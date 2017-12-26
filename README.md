@@ -1,7 +1,9 @@
 # OCLR Simulation
 # Version 1.0
-This simulation is based on a variant protocol of M-bus done by Prof. Rosario Culmone (University of Camerino)
+This simulation is based on a variant protocol of M-bus done by Prof. Rosario Culmone (University of Camerino).
+
 The simulation can be found here: https://www.researchgate.net/publication/269645771_Light_Routing_Algorithm_for_Utility_Networks .
+
 This variant concerns automatic meter reading applications ( e.g. water, gas and electric meter ).
 The architecture considered is master/slave where the master has ideally unlimited computation capacity and power source .Instead the slave are limited.
 ## Variant Contribution
@@ -14,3 +16,4 @@ The first release (v1.0) concerns this variant and is released with license Ecli
 - Jgraph (BSD 3)
 - JgraphT (EPL 1.0)
 - JgraphX (BSD 3)
+
