@@ -14,19 +14,23 @@ import java.util.HashMap;
 
 public abstract class MbusNetwork extends Model {
     private MbusDevice nodes[];
-    private NetConfigManager configManager;
+    public NetConfigManager configManager;
     private long lasting;
 
     protected double headerSum = 0;
-    protected int messagesSent = 0; // number of package sent.
+    protected long messagesSent = 0; // number of package sent.
+    public double avgBandwidth  = 0; // number of package sent.
+    public long masterSentMessage = 0;
+    public long masterReceivedMessage = 0;
+	private Experiment exp;
 
 
     public MbusNetwork(Model owner, String name, boolean showInReport, boolean showInTrace, int nodesNum,
-                       double mediumNoise, int variability, int mediumDegree, long lasting) {
+                       double mediumNoise, int variability, int mediumDegree, int noiseRange, long lasting, int packetDestinationMax) {
         super(owner, name, showInReport, showInTrace);
         nodes = new MbusDevice[nodesNum];
         this.lasting = lasting;
-        configManager = new NetConfigManager(nodesNum, variability, mediumNoise, mediumDegree);
+        configManager = new NetConfigManager(nodesNum, variability, mediumNoise, mediumDegree, noiseRange,packetDestinationMax);
     }
 
 
@@ -44,6 +48,13 @@ public abstract class MbusNetwork extends Model {
         return lasting;
     }
 
+    protected void setExperiment(Experiment exp) {
+        this.exp = exp;
+    }
+    
+    public Experiment getExperiment() {
+        return  this.exp;
+    }
 
     public void updateNoise() {configManager.updateNoise();}
 

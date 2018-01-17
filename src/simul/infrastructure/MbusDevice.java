@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 public abstract class MbusDevice extends SimProcess {
     private int position;
-    private MbusNetwork network;
-    private MbusMessage lastReceived;
+    protected MbusNetwork network;
+    protected MbusMessage lastReceived;
 
     
     public MbusDevice(Model owner, String name, Boolean showInTrace, int pos) {
@@ -42,11 +42,11 @@ public abstract class MbusDevice extends SimProcess {
 
         hold(new TimeSpan(message.getLength())); // simulation message send delay.
 
-        if (TimeInstant.isAfter(presentTime(), new TimeInstant(network.getLasting()/2))) {
+        //if (TimeInstant.isAfter(presentTime(), new TimeInstant(network.getLasting()/2))) {
         	// package sended.
-            network.headerSum += message.getLength() - 20;
-            network.messagesSent++; // increase package sended.
-        }
+        network.headerSum += message.getLength() - 20;
+        network.messagesSent++; // increase package sended.
+        //}
 
         for (Integer key : outgoingEdges.keySet()) {// send to all neighbors.
         	// if it is a reply with data.

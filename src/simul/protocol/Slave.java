@@ -4,10 +4,13 @@ import co.paralleluniverse.fibers.SuspendExecution;
 import desmoj.core.simulator.Model;
 
 import desmoj.core.simulator.TimeSpan;
+import simul.cache.slaveCache;
+import simul.cache.base.cachePair;
 import simul.infrastructure.MbusDevice;
 import simul.infrastructure.MbusMessage;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -15,7 +18,10 @@ import java.util.HashMap;
  */
 public class Slave extends MbusDevice {
     private int slaveAddress;
-    private HashMap<Integer, Double> noiseTable = new HashMap<Integer, Double>();
+    // neighbor -> rumor
+    private HashMap<Integer, Double>  noiseTable = new HashMap<Integer, Double>();
+    private slaveCache cache = new slaveCache();
+    
 
     public Slave(Model owner, String name, Boolean showInTrace, int pos) {
         super(owner, name, showInTrace, pos);
@@ -50,20 +56,20 @@ public class Slave extends MbusDevice {
 
         if (!integrity) {
             if (message.getClass() == Request.class) {
-                if(((Request)message).getHopList().getFirst() == slaveAddress) {
+                /*if(((Request)message).getHopList().getFirst() == slaveAddress) {
                     System.out.println("Il nodo " + slaveAddress + " ha ricevuto il pacchetto ma era danneggiato");
-                }
+                }*/
             }
             else {
-                if(((Response)message).getNextHop() == slaveAddress) {
+                /*if(((Response)message).getNextHop() == slaveAddress) {
                     System.out.println("Il nodo " + slaveAddress + " ha ricevuto il pacchetto ma era danneggiato");
-                }
+                }*/
             }
         }
 
         return integrity;
     }
-
+    
 
     public void lifeCycle() throws SuspendExecution {
         int fatherAddress = -1;
@@ -72,29 +78,52 @@ public class Slave extends MbusDevice {
          * 
          */
         while (true) {
-            if (getReceived().getClass() == Request.class) {
+            if (getReceived() != null && getReceived().getClass() == Request.class) {
                 Request received = new Request((Request)retrieveMsg());
 
-                if (decode(received, received.getSource()) && (received.getHopList().pollFirst() == slaveAddress)) { // check local destination.
+                if (decode(received, received.getSource()) && (received.getHopDestination() == this.slaveAddress)) { // check local destination.
                     fatherAddress = received.getSource(); // Get source address.
 
-                    if (received.getHopList().isEmpty()) { // i'm the destination node.
+                    if (received.getDestination() == this.slaveAddress) { // i'm the destination node.
                         ArrayDeque<NoiseTable> tablesList = new ArrayDeque<NoiseTable>();
-                        tablesList.push(new NoiseTable(noiseTable, slaveAddress));
+                        tablesList.push(new NoiseTable(noiseTable, this.slaveAddress));
 
                         //System.out.println("Slave #"+this.slaveAddress+": Message received with payload length:  " + received.getPayloadLen()+ " time: "+presentTime());
                         //System.out.print("la tabella è stata trasmessa da " + slaveAddress);
-                        System.out.println("Slave #"+this.slaveAddress+" Forward packet ");
+                        System.out.println("Slave #"+this.slaveAddress+" Forward back packet ");
                         // trasmit the response package.
                         transmit(new Response(1, received.getToken(), 20, slaveAddress, fatherAddress, tablesList),
                                 false);
                     } else {
                     	// forward the package.
+                    	// next hop algorithm
+                    	// if the destination is a  neighbor go straight there.
+                    	// Prority: the hop list and after the cache.
+                    	System.out.println("Slave #"+this.slaveAddress+" Forward packet ");
+                    	// if the destination is a  neighbor go straight there.
+                    	int nextHop;
+                    	if (network.configManager.getNeighbors(this.slaveAddress).contains(received.getDestination())){
+                    		nextHop = received.getDestination();
+                    		cache.addLocalCache(nextHop,received.getDestination()); // Why? Problem? sync with server.
+                    	} else
+                    	if (received.getHopList().size() > 1  && received.getHopList().getFirst() == this.slaveAddress){
+                    		received.getHopList().pollFirst();
+                    		nextHop = received.getHopList().getFirst();
+                    		// update cache.
+                    		cache.addLocalCache(nextHop,received.getDestination());
+                    	}else { // get destination.
+                    		nextHop = (cache.lookUpCache(received.getDestination()));
+                    		if (nextHop==-1){
+                    			System.out.println("impossible");
+                    			//throw new ("Internal error");// not possible 
+                    		}
+                    	}
+                    	
                         transmit(new Request(received.getCode(), received.getToken(), received.getPayloadLen(),
-                                slaveAddress, received.getHopList()), false);
+                        		this.slaveAddress,nextHop,received.getDestination(), received.getHopList()), false);
                     }
                 }
-            } else if (getReceived().getClass() == Response.class) { // Response ..
+            } else if (getReceived() != null &&getReceived().getClass() == Response.class) { // Response ..
                 Response received = new Response((Response)retrieveMsg());
 
                 if (decode(received, received.getSource()) && (received.getNextHop() == slaveAddress)) {
@@ -102,7 +131,7 @@ public class Slave extends MbusDevice {
 
                     received.getNoiseTables().push(new NoiseTable(noiseTable, slaveAddress));
 
-                    System.out.print("Slave #"+slaveAddress+": Retrasmit noiseTable");
+                    System.out.println("Slave #"+slaveAddress+": Retrasmit noiseTable");
                     transmit(new Response(received.getCode(), received.getToken(), received.getPayloadLen(),
                             slaveAddress, fatherAddress, received.getNoiseTables()), false);
                 }
@@ -111,5 +140,8 @@ public class Slave extends MbusDevice {
             passivate();
         }
     }
+
+
+	
 
 }

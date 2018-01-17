@@ -18,6 +18,9 @@ public class NetConfigManager {
 
     private NetConfig config;
     private ArrayList<AddressesPair> edgeList = new ArrayList<AddressesPair>();
+    private Random randomGen = new Random();
+	private int NOISE_RANGE;
+	private int MAX_DEST;
 
     /**
      * Graph generation
@@ -25,8 +28,10 @@ public class NetConfigManager {
      * @param variability 
      * @param mediumNoise
      * @param mediumDegree
+     * @param noiseRange 
+     * @param packetDestinationMax 
      */
-    public NetConfigManager(int nodesNum, int variability, double mediumNoise, int mediumDegree) {
+    public NetConfigManager(int nodesNum, int variability, double mediumNoise, int mediumDegree, int noiseRange, int packetDestinationMax) {
         if (nodesNum < 3) {
             System.out.println("Il graph size is three.");
             nodesNum = 3;
@@ -39,7 +44,8 @@ public class NetConfigManager {
         NOISE_VARIABILITY = variability;
         MEDIUM_NOISE = mediumNoise;
         MEDIUM_DEGREE = mediumDegree;
-
+        NOISE_RANGE = noiseRange;
+        setMaxDest(packetDestinationMax);
         int edgeEnd;
         double edgeNoise;
 
@@ -79,15 +85,41 @@ public class NetConfigManager {
 
     public void updateNoise() {
         double newNoise;
+        int infected = 0; // edge's number with noise changed.
         Random randomGen = new Random();
-
+        
         for (AddressesPair edge: edgeList) {
-            if (randomGen.nextInt(100) <= NOISE_VARIABILITY) {
+        	//&& infected < NOISE_RANGE
+            if (randomGen.nextInt(100) <= NOISE_VARIABILITY ) {
                 newNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/2) * randomGen.nextGaussian());
                 config.setEdge(edge.getFirst(), edge.getSecond(), newNoise);
                 config.setEdge(edge.getSecond(), edge.getFirst(), newNoise);
+                //infected++;
             }
         }
+    	/*double newNoise;
+    	// Localize to a specific node.
+    	int infected = 0; // edge's number with noise changed.
+    	
+    	int node = randomGen.nextInt(this.config.NODES - 1) +1;
+    	if (randomGen.nextInt(100) <= NOISE_VARIABILITY) {
+    		for (AddressesPair edge: edgeList) {
+    			if (edge.getFirst() == node && infected < NOISE_RANGE){
+    				infected++;
+    				newNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/2) * randomGen.nextGaussian());
+    				config.setEdge(edge.getFirst(), edge.getSecond(), newNoise);
+                    config.setEdge(edge.getSecond(), edge.getFirst(), newNoise);
+    			}
+        	}
+    	}else {
+    		for (AddressesPair edge: edgeList) {
+    			if (edge.getFirst() != node && edge.getSecond() != node){
+    				newNoise = 0;
+    				config.setEdge(edge.getFirst(), edge.getSecond(), newNoise);
+                    config.setEdge(edge.getSecond(), edge.getFirst(), newNoise);
+    			}
+        	}
+    	}*/
     }
 
 
@@ -105,7 +137,22 @@ public class NetConfigManager {
 
         return outgoingEdges;
     }
+    
+    public ArrayList<Integer> getNeighbors(int source) {
+    	ArrayList<Integer> outgoingEdges = new ArrayList<Integer>();
 
+        for (AddressesPair edge : edgeList) {
+        	// edges are not repeated.
+            if (edge.getFirst() == source) {
+                outgoingEdges.add(edge.getSecond());
+            }
+            if (edge.getSecond() == source) {
+                outgoingEdges.add(edge.getFirst());
+            }
+        }
+
+        return outgoingEdges;
+    }
 
     public SimpleWeightedGraph<Integer, DefaultWeightedEdge> getGraphRepresentation() {
         SimpleWeightedGraph<Integer, DefaultWeightedEdge> graph =
@@ -137,4 +184,14 @@ public class NetConfigManager {
             System.out.println();
         }
     }
+
+
+	public int getMaxDest() {
+		return MAX_DEST;
+	}
+
+
+	public void setMaxDest(int mAX_DEST) {
+		MAX_DEST = mAX_DEST;
+	}
 }
