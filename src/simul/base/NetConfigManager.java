@@ -90,8 +90,8 @@ public class NetConfigManager {
         
         for (AddressesPair edge: edgeList) {
         	//&& infected < NOISE_RANGE
-            if (randomGen.nextInt(100) <= NOISE_VARIABILITY ) {
-                newNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/2) * randomGen.nextGaussian());
+            if (randomGen.nextInt(100) + 1 <= NOISE_VARIABILITY ) {
+                newNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/2) * randomGen.nextDouble()); // nextGuassian
                 config.setEdge(edge.getFirst(), edge.getSecond(), newNoise);
                 config.setEdge(edge.getSecond(), edge.getFirst(), newNoise);
                 //infected++;

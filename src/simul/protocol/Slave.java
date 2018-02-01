@@ -83,41 +83,64 @@ public class Slave extends MbusDevice {
 
                 if (decode(received, received.getSource()) && (received.getHopDestination() == this.slaveAddress)) { // check local destination.
                     fatherAddress = received.getSource(); // Get source address.
-
+                    // stats
+                    
+                    
+                    //System.out.println(received.getHopList().size());
+                    
                     if (received.getDestination() == this.slaveAddress) { // i'm the destination node.
                         ArrayDeque<NoiseTable> tablesList = new ArrayDeque<NoiseTable>();
                         tablesList.push(new NoiseTable(noiseTable, this.slaveAddress));
-
+                        
                         //System.out.println("Slave #"+this.slaveAddress+": Message received with payload length:  " + received.getPayloadLen()+ " time: "+presentTime());
                         //System.out.print("la tabella è stata trasmessa da " + slaveAddress);
-                        System.out.println("Slave #"+this.slaveAddress+" Forward back packet ");
+                        //System.out.println("Slave #"+this.slaveAddress+" Forward back packet ");
                         // trasmit the response package.
                         transmit(new Response(1, received.getToken(), 20, slaveAddress, fatherAddress, tablesList),
                                 false);
                     } else {
+                    	// does not consider the last hop.(destination)s
+                    	this.network.hopCount++; 
+                    	
                     	// forward the package.
                     	// next hop algorithm
                     	// if the destination is a  neighbor go straight there.
                     	// Prority: the hop list and after the cache.
-                    	System.out.println("Slave #"+this.slaveAddress+" Forward packet ");
+                    	//System.out.println("Slave #"+this.slaveAddress+" Forward packet ");
                     	// if the destination is a  neighbor go straight there.
                     	int nextHop;
-                    	if (network.configManager.getNeighbors(this.slaveAddress).contains(received.getDestination())){
+                    	/*if (network.configManager.getNeighbors(this.slaveAddress).contains(received.getDestination())){
                     		nextHop = received.getDestination();
+                    		received.getHopList().clear();
                     		cache.addLocalCache(nextHop,received.getDestination()); // Why? Problem? sync with server.
-                    	} else
+                    	} else May short the path .. but it is not optimized for noise.*/
                     	if (received.getHopList().size() > 1  && received.getHopList().getFirst() == this.slaveAddress){
                     		received.getHopList().pollFirst();
                     		nextHop = received.getHopList().getFirst();
+                    		
+                    		if (nextHop == received.getDestination()){
+                    			received.getHopList().clear(); // 
+                    		}
                     		// update cache.
                     		cache.addLocalCache(nextHop,received.getDestination());
-                    	}else { // get destination.
+                    	}else if (network.configManager.getNeighbors(this.slaveAddress).contains(received.getDestination())){
+                    		nextHop = received.getDestination();
+                    		received.getHopList().clear();
+                    		cache.addLocalCache(nextHop,received.getDestination()); // Why? Problem? sync with server.
+                    	} else { // get destination.
                     		nextHop = (cache.lookUpCache(received.getDestination()));
+                    		
+                    		if (nextHop == received.getDestination()){
+                    			received.getHopList().clear();
+                    		}
+                    		
                     		if (nextHop==-1){
                     			System.out.println("impossible");
                     			//throw new ("Internal error");// not possible 
                     		}
                     	}
+                    	// stat after for trasmit reason.
+                    	this.network.currentThroughtput += received.getHopList().size() + 1; // plus the final destination 
                     	
                         transmit(new Request(received.getCode(), received.getToken(), received.getPayloadLen(),
                         		this.slaveAddress,nextHop,received.getDestination(), received.getHopList()), false);
@@ -131,7 +154,7 @@ public class Slave extends MbusDevice {
 
                     received.getNoiseTables().push(new NoiseTable(noiseTable, slaveAddress));
 
-                    System.out.println("Slave #"+slaveAddress+": Retrasmit noiseTable");
+                    //System.out.println("Slave #"+slaveAddress+": Retrasmit noiseTable");
                     transmit(new Response(received.getCode(), received.getToken(), received.getPayloadLen(),
                             slaveAddress, fatherAddress, received.getNoiseTables()), false);
                 }

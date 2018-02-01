@@ -23,6 +23,11 @@ public abstract class MbusNetwork extends Model {
     public long masterSentMessage = 0;
     public long masterReceivedMessage = 0;
 	private Experiment exp;
+	public int currentThroughtput  = 0;
+	public double avgBestBandwidth = 0;
+	public Integer hopCount = 0;
+	public long masterCacheHit = 0;
+	
 
 
     public MbusNetwork(Model owner, String name, boolean showInReport, boolean showInTrace, int nodesNum,

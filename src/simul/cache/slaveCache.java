@@ -40,14 +40,14 @@ public class slaveCache {
     		if (cacheSingle.getNeighbor() == nextHop ){
     			found = true;
     			if (!cacheSingle.getNextHops().contains(destination)){
-    				System.out.println("Add cache:"+cacheSingle.getNeighbor()+","+destination);
+    				//System.out.println("Add cache:"+cacheSingle.getNeighbor()+","+destination);
     				cacheSingle.getNextHops().add(destination);
     			}
     			// if contains ok.
     		}else{
     			// remove old record. if contains destination.
     			if (cacheSingle.getNextHops().contains(destination)){
-    				System.out.println("Remove cache:"+cacheSingle.getNeighbor()+","+destination);
+    				//System.out.println("Remove cache:"+cacheSingle.getNeighbor()+","+destination);
     				cacheSingle.getNextHops().remove(destination); // remove old hop.
     			}
     		}

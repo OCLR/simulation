@@ -43,7 +43,7 @@ public class networkCache {
 			return false;
 		}
 		if(this.cache.get(source).exists(hopDestination,destination)){
-			System.out.println(source);
+			//System.out.println(source);
 			return true;
 		}else{
 			return false;

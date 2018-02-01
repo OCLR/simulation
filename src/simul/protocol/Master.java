@@ -82,7 +82,7 @@ public class Master extends MbusDevice {
 
         if (!integrity  && (message.getClass() == Response.class)) { // package fault 
             if(((Response)message).getNextHop() == 0) {
-                System.out.println("Packet fault");
+                //System.out.println("Packet fault");
             }
         }
 
@@ -160,15 +160,21 @@ public class Master extends MbusDevice {
         ArrayDeque<Integer> pathReduced,pathEncoded;
         System.out.println(graph);
         // Generate fixed list node.
-        ArrayList<Integer> dest = getDestinations(this.network.configManager.getMaxDest());
+        ArrayList<Integer> dest = getDestinations(this.network.configManager.getMaxDest()); // without master.
         Integer fixedNode = dest.get(0);//randomGen.nextInt(graph.vertexSet().size() - 1) +1;
         Integer fixedNodeIndex = -1;
         DecimalFormat formatter = new DecimalFormat("#,###.00");
         // 1;//
         //Integer fixedNode;
+        /*
+         * come descrivi una pecora brutta ?
+		 * bela fuori ...e  bella dentro ...
+         */
+        System.out.println("Simulation starts");
+        
         while (true) {
         	//fixedNode = randomGen.nextInt(graph.vertexSet().size() - 1) +1;
-        	if (fixedNodeIndex.equals(dest.size()-1)){
+        	if (fixedNodeIndex.equals(dest.size()-1) ){
             	fixedNodeIndex = 0; 
             	fixedNode = dest.get(fixedNodeIndex);
             	
@@ -189,13 +195,18 @@ public class Master extends MbusDevice {
             try{
             	path = dijkstraPaths.getPath(endNode).getVertexList();
             }catch(Exception e){
-            	System.out.println("why?");
+            	//throw new SUSPEND;
+            	//System.out.println("NO PATH DEFINED FOR NODE "+fixedNode);
+            	continue; // Maybe happen no path ok.
+            	//continue;
             }
             try{
             	path.remove(0);
 	        }catch(Exception e){
-	        	System.out.println("why?");
-	        	continue;
+	        	//System.out.println("No master node "+fixedNode);
+	        	throw new IllegalArgumentException();
+	        	//continue;
+	        	// the fuck?
 	        }
             
 
@@ -210,15 +221,23 @@ public class Master extends MbusDevice {
             pathEncoded = encodePath(path);
             pathReduced = cache.reducePath(pathEncoded);
             
-            this.network.avgBandwidth += ((pathReduced.size()*1.0)/pathEncoded.size());
+            //this.network.avgBandwidth += ((pathReduced.size()*1.0)/pathEncoded.size());
             
-            this.log.println(pathReduced.size()+","+pathEncoded.size()+","+pathEncoded.getLast());
+            //this.log.println(pathReduced.size()+","+pathEncoded.size()+","+pathEncoded.getLast());
             this.network.masterSentMessage++;
-            System.out.println("Path:"+pathEncoded);
-            System.out.println("Path:"+pathReduced);
+            
+            //System.out.println("Path:"+pathEncoded);
+            //System.out.println("Path:"+pathReduced);
+            
+            if (pathEncoded.size() -1 != pathReduced.size() ){
+            	this.network.masterCacheHit++;
+            }
+            
             sending = new Request(1, token++, 20, 0, pathEncoded.getFirst(),pathEncoded.getLast(), pathReduced);
             
             correct = false;
+            this.network.hopCount = 1;
+            this.network.currentThroughtput = pathReduced.size() + 1; // for the destination node.
             /**
              * Send packet and update rumors node.
              */
@@ -239,13 +258,27 @@ public class Master extends MbusDevice {
                 if (getReceived() == null) { // TIMEOUT 
                 	// not correct? PACKET LOSS.
                     if (!correct) { // double check not required.
-                        System.out.println("Packet loss");
+                        //System.out.println("Packet loss");
                         fault++;
+                        double avg = this.network.currentThroughtput/(this.network.hopCount+0.0); // (the current node)
+                        double bavg = computeSum(pathEncoded.size(),this.network.hopCount)/(this.network.hopCount+0.0);
+                        this.network.avgBandwidth += avg;
+                        this.network.avgBestBandwidth += bavg;
+                        /*if (avg > bavg){
+                        	System.out.println("what?");
+                        	//throw new Exception("what?");
+                        }*/
+                        this.band_log.println("'"+formatter.format(avg)+"';"+"'"+formatter.format(bavg)+"';"+fault+";"+pathEncoded.getLast());
+                        //System.out.println(this.network.avgBestBandwidth);
+                        //System.out.println("best avg:"+this.network.avgBestBandwidth);
                         // This is done for synchronization between the slaves and the master.
                         // It reduces the bandwidth spread but is useful to avoid possible loop or possible unreachable destination due to locked path.
+                        System.out.print("Packet #"+this.network.masterSentMessage+" fault "); 
+                        System.out.println("Progress: "+((this.network.masterSentMessage*100)/this.network.getLasting())+"%");
+                        
                         cache.faultCaching(pathEncoded,fixedNode);
                         if ((pathReduced.size()*1.0)<=pathEncoded.size()){ // avoiding error data.
-                        	this.band_log.println(("'"+formatter.format(((pathReduced.size()*1.0)/pathEncoded.size()) *100))+"';"+fault+";"+pathEncoded.getLast());
+                        	//this.band_log.println(("'"+formatter.format(((pathReduced.size()*1.0)/pathEncoded.size()) *100))+"';"+fault+";"+pathEncoded.getLast());
                         }
                         
                         
@@ -268,8 +301,21 @@ public class Master extends MbusDevice {
                         if (decode(received, graph.getEdge(masterNode, findNode(received.getSource())) )) { // decode the message 
                             if (received.getNextHop() == 0 && received.getNoiseTables().size() == path.size()) {
                                 correct = true;
-                                System.out.println("Packet received");
-                                this.band_log.println(("'"+formatter.format(((pathReduced.size()*1.0)/pathEncoded.size())*100))+"';"+fault+";"+pathEncoded.getLast());
+                                //System.out.println("Packet received");
+                                double avg = this.network.currentThroughtput/(this.network.hopCount+0.0); // (the current node)
+                                double bavg = computeSum(pathEncoded.size(),this.network.hopCount)/(this.network.hopCount+0.0);
+                                this.network.avgBandwidth += avg;
+                                this.network.avgBestBandwidth += bavg ;
+                                //System.out.println(this.network.avgBestBandwidth);
+                                //System.out.println(this.network.avgBandwidth);
+                                if (avg > bavg){
+                                	System.out.println("what?");
+                                }
+                                System.out.print("Packet #"+this.network.masterSentMessage+" ok     "); 
+                                System.out.println("Progress: "+((this.network.masterSentMessage*100)/this.network.getLasting())+"% "+avg);
+                                this.band_log.println("'"+formatter.format(avg)+"';"+"'"+formatter.format(bavg)+"';"+fault+";"+pathEncoded.getLast());
+                                //System.out.println("best avg:"+this.network.avgBestBandwidth);
+                                //this.band_log.println(("'"+formatter.format(((pathReduced.size()*1.0)/pathEncoded.size())*100))+"';"+fault+";"+pathEncoded.getLast());
                                 
                                 /*if (pathReduced.size() +1 == pathEncoded.size()){
                                 	// the first time caching.
@@ -299,12 +345,39 @@ public class Master extends MbusDevice {
     }
 
 
+	private Integer computeSum(int i,int limit) {
+		// TODO Auto-generated method stub
+		int sum = 0;
+		for (int y = 0; y < limit && i > 0; y++){
+			// sum until reach limit number.
+			sum+=i;
+			i--;
+		}
+		return sum;
+		//return null;
+	}
+
+
 	private ArrayList<Integer> getDestinations(int maxDest) {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		Integer i = 0;
 		int node;
+		/*do{
+			node = randomGen.nextInt(graph.vertexSet().size() - 1);
+			if (node == 0){
+				continue;
+			}
+			if (list.contains(node)){
+				continue;
+			}
+			list.add(node);
+		}while(list.size()!=maxDest);*/
 		do{
-			 node = randomGen.nextInt(graph.vertexSet().size() - 1) + 1;
+			i++;
+			node = i;
+			if (node == 0){
+				continue;
+			}
 			if (list.contains(node)){
 				continue;
 			}

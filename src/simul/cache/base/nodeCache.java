@@ -30,7 +30,7 @@ class nodeCache {
 			if (cp.getNeighbor().equals(hopDestination)){
 				// use new path.
 				found = true;
-				System.out.println("Global cache add:"+hopDestination+","+destination);
+				//System.out.println("Global cache add:"+hopDestination+","+destination);
 				if (!cp.getNextHops().contains(destination)){
 					cp.getNextHops().add(destination);// multiple times multiple problems :S 
 				}
@@ -38,7 +38,7 @@ class nodeCache {
 			}else{
 				// remove old path.
 				if (cp.getNextHops().contains(destination)){
-					System.out.println("Global cache remove:"+cp.getNeighbor()+","+destination);
+					//System.out.println("Global cache remove:"+cp.getNeighbor()+","+destination);
 					cp.getNextHops().remove(destination);
 				}
 			}
@@ -55,7 +55,7 @@ class nodeCache {
 		
 		for (cachePair cp:cache){
 			if (cp.getNeighbor().equals(hopDestination) && cp.getNextHops().contains(destination)){
-				System.out.print("Cache hit! "+hopDestination+"|"+destination);
+				//System.out.print("Cache hit! "+hopDestination+"|"+destination);
 				// use new path.
 				return true;
 			}else{

@@ -65,8 +65,11 @@ public class ProtocolNetwork extends MbusNetwork {
         for (int i = 1; i <= slavesNum; i++) {
             setNode(new Slave(this, "Slave", true, i), i);
         }
-
-        master = new Master(this, true, generateMasterGraph());
+        System.out.println("Building Network");
+        SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> graph = generateMasterGraph();
+        System.out.println("Network created");
+        
+        master = new Master(this, true, graph);
         setNode(master, 0);
         master.activate();
     }
@@ -81,16 +84,35 @@ public class ProtocolNetwork extends MbusNetwork {
         long lasting;
         int packetDestinationMax;
         Scanner in = new Scanner(System.in);
-        /*slaveNum = Integer.parseInt(args[0]);
-        mediumNoise = Double.parseDouble(args[1]);
-        variability = Integer.parseInt(args[2]);
-        mediumDegree = Integer.parseInt(args[3]);
-        packetDestinationMax = Integer.parseInt(args[4]);
-        lasting = Integer.parseInt(args[5]);*/
+        if (args.length == 5){
+	        slaveNum = Integer.parseInt(args[0]);
+	        mediumNoise = Double.parseDouble(args[1]);
+	        variability = Integer.parseInt(args[2]);
+	        mediumDegree = Integer.parseInt(args[3]);
+	        //packetDestinationMax = Integer.parseInt(args[4]);
+	        packetDestinationMax = slaveNum;
+	        lasting = Integer.parseInt(args[4]);
+        }else{
+        	System.out.println("How many slaves ?");
+            slaveNum = in.nextInt();
+            System.out.println("Which is the noise average?");
+            mediumNoise = in.nextDouble();
+            System.out.println("Which is the probability that the noise change in a specific time?" );
+            variability = in.nextInt();
+            System.out.println("How many max arches incedence in a node?" );
+            mediumDegree = in.nextInt();
+            //System.out.println("How many nodes can be used as a packet destination?");
+            //packetDestinationMax = in.nextInt();
+            // packetDestinationMax = 1;
+            packetDestinationMax = slaveNum;
+            System.out.println("How many packets will sends?" );
+            lasting = in.nextLong();
+            /*System.out.println("What is the noise range in a node? <= max arches.");
+            noiseRange = in.nextInt();*/
+        }
         
         
-        
-        
+        /*
         System.out.println("How many slaves ?");
         slaveNum = in.nextInt();
         System.out.println("Which is the noise average?");
@@ -98,17 +120,17 @@ public class ProtocolNetwork extends MbusNetwork {
         System.out.println("Which is the probability that the noise change in a specific time?" );
         variability = in.nextInt();
         System.out.println("How many max arches incedence in a node?" );
-        mediumDegree = in.nextInt();
+        mediumDegree = in.nextInt();*/
         /*System.out.println("What is the noise range in a node? <= max arches.");
         noiseRange = in.nextInt();*/
         noiseRange = mediumDegree; // no need @deprecated
         /*if (noiseRange>mediumDegree){
         	throw new IllegalArgumentException(" Noise range > max arches.");
         }*/
-        System.out.println("How many nodes can be used as a packet destination?");
+        /*System.out.println("How many nodes can be used as a packet destination?");
          packetDestinationMax = in.nextInt();
         System.out.println("How many packets will sends?" );
-        lasting = in.nextLong();
+        lasting = in.nextLong();*/
 
         ProtocolNetwork protocol = new ProtocolNetwork(null, "Protocol network first variant",
                 true, true, slaveNum, mediumNoise, variability, mediumDegree, noiseRange, lasting, packetDestinationMax);
@@ -124,8 +146,6 @@ public class ProtocolNetwork extends MbusNetwork {
         exp.debugPeriod(new TimeInstant(0), new TimeInstant(50));
         
         exp.start();
-        
-
         exp.report();
 
         System.out.println();
@@ -134,7 +154,11 @@ public class ProtocolNetwork extends MbusNetwork {
                      "(frames for packet)");
         	 System.out.println("Master message sent:"+protocol.masterSentMessage);
         	 System.out.println("Master message received:"+protocol.masterReceivedMessage);
-        	 System.out.println("Bandwidth avg (0 < x < 1) :"+(protocol.avgBandwidth /protocol.masterSentMessage));
+        	 System.out.println("Master Cache Hit:"+ protocol.masterCacheHit);
+        	 System.out.println("Master Cache Impact:"+ protocol.masterCacheHit/(protocol.masterSentMessage+0.0));
+        	 System.out.println("Bandwidth Cache   case avg :"+(protocol.avgBandwidth /protocol.masterSentMessage));
+        	 System.out.println("Bandwidth Default case avg  :"+(protocol.avgBestBandwidth /protocol.masterSentMessage));
+        	 System.out.println("Comparison index (0 < x < 1) :"+(protocol.avgBandwidth /protocol.masterSentMessage)/(protocol.avgBestBandwidth /protocol.masterSentMessage));
         	 
         	 
         }else{
