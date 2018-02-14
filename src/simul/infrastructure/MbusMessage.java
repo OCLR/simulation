@@ -8,6 +8,7 @@ import java.util.Random;
 public abstract class MbusMessage {
     private int length;
     private int frameErrors[];
+    private double errorRate;
 
     public MbusMessage(int length) {
         this.length = length;
@@ -35,22 +36,28 @@ public abstract class MbusMessage {
      * @param errorRate
      */
     public void generateErrors(double errorRate) {
-        int errors;
-        Random randomGen = new Random();
-        
-        // An error can occur in any of this bit.
-        for (int i = 0; i < frameErrors.length; i++) {
-            errors = 0;
+//        int errors;
+//        Random randomGen = new Random();
+//        double gen;
+//        // An error can occur in any of this bit.
+//        for (int i = 0; i < frameErrors.length; i++) {
+//            errors = 0;
+//
+//            for (int j = 1; j < 11; j++) {
+//                gen = randomGen.nextDouble();
+//                if (gen <= errorRate) {
+//                    errors++;
+//                }
+//            }
+//            
+//
+//            frameErrors[i] = errors;
+//        }
+        this.errorRate = errorRate;
+    }
 
-            for (int j = 1; j < 11; j++) {
-                if ((randomGen.nextDouble() * 100) <= errorRate) {
-                    errors++;
-                }
-            }
-            
-
-            frameErrors[i] = errors;
-        }
+    public double getErrorRate() {
+        return this.errorRate;
     }
 
 }

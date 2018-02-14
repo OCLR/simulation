@@ -32,17 +32,21 @@ public class Slave extends MbusDevice {
     private boolean decode(MbusMessage message, int source) throws SuspendExecution{
         double sum = 0;
         boolean integrity = true;
-
-        hold(new TimeSpan(message.getLength()));
-
-        if ((message.getErrors(1) < 2) && (message.getErrors(2) < 2)) {
+        // check null exception.
+        try{
+            hold(new TimeSpan(message.getLength()));
+        }
+        catch(Exception e){
+           
+        }
+        /*if ((message.getErrors(1) < 2) && (message.getErrors(2) < 2)) {
             sum += (message.getErrors(1) + message.getErrors(2));
         }
         else {
             return false;
-        }
+        }*/
 
-        for (int i = 0; i < message.getLength(); i++) {
+        /*for (int i = 0; i < message.getLength(); i++) {
             if (message.getErrors(i) > 1) {
                 integrity = false;
                 sum += 2;
@@ -50,24 +54,28 @@ public class Slave extends MbusDevice {
             else if (message.getErrors(i) == 1) {
                 sum += 1;
             }
+        }*/
+        //System.out.println("Error Rate:"+message.getErrorRate());
+        if (message.getErrorRate() < 0){
+          return false;  
         }
+        noiseTable.put(source, message.getErrorRate());
 
-        noiseTable.put(source, sum / message.getLength());
-
-        if (!integrity) {
+        /*if (!integrity) {
             if (message.getClass() == Request.class) {
                 /*if(((Request)message).getHopList().getFirst() == slaveAddress) {
                     System.out.println("Il nodo " + slaveAddress + " ha ricevuto il pacchetto ma era danneggiato");
-                }*/
+                }
             }
             else {
                 /*if(((Response)message).getNextHop() == slaveAddress) {
                     System.out.println("Il nodo " + slaveAddress + " ha ricevuto il pacchetto ma era danneggiato");
-                }*/
+                }
             }
-        }
-
-        return integrity;
+        }*/
+        
+        
+        return (message.getErrorRate()!=2);
     }
     
 

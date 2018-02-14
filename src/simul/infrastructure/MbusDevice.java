@@ -35,6 +35,7 @@ public abstract class MbusDevice extends SimProcess {
     protected void transmit(MbusMessage message, boolean variation) throws SuspendExecution{
         HashMap<Integer, Double> outgoingEdges = network.getOutgoingEdges(position); // get all neighbors.
         MbusMessage son;
+        double error;
 
         if (variation) {
             network.updateNoise();
@@ -56,8 +57,9 @@ public abstract class MbusDevice extends SimProcess {
             else { // consider a message as a request otherwise.
                 son = new Request((Request)message); 
             }
-        	// Error can happen and the message compute it.
-            son.generateErrors(outgoingEdges.get(key));
+            error = outgoingEdges.get(key);
+            // Error can happen and the message compute it.
+            son.generateErrors(error);
             // Every node receive a message.
             network.getNode(key).receive(son);
             network.getNode(key).activate();

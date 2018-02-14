@@ -10,8 +10,15 @@ public class NetConfig {
     private double[][] adjacenceMatrix;
 
     NetConfig(int nodes) {
+        int n1,n2;
         NODES = nodes;
         adjacenceMatrix = new double[NODES][NODES];
+        // Fill initialy.
+        for (n1 = 0; n1 < nodes;n1++){
+            for (n2 = 0; n2 < nodes;n2++){
+                adjacenceMatrix[n1][n2] = NetConfigManager.updateSingleNoise(); // init.
+            }
+        }
     }
 
     public void setEdge(int from, int to, double noise) {

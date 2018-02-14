@@ -10,6 +10,7 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import simul.infrastructure.MbusNetwork;
 
 import java.util.Scanner;
+import simul.base.NetConfigManager;
 
 /**
  * Created by Federico Falconi on 05/07/2017.
@@ -22,8 +23,8 @@ public class ProtocolNetwork extends MbusNetwork {
     
 
     public ProtocolNetwork(Model owner, String name, boolean showInReport, boolean showInTrace, int slaveNum,
-                           double mediumNoise, int variability, int mediumDegreee, int noiseRange, long lasting, int packetDestinationMax) {
-        super(owner, name, showInReport, showInTrace, slaveNum + 1, mediumNoise, variability, mediumDegreee,noiseRange, lasting,packetDestinationMax);
+                           int powerNoisePerc, int variability, int mediumDegreee, int noiseRange, long lasting, int packetDestinationMax) {
+        super(owner, name, showInReport, showInTrace, slaveNum + 1, powerNoisePerc, variability, mediumDegreee,noiseRange, lasting,packetDestinationMax);
         this.slavesNum = slaveNum;
     }
 
@@ -51,7 +52,7 @@ public class ProtocolNetwork extends MbusNetwork {
            masterGraph.addVertex(edgeTarget);
 
             masterGraph.setEdgeWeight(masterGraph.addEdge(edgeSource, edgeTarget),
-                    netGraph.getEdgeWeight(edge) * 2 / 10);
+                   NetConfigManager.updateSingleNoise());
         }
 
         return masterGraph;
@@ -78,29 +79,33 @@ public class ProtocolNetwork extends MbusNetwork {
     public static void main(String[] args) throws Exception {
         int slaveNum;
         int variability;
-        double mediumNoise;
+        int powerNoisePerc = 0;
         int mediumDegree;
-        int noiseRange;
+        int noiseNodesPercentage;
         long lasting;
         int packetDestinationMax;
         Scanner in = new Scanner(System.in);
         if (args.length == 5){
 	        slaveNum = Integer.parseInt(args[0]);
-	        mediumNoise = Double.parseDouble(args[1]);
+	        powerNoisePerc = Integer.parseInt(args[1]);
 	        variability = Integer.parseInt(args[2]);
 	        mediumDegree = Integer.parseInt(args[3]);
 	        //packetDestinationMax = Integer.parseInt(args[4]);
 	        packetDestinationMax = slaveNum;
 	        lasting = Integer.parseInt(args[4]);
+                noiseNodesPercentage = Integer.parseInt(args[5]);
         }else{
         	System.out.println("How many slaves ?");
             slaveNum = in.nextInt();
-            System.out.println("Which is the noise average?");
-            mediumNoise = in.nextDouble();
-            System.out.println("Which is the probability that the noise change in a specific time?" );
+            System.out.println("What is the noise probability in this network?");
+            powerNoisePerc = in.nextInt();
+            System.out.println("Which is the noise packet frequency?" );
             variability = in.nextInt();
+            System.out.println("Which is the noise probability impact?" );
+            noiseNodesPercentage = in.nextInt();
             System.out.println("How many max arches incedence in a node?" );
             mediumDegree = in.nextInt();
+            
             //System.out.println("How many nodes can be used as a packet destination?");
             //packetDestinationMax = in.nextInt();
             // packetDestinationMax = 1;
@@ -123,7 +128,6 @@ public class ProtocolNetwork extends MbusNetwork {
         mediumDegree = in.nextInt();*/
         /*System.out.println("What is the noise range in a node? <= max arches.");
         noiseRange = in.nextInt();*/
-        noiseRange = mediumDegree; // no need @deprecated
         /*if (noiseRange>mediumDegree){
         	throw new IllegalArgumentException(" Noise range > max arches.");
         }*/
@@ -133,7 +137,7 @@ public class ProtocolNetwork extends MbusNetwork {
         lasting = in.nextLong();*/
 
         ProtocolNetwork protocol = new ProtocolNetwork(null, "Protocol network first variant",
-                true, true, slaveNum, mediumNoise, variability, mediumDegree, noiseRange, lasting, packetDestinationMax);
+                true, true, slaveNum, powerNoisePerc, variability, mediumDegree, noiseNodesPercentage, lasting, packetDestinationMax);
 
         Experiment exp = new Experiment("FirstProtocolExperiment");
 
@@ -150,8 +154,8 @@ public class ProtocolNetwork extends MbusNetwork {
 
         System.out.println();
         if (protocol.messagesSent != 0){
-        	 System.out.println("The weight's average in the header is: " + (protocol.headerSum / protocol.messagesSent) +
-                     "(frames for packet)");
+        	/* System.out.println("The weight's average in the header is: " + (protocol.headerSum / protocol.messagesSent) +
+                     "(frames for packet)");*/
         	 System.out.println("Master message sent:"+protocol.masterSentMessage);
         	 System.out.println("Master message received:"+protocol.masterReceivedMessage);
         	 System.out.println("Master Cache Hit:"+ protocol.masterCacheHit);

@@ -31,11 +31,11 @@ public abstract class MbusNetwork extends Model {
 
 
     public MbusNetwork(Model owner, String name, boolean showInReport, boolean showInTrace, int nodesNum,
-                       double mediumNoise, int variability, int mediumDegree, int noiseRange, long lasting, int packetDestinationMax) {
+                       int powerNoisePerc, int variability, int mediumDegree, int noiseNodesPercentage, long lasting, int packetDestinationMax) {
         super(owner, name, showInReport, showInTrace);
         nodes = new MbusDevice[nodesNum];
         this.lasting = lasting;
-        configManager = new NetConfigManager(nodesNum, variability, mediumNoise, mediumDegree, noiseRange,packetDestinationMax);
+        configManager = new NetConfigManager(nodesNum, variability, powerNoisePerc, mediumDegree, noiseNodesPercentage,packetDestinationMax);
     }
 
 
@@ -61,7 +61,7 @@ public abstract class MbusNetwork extends Model {
         return  this.exp;
     }
 
-    public void updateNoise() {configManager.updateNoise();}
+    public void updateNoise() {configManager.updateNoise(this.masterSentMessage);}
 
 
     protected SimpleWeightedGraph<Integer, DefaultWeightedEdge> getGraphRepresentation() {

@@ -1,10 +1,13 @@
 package simul.base;
 
+import java.security.SecureRandom;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -14,13 +17,19 @@ import java.util.Random;
 public class NetConfigManager {
     private final int NOISE_VARIABILITY;
     private final int MEDIUM_DEGREE;
-    private final double MEDIUM_NOISE;
+    private final int NOISE_POWER_PERC;
+    
+    private static int PERCENT_ZERO = 33;
+    private static int PERCENT_ONE = 33;
+    private static int PERCENT_TWO = 33;
+    
 
     private NetConfig config;
     private ArrayList<AddressesPair> edgeList = new ArrayList<AddressesPair>();
-    private Random randomGen = new Random();
-	private int NOISE_RANGE;
-	private int MAX_DEST;
+    private final static Random randomGen = new SecureRandom();
+    private int NOISE_RANGE;
+    private int MAX_DEST;
+    private final int NODES_NOISE_PERC;
 
     /**
      * Graph generation
@@ -31,7 +40,7 @@ public class NetConfigManager {
      * @param noiseRange 
      * @param packetDestinationMax 
      */
-    public NetConfigManager(int nodesNum, int variability, double mediumNoise, int mediumDegree, int noiseRange, int packetDestinationMax) {
+    public NetConfigManager(int nodesNum, int variability, int noisePowerPerc, int mediumDegree, int noiseNodesPercentage, int packetDestinationMax) {
         if (nodesNum < 3) {
             System.out.println("Il graph size is three.");
             nodesNum = 3;
@@ -42,17 +51,17 @@ public class NetConfigManager {
          */
         config = new NetConfig(nodesNum);
         NOISE_VARIABILITY = variability;
-        MEDIUM_NOISE = mediumNoise;
+        NOISE_POWER_PERC = noisePowerPerc;
         MEDIUM_DEGREE = mediumDegree;
-        NOISE_RANGE = noiseRange;
+        NODES_NOISE_PERC = noiseNodesPercentage;
         setMaxDest(packetDestinationMax);
         int edgeEnd;
         double edgeNoise;
 
-        Random randomGen = new Random();
+        
         edgeEnd = randomGen.nextInt(nodesNum - 2) + 1;
-        edgeNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/2) * randomGen.nextDouble()); // Starting noise.
-
+        edgeNoise = NOISE_POWER_PERC * randomGen.nextGaussian(); // Starting noise.
+        
         config.setEdge(0, edgeEnd, edgeNoise);
         edgeList.add(new AddressesPair(0, edgeEnd));
 
@@ -71,32 +80,90 @@ public class NetConfigManager {
                 }
 
                 if (!edgeList.contains(new AddressesPair(edgeEnd, i)) && !edgeList.contains(new AddressesPair(i, edgeEnd))) {
-                    edgeNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/3) * randomGen.nextDouble()); // reduce the noise.
+                    edgeNoise = NOISE_POWER_PERC - ((NOISE_POWER_PERC/3) * randomGen.nextDouble()); // reduce the noise.
                     // add to the edge list the node.
                     edgeList.add(new AddressesPair(i, edgeEnd));
                     // add the edge to the graph noise matrix.
-                    config.setEdge(i, edgeEnd, edgeNoise);
+                    config.setEdge(i, edgeEnd, updateSingleNoise());
                 }
             }
         }
         
     }
-
-
-    public void updateNoise() {
-        double newNoise;
-        int infected = 0; // edge's number with noise changed.
-        Random randomGen = new Random();
+    public static double getValidNoise(double noise){
+        return noise>2?0:noise;
+    }
+    
+    public static double updateSingleNoise(){
         
-        for (AddressesPair edge: edgeList) {
+        int var = randomGen.nextInt(100); 
+        if (var < NetConfigManager.PERCENT_ZERO){
+          return 0;
+        } else if (var <= NetConfigManager.PERCENT_ONE) {
+           return 1;
+        }   
+        return 2;
+
+    }
+
+    public void updateNoise(long messageCount) {
+        double newNoise;
+        int infected = 0; // edge's number with noise changed
+        int nodesNumber = (NODES_NOISE_PERC*edgeList.size())/100;
+        LinkedList<Integer> nodes = new LinkedList<Integer>();
+        
+        if (messageCount % NOISE_VARIABILITY != 0){
+            return; // Every n packet.. apply rumor.
+        }
+        
+        do{
+            nodes.add(randomGen.nextInt(this.config.NODES - 1) + 1);
+        }while(nodes.size()!=nodesNumber);
+        // for every nodes ... let's spread the noise.
+        for( Integer node: nodes){
+            
+            infected = (MEDIUM_DEGREE*NOISE_RANGE)/100;
+            for (AddressesPair edge: edgeList) {
+               if (edge.getFirst() == node && infected > 0 ){
+                   infected--;
+                   newNoise = updateSingleNoise();
+                   config.setEdge(edge.getFirst(), edge.getSecond(), newNoise);
+                   config.setEdge(edge.getSecond(), edge.getFirst(), newNoise);
+               }
+            }
+        }
+        /*if (startNode + nodesNumber < edgeList.size()){
+            endNode = startNode + nodesNumber;
+        }else{
+            startNode = randomGen.nextInt(edgeList.size() - nodesNumber);
+            endNode = startNode +nodesNumber;
+        }*/
+        
+        
+        //List<AddressesPair> edges = edgeList.subList(startNode, endNode);
+        /*
+        for (AddressesPair edge: edges) {
         	//&& infected < NOISE_RANGE
             if (randomGen.nextInt(100) + 1 <= NOISE_VARIABILITY ) {
-                newNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/2) * randomGen.nextDouble()); // nextGuassian
+                //newNoise = MEDIUM_NOISE - ((MEDIUM_NOISE/2) * randomGen.nextDouble()); // nextGuassian
+                newNoise = this.updateSingleNoise();
+                //newNoise = config.getEdge(edge.getFirst(), edge.getSecond());
+                // -MEDIUM_NOISE ... +MEDIUM_NOISE
+                //newNoise = newNoise + ((randomGen.nextDouble() % (MEDIUM_NOISE*2+1)) - MEDIUM_NOISE);
+                // setting limit 
+                //if (newNoise < 0){ 
+                //    newNoise = 0;
+                //} else if (newNoise >1){
+                //    newNoise = 1;
+                //}
+                // Three state. Intensity 
+                //newNoise = randomGen.nextInt(NOISE_RANGE) != 0? randomGen.nextInt(2) :Integer.MAX_VALUE;
+                
                 config.setEdge(edge.getFirst(), edge.getSecond(), newNoise);
                 config.setEdge(edge.getSecond(), edge.getFirst(), newNoise);
                 //infected++;
             }
-        }
+        }*/
     	/*double newNoise;
     	// Localize to a specific node.
     	int infected = 0; // edge's number with noise changed.

@@ -20,6 +20,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import simul.base.NetConfigManager;
 
 /**
  * Created by Federico Falconi on 04/07/2017.
@@ -34,7 +35,6 @@ public class Master extends MbusDevice {
     private List<MasterGraphNode> path;
     private SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> graph;
 
-    private Random randomGen = new Random();
     public PrintWriter log;
     public PrintWriter band_log;
     
@@ -61,7 +61,7 @@ public class Master extends MbusDevice {
         double sum = 0;
         boolean integrity = true;
 
-        if ((message.getErrors(1) < 3) && (message.getErrors(2) < 3)) {
+    /*        if ((message.getErrors(1) < 3) && (message.getErrors(2) < 3)) {
             sum += (message.getErrors(1) + message.getErrors(2));
         }
         else {
@@ -84,9 +84,15 @@ public class Master extends MbusDevice {
             if(((Response)message).getNextHop() == 0) {
                 //System.out.println("Packet fault");
             }
+        }*/
+        //System.out.println("Error Rate:"+message.getErrorRate());
+        if (message.getErrorRate() < 0){
+          return false;  
         }
-
-        return integrity;
+        //System.out.println(message.getErrorRate());
+        
+        graph.setEdgeWeight(edge,message.getErrorRate());
+        return (message.getErrorRate()!=2);
     }
 
 
@@ -115,7 +121,9 @@ public class Master extends MbusDevice {
         DefaultWeightedEdge currentEdge;
         NoiseTable currentTable = null;
         MasterGraphNode node2;
+        double error;
         try {
+            
             for (MasterGraphNode node : path) {
 
                 currentTable = tables.pop();
@@ -127,8 +135,14 @@ public class Master extends MbusDevice {
                     	// Same edge avoid,
                     	continue;
                     }
+                    error = currentTable.getEntries().get(address);
+                    if (error !=0){
+                        System.out.println("Master Error:"+error);
+                      
+                    }
+                    
                     try{
-                    	graph.setEdgeWeight(currentEdge, currentTable.getEntries().get(address));
+                    	graph.setEdgeWeight(currentEdge, error);
                     }catch(NullPointerException e){
                     	throw e;
                     }
@@ -171,6 +185,7 @@ public class Master extends MbusDevice {
 		 * bela fuori ...e  bella dentro ...
          */
         System.out.println("Simulation starts");
+        
         
         while (true) {
         	//fixedNode = randomGen.nextInt(graph.vertexSet().size() - 1) +1;
@@ -241,6 +256,11 @@ public class Master extends MbusDevice {
             /**
              * Send packet and update rumors node.
              */
+            
+            /*
+             * Update network noise ( only the beginning )
+             */
+            
             transmit(sending, true);
 
             /*System.out.println();
@@ -284,8 +304,10 @@ public class Master extends MbusDevice {
                         
                         // Update the weight of graph.
                         for (DefaultWeightedEdge edge : dijkstraPaths.getPath(endNode).getEdgeList()) {
-                            graph.setEdgeWeight(edge, (graph.getEdgeWeight(edge) * 2 + 2) / 3);
+                            //graph.setEdgeWeight(edge, (graph.getEdgeWeight(edge) * 2 + 2) / 3);
+                            graph.setEdgeWeight(edge, NetConfigManager.getValidNoise( (graph.getEdgeWeight(edge)+1)));
                         }
+                        
                         // close the simulation if the master sent a specific number of packet.
                         if (this.network.masterSentMessage>=this.network.getLasting()){
                         	this.network.getExperiment().stop();
