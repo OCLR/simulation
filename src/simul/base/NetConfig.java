@@ -16,7 +16,9 @@ public class NetConfig {
         // Fill initialy.
         for (n1 = 0; n1 < nodes;n1++){
             for (n2 = 0; n2 < nodes;n2++){
-                adjacenceMatrix[n1][n2] = NetConfigManager.updateSingleNoise(); // init.
+                double noise = 0;//NetConfigManager.updateSingleNoise();       
+                //System.out.println(noise);
+                adjacenceMatrix[n1][n2] = noise ; // init.
             }
         }
     }
@@ -29,6 +31,7 @@ public class NetConfig {
         }
         catch (ArrayIndexOutOfBoundsException index)
         {
+            
             System.out.println("The vertices does not exists");
         }
     }

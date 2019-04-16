@@ -6,72 +6,91 @@ import simul.protocol.Response;
 import simul.protocol.Request;
 
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import simul.protocol.CommunicationFault;
 
 /**
  * Created by Federico Falconi on 04/07/2017.
  */
+public abstract class MbusDevice {
 
-public abstract class MbusDevice extends SimProcess {
-    private int position;
-    protected MbusNetwork network;
+    private int nodeID;
+    public MbusNetwork network;
     protected MbusMessage lastReceived;
 
-    
-    public MbusDevice(Model owner, String name, Boolean showInTrace, int pos) {
-        super(owner, name, showInTrace);
-        /** M-bus network */
-        network = (MbusNetwork)owner;
-        
-        position = pos;
+    public MbusDevice(MbusNetwork owner, String name, Boolean showInTrace, int nodeID) {
+        /**
+         * M-bus network
+         */
+        this.network = owner;
+
+        this.nodeID = nodeID;
     }
 
     /**
      * Trasmit an Mbus Message and change the network variation
-     * 
+     *
      * @param message Mbus message
      * @param variation True of false for noise variation.
+     * @throws simul.protocol.CommunicationFault
      * @throws SuspendExecution
      */
-    protected void transmit(MbusMessage message, boolean variation) throws SuspendExecution{
-        HashMap<Integer, Double> outgoingEdges = network.getOutgoingEdges(position); // get all neighbors.
-        MbusMessage son;
-        double error;
-
-        if (variation) {
-            network.updateNoise();
-        }
-
-        hold(new TimeSpan(message.getLength())); // simulation message send delay.
-
-        //if (TimeInstant.isAfter(presentTime(), new TimeInstant(network.getLasting()/2))) {
-        	// package sended.
-        network.headerSum += message.getLength() - 20;
-        network.messagesSent++; // increase package sended.
-        //}
-
-        for (Integer key : outgoingEdges.keySet()) {// send to all neighbors.
-        	// if it is a reply with data.
-        	if (message.getClass() == Response.class) { // consider the message as a response
-                son = new Response((Response)message);
-            }
-            else { // consider a message as a request otherwise.
-                son = new Request((Request)message); 
-            }
-            error = outgoingEdges.get(key);
-            // Error can happen and the message compute it.
-            son.generateErrors(error);
-            // Every node receive a message.
-            network.getNode(key).receive(son);
-            network.getNode(key).activate();
-        }
+    public synchronized Response transmit(MbusMessage message, boolean variation) throws CommunicationFault  {
+        boolean hit;
+        HashMap<Integer, Double> outgoingEdges = network.getOutgoingEdges(this.nodeID); // get all neighbors.
         
+        //System.out.println("TRY");
+        
+        // Every node receive a message.
+        if (message.getClass() == Request.class) { // consider the message as a response
+            Request son = new Request((Request) message);
+            Response  res = null;
+           for (Integer key : outgoingEdges.keySet()) {// send to all neighbors.
+                son.generateErrors(network.configManager.updateSingleRequest(son));
+                res = network.getNode(key).receive(son); // son.getHopDestination()
+                if (res!=null){
+                    break;
+                }
+            }
+            
+           /* if (res == null){
+                throw new InternalError ("Not good. please debug.");
+            }*/
+            
+            // setting source of resource. ( coming from me )
+            res.setSource(son.getHopDestination());
+            // setting destination for father.
+            res.setNextHop(son.getSource());
+            // Throw back a fault if something happens.
+            double error = network.configManager.updateSingleResponse(res);
+            // Update the node t
+            
+            if (error==2){
+                CommunicationFault  unRecoverable = new CommunicationFault(this.nodeID);
+                unRecoverable.setUnRecoverable(true);
+                throw unRecoverable;
+            }
+            return res;
+        }else{
+            return null;/* else { // consider a message as a request otherwise.
+            Request son = new Request((Request) message);
+            try{
+                son.generateErrors();
+            }
+            catch(NullPointerException e){
+                throw e;
+            }
+            return network.getNode(son.getHopDestination()).receive(son);
+        }*/
+        }
     }
 
-
-    public void receive(MbusMessage message) {
+    public synchronized Response receive(MbusMessage message) throws CommunicationFault{
         lastReceived = message;
+        decode(message);
+        return null;
     }
-
 
     protected MbusMessage retrieveMsg() throws SuspendExecution {
         MbusMessage msg = lastReceived;
@@ -79,8 +98,12 @@ public abstract class MbusDevice extends SimProcess {
         return msg;
     }
 
-
     protected MbusMessage getReceived() {
         return lastReceived;
+    }
+
+    public boolean decode(MbusMessage message)  {
+        //throw new CommunicationFault(0); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 }

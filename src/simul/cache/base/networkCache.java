@@ -44,6 +44,7 @@ public class networkCache {
 		}
 		if(this.cache.get(source).exists(hopDestination,destination)){
 			//System.out.println(source);
+                        //System.out.println("Global hit: "+source+ " Cache hit "+hopDestination+"->"+destination);
 			return true;
 		}else{
 			return false;
@@ -65,6 +66,7 @@ public class networkCache {
 			Map.Entry pairs = (Map.Entry) it.next();
 			nodeCache cp = (nodeCache) pairs.getValue();
 			cp.remove(dest, dest);
+                       // System.out.println("Global hit: "+dest+ " removed ");
 		}
 		
 	}

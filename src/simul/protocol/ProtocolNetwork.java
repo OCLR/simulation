@@ -5,11 +5,19 @@ import desmoj.core.dist.ContDistUniform;
 import desmoj.core.simulator.Experiment;
 import desmoj.core.simulator.Model;
 import desmoj.core.simulator.TimeInstant;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import static java.lang.Math.random;
+import java.util.Random;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import simul.infrastructure.MbusNetwork;
 
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import simul.base.NetConfigManager;
 
 /**
@@ -19,12 +27,12 @@ import simul.base.NetConfigManager;
 public class ProtocolNetwork extends MbusNetwork {
     private Master master;
     private int slavesNum;
-	private Experiment exp;
+    private Experiment exp;
     
 
     public ProtocolNetwork(Model owner, String name, boolean showInReport, boolean showInTrace, int slaveNum,
                            int powerNoisePerc, int variability, int mediumDegreee, int noiseRange, long lasting, int packetDestinationMax) {
-        super(owner, name, showInReport, showInTrace, slaveNum + 1, powerNoisePerc, variability, mediumDegreee,noiseRange, lasting,packetDestinationMax);
+        super(owner, name, showInReport, showInTrace, slaveNum, powerNoisePerc, variability, mediumDegreee,noiseRange, lasting,packetDestinationMax);
         this.slavesNum = slaveNum;
     }
 
@@ -45,8 +53,8 @@ public class ProtocolNetwork extends MbusNetwork {
         MasterGraphNode edgeSource;
         MasterGraphNode edgeTarget;
         for (DefaultWeightedEdge edge : netGraph.edgeSet()) {
-            edgeSource = new MasterGraphNode(netGraph.getEdgeSource(edge));
-            edgeTarget = new MasterGraphNode(netGraph.getEdgeTarget(edge));
+           edgeSource = new MasterGraphNode(netGraph.getEdgeSource(edge)); 
+           edgeTarget = new MasterGraphNode(netGraph.getEdgeTarget(edge));
 
            masterGraph.addVertex(edgeSource);
            masterGraph.addVertex(edgeTarget);
@@ -62,9 +70,9 @@ public class ProtocolNetwork extends MbusNetwork {
     public void init() {}
 
 
-    public void doInitialSchedules() {
-        for (int i = 1; i <= slavesNum; i++) {
-            setNode(new Slave(this, "Slave", true, i), i);
+    public void run() throws SuspendExecution, ExecutionException, TimeoutException, InterruptedException, IOException, Exception {
+        for (int i = 1; i < slavesNum; i++) {
+            setNode(new Slave(this,"Slave", true, i), i);
         }
         System.out.println("Building Network");
         SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> graph = generateMasterGraph();
@@ -72,7 +80,7 @@ public class ProtocolNetwork extends MbusNetwork {
         
         master = new Master(this, true, graph);
         setNode(master, 0);
-        master.activate();
+        master.lifeCycle();
     }
 
 
@@ -85,15 +93,16 @@ public class ProtocolNetwork extends MbusNetwork {
         long lasting;
         int packetDestinationMax;
         Scanner in = new Scanner(System.in);
-        if (args.length == 5){
+        if (args.length == 6){
 	        slaveNum = Integer.parseInt(args[0]);
 	        powerNoisePerc = Integer.parseInt(args[1]);
 	        variability = Integer.parseInt(args[2]);
-	        mediumDegree = Integer.parseInt(args[3]);
+                noiseNodesPercentage = Integer.parseInt(args[3]);
+	        mediumDegree = Integer.parseInt(args[4]);
+                lasting = Integer.parseInt(args[5]);
 	        //packetDestinationMax = Integer.parseInt(args[4]);
 	        packetDestinationMax = slaveNum;
-	        lasting = Integer.parseInt(args[4]);
-                noiseNodesPercentage = Integer.parseInt(args[5]);
+                
         }else{
         	System.out.println("How many slaves ?");
             slaveNum = in.nextInt();
@@ -116,7 +125,13 @@ public class ProtocolNetwork extends MbusNetwork {
             noiseRange = in.nextInt();*/
         }
         
+        Random r = new Random();
+        Stats.statFile = "distanceNoise-"+slaveNum+"-"+powerNoisePerc+"-"+variability+"-"+noiseNodesPercentage+"-"+mediumDegree+"-"+lasting+".txt";
+        Stats.statFile2 = "fault-"+slaveNum+"-"+powerNoisePerc+"-"+variability+"-"+noiseNodesPercentage+"-"+mediumDegree+"-"+lasting+".txt";
         
+        Stats.updateMasterSlave = 0;
+        Stats.updateNoiseSlave = 0;
+        Stats.windowFault = 0;
         /*
         System.out.println("How many slaves ?");
         slaveNum = in.nextInt();
@@ -139,44 +154,80 @@ public class ProtocolNetwork extends MbusNetwork {
         ProtocolNetwork protocol = new ProtocolNetwork(null, "Protocol network first variant",
                 true, true, slaveNum, powerNoisePerc, variability, mediumDegree, noiseNodesPercentage, lasting, packetDestinationMax);
 
-        Experiment exp = new Experiment("FirstProtocolExperiment");
+        //Experiment exp = new Experiment("FirstProtocolExperiment");
 
-        protocol.setExp(exp);
-        protocol.connectToExperiment(exp);
+        //protocol.setExp(exp);
+        //protocol.connectToExperiment(exp);
 
         //exp.setShowProgressBar(true);
         //exp.stop(new TimeInstant(10000000));
-        exp.tracePeriod(new TimeInstant(0), new TimeInstant(100));
+        /*exp.tracePeriod(new TimeInstant(0), new TimeInstant(100));
         exp.debugPeriod(new TimeInstant(0), new TimeInstant(50));
         
         exp.start();
-        exp.report();
+        exp.report();*/
 
-        System.out.println();
-        if (protocol.messagesSent != 0){
+        protocol.run();
+        
+        PrintWriter out = null;
+        if (Stats.masterSentMessage != 0){
         	/* System.out.println("The weight's average in the header is: " + (protocol.headerSum / protocol.messagesSent) +
                      "(frames for packet)");*/
-        	 System.out.println("Master message sent:"+protocol.masterSentMessage);
-        	 System.out.println("Master message received:"+protocol.masterReceivedMessage);
-        	 System.out.println("Master Cache Hit:"+ protocol.masterCacheHit);
-        	 System.out.println("Master Cache Impact:"+ protocol.masterCacheHit/(protocol.masterSentMessage+0.0));
-        	 System.out.println("Bandwidth Cache   case avg :"+(protocol.avgBandwidth /protocol.masterSentMessage));
-        	 System.out.println("Bandwidth Default case avg  :"+(protocol.avgBestBandwidth /protocol.masterSentMessage));
-        	 System.out.println("Comparison index (0 < x < 1) :"+(protocol.avgBandwidth /protocol.masterSentMessage)/(protocol.avgBestBandwidth /protocol.masterSentMessage));
-        	 
+        	 System.out.println("Master message sent:"+Stats.masterSentMessage);
+        	 System.out.println("Master message received:"+Stats.masterReceivedMessage);
+                 
+        	 System.out.println("Master Cache Hit:"+ Stats.masterCacheHit);
+        	 System.out.println("Master Cache Impact:"+ ((Stats.masterCacheHit/(Stats.masterSentMessage+0.0))*100));
+        	 System.out.println("Bandwidth Cache   case avg :"+(Stats.avgBandwidth /Stats.masterSentMessage));
+        	 System.out.println("Bandwidth Default case avg  :"+(Stats.avgBestBandwidth /Stats.masterSentMessage));
+        	 System.out.println("Comparison index (0 < x < 1) :"+(Stats.avgBandwidth /Stats.masterSentMessage)/(Stats.avgBestBandwidth /Stats.masterSentMessage));
+                 double bandw = (Stats.avgBandwidth /Stats.masterSentMessage)/(Stats.avgBestBandwidth /Stats.masterSentMessage);
+                try{
+                    FileWriter fw = new FileWriter("results.txt", true);
+                    BufferedWriter bw = new BufferedWriter(fw);
+                    out = new PrintWriter(bw);
+                    out.print(slaveNum);
+                    out.print(";");
+                    out.print(powerNoisePerc);
+                    out.print(";");
+                    out.print(variability);
+                    out.print(";");
+                    out.print(noiseNodesPercentage);
+                    out.print(";");
+                    out.print(mediumDegree);
+                    out.print(";");
+                    out.print(lasting);
+                    out.print(";");
+                    out.print(Stats.masterReceivedMessage);
+                    out.print(";");
+                    out.print((Stats.masterReceivedMessage/(Stats.masterSentMessage+0.0))*100);
+                    out.print(";");
+                    out.print(Stats.masterCacheHit);
+                    out.print(";");
+                    out.print((Stats.masterCacheHit/(Stats.masterSentMessage+0.0))*100);
+                    out.print(";");
+                    out.print((Stats.avgBandwidth /Stats.masterSentMessage));
+                    out.print(";");
+                    out.print((Stats.avgBestBandwidth /Stats.masterSentMessage));
+                    out.print(";");
+                    out.print(bandw*100);
+                    out.print(";");
+                    out.print(Stats.masterAvgLength/Stats.masterSentMessage);
+                    
+                    out.println();
+                    //more code
+                } catch (IOException e) {
+                    //exception handling left as an exercise for the reader
+                    throw e;
+                }
         	 
         }else{
         	System.out.println("No package has been sent from the system; Change the clock");
         }
-        protocol.master.log.close();
-        protocol.master.band_log.close();
-        
-
-        exp.finish();
+        out.close();
+        //protocol.master.log.close();
+        //protocol.master.log_fault.close();
+        //.master.band_log.close();
     }
 
-	private void setExp(Experiment exp) {
-		
-		this.setExperiment(exp);
-	}
 }

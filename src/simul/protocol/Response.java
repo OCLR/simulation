@@ -12,27 +12,39 @@ import java.util.ArrayDeque;
 
 public class Response extends MbusMessage {
     private int code, token, payloadLen;
-    private int source;
     private int nextHop;
     private ArrayDeque<NoiseTable> noiseTables;
 
+    public int getSize() {
+        int size = super.getSize();
+        size += (4*Integer.SIZE);
+        size += (
+                 (noiseTables.size()*Integer.SIZE)+ //Index
+                 (noiseTables.size()*Integer.SIZE) //Nodes
+                );
+        for (NoiseTable ns: noiseTables){
+            size += (ns.getEntries().size()*(Integer.SIZE+Double.SIZE));
+        }
+        size += (payloadLen*8);// Payload size(in bytes).
+        
+        return size;
+    }
+    
     public Response(int code, int token, int payloadLen, int source, int nextHop, ArrayDeque<NoiseTable> noiseTables) {
-        super(payloadLen + 4);
+        super(payloadLen + 4,source);
         this.code = code;
         this.token = token;
         this.payloadLen = payloadLen;
-        this.source = source;
         this.nextHop = nextHop;
         this.noiseTables = noiseTables;
     }
 
 
     public Response(Response other) {
-        super(other);
+        super(other.getPayloadLen(),other.getSource());
         this.code = other.code;
         this.token = other.token;
         this.payloadLen = other.payloadLen;
-        this.source = other.source;
         this.nextHop = other.nextHop;
         this.noiseTables = new ArrayDeque<NoiseTable>(other.noiseTables);
     }
@@ -56,10 +68,10 @@ public class Response extends MbusMessage {
     }
 
 
-    public int getSource() {
-        return source;
-    }
-
-
+  
     public ArrayDeque<NoiseTable> getNoiseTables() { return noiseTables; }
+
+    public void setNextHop( int nextHop) {
+        this.nextHop = nextHop;
+    }
 }
