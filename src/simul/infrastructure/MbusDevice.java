@@ -18,6 +18,13 @@ public abstract class MbusDevice {
     private int nodeID;
     public MbusNetwork network;
     protected MbusMessage lastReceived;
+    protected long numberOfUpdates;
+    protected long receivedPacket;
+    protected long sentPacket;
+    protected long faultPacket;
+    protected long updateLocalNoiseTable;
+    protected long sentPacketBroadcast;
+
 
     public MbusDevice(MbusNetwork owner, String name, Boolean showInTrace, int nodeID) {
         /**
@@ -26,6 +33,11 @@ public abstract class MbusDevice {
         this.network = owner;
 
         this.nodeID = nodeID;
+        this.numberOfUpdates = 0;
+        this.receivedPacket = 0;
+        this.sentPacket = 0;
+        this.updateLocalNoiseTable = 0;
+        this.faultPacket = 0;
     }
 
     /**
@@ -41,22 +53,26 @@ public abstract class MbusDevice {
         HashMap<Integer, Double> outgoingEdges = network.getOutgoingEdges(this.nodeID); // get all neighbors.
         
         //System.out.println("TRY");
-        
+
         // Every node receive a message.
         if (message.getClass() == Request.class) { // consider the message as a response
             Request son = new Request((Request) message);
+            Response  nodeRes = null;
             Response  res = null;
+            this.sentPacket++;
            for (Integer key : outgoingEdges.keySet()) {// send to all neighbors.
+                this.sentPacketBroadcast++;
+
                 son.generateErrors(network.configManager.updateSingleRequest(son));
-                res = network.getNode(key).receive(son); // son.getHopDestination()
-                if (res!=null){
-                    break;
+                nodeRes = network.getNode(key).receive(son); // son.getHopDestination()
+                if (nodeRes!=null){
+                    res = nodeRes;
                 }
             }
             
-           /* if (res == null){
-                throw new InternalError ("Not good. please debug.");
-            }*/
+            if (res == null){
+                throw new InternalError ("Send packet to no one....");
+            }
             
             // setting source of resource. ( coming from me )
             res.setSource(son.getHopDestination());
@@ -67,6 +83,7 @@ public abstract class MbusDevice {
             // Update the node t
             
             if (error==2){
+                this.faultPacket++;
                 CommunicationFault  unRecoverable = new CommunicationFault(this.nodeID);
                 unRecoverable.setUnRecoverable(true);
                 throw unRecoverable;
@@ -88,6 +105,7 @@ public abstract class MbusDevice {
 
     public synchronized Response receive(MbusMessage message) throws CommunicationFault{
         lastReceived = message;
+        this.receivedPacket++;
         decode(message);
         return null;
     }

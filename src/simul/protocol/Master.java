@@ -3,6 +3,9 @@ package simul.protocol;
 //import desmoj.core.simulator.*;
 //import co.paralleluniverse.fibers.SuspendExecution;
 import java.io.BufferedWriter;
+
+import org.jgrapht.Graph;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -237,7 +240,8 @@ public class Master extends MbusDevice {
                 fixedNodeIndex++;
                 fixedNode = dest.get(fixedNodeIndex);
             }
-            dijkstraPaths = new DijkstraShortestPath<MasterGraphNode, DefaultWeightedEdge>(graph).getPaths(masterNode);
+            DijkstraShortestPath dijkstraPaths = new DijkstraShortestPath<MasterGraphNode, DefaultWeightedEdge>(graph);
+            // .getPaths(masterNode);
             endNode = findNode(fixedNode); // chooose destination and apply dijkstra
 
             if (endNode == null) {
@@ -246,13 +250,20 @@ public class Master extends MbusDevice {
             /**
              * The dijkstraPaths path.
              */
+            GraphPath p;
             try {
-                path = dijkstraPaths.getPath(endNode).getVertexList();
+                    p = dijkstraPaths.getPath(masterNode,endNode);
+                    path = p.getVertexList();
             } catch (Exception e) {
                 //throw new SUSPEND;
-                //System.out.println("NO PATH DEFINED FOR NODE "+fixedNode);
+
                 continue; // Maybe happen no path ok.
                 //continue;
+            }
+
+            if (p == null){
+                System.out.println("Path not found");
+                continue;
             }
 
             try {
@@ -326,6 +337,7 @@ public class Master extends MbusDevice {
                  int fault = Stats.windowFault;
                  int nMaster = Stats.updateMasterSlave;
                  int nSlave = Stats.updateNoiseSlave;
+
                  if (m.network.updateNoise()){
                    // this.log.println(nMaster+","+nSlave+","+fault);
                  }
@@ -334,7 +346,7 @@ public class Master extends MbusDevice {
              } catch (CommunicationFault ex) {
                  
                  m.timeout(fixedNode, pathEncoded, pathReduced, answer);
-                 
+
                  if (!ex.isUnRecoverable()){
                     readNoiseTables(ex.getTables());
                  }
@@ -366,6 +378,7 @@ public class Master extends MbusDevice {
   
 
          }
+
     }
 
     private Integer computeSum(int i, int limit) {

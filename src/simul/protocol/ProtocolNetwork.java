@@ -113,7 +113,7 @@ public class ProtocolNetwork extends MbusNetwork {
             powerNoiseNodePercentage = in.nextInt();
             System.out.println("What is the noise probability in this network? (for edges)");
             noiseEdgesNodePercentage = in.nextInt();
-            System.out.println("How many max arches incedence in a node?" );
+            System.out.println("How many max arches incedence in a node? (max number of edges)" );
             mediumDegree = in.nextInt();
             
             //System.out.println("How many nodes can be used as a packet destination?");

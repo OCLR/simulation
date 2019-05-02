@@ -25,6 +25,7 @@ public class Slave extends MbusDevice {
     // neighbor -> rumor
     private HashMap<Integer, Double> noiseTable = new HashMap<Integer, Double>();
     private HashMap<Integer, Boolean> updatedNoiseTable = new HashMap<Integer, Boolean>();
+
     //private slaveCache cache = new slaveCache();
     private int fatherAddress = -1;
 
@@ -39,12 +40,15 @@ public class Slave extends MbusDevice {
             updatedNoiseTable.put(message.getSource(), message.getErrorRate() != noiseTable.get(message.getSource()));
             if (message.getErrorRate() != noiseTable.get(message.getSource())) {
                 Stats.updateNoiseSlave++;
+                this.updateLocalNoiseTable++;
             }
 
         } else if (!noiseTable.containsKey(message.getSource())) {
             updatedNoiseTable.put(message.getSource(), true);// first time.
             Stats.updateNoiseSlave++;
+            this.updateLocalNoiseTable++;
         }
+
         noiseTable.put(message.getSource(), message.getErrorRate());
 
         return true;
@@ -58,6 +62,7 @@ public class Slave extends MbusDevice {
 
         if (received.getHopDestination() != slaveAddress) {
             // Alarm
+            this.numberOfUpdates++;
             return null;
             // new InternalError("Something was wrong");
         }
