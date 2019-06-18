@@ -5,9 +5,9 @@
  */
 package simul.protocol;
 
+import simul.infrastructure.ECCTable;
+
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  *
@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class CommunicationFault extends  Exception{
 
     private final long node;
-    private ArrayDeque<NoiseTable> tables = new ArrayDeque<NoiseTable>();
+    private ArrayDeque<ECCTable> tables = new ArrayDeque<ECCTable>();
     private boolean unRecoverable = false;
 
     public boolean isUnRecoverable() {
@@ -26,11 +26,11 @@ public class CommunicationFault extends  Exception{
     public void setUnRecoverable(boolean unRecoverable) {
         this.unRecoverable = unRecoverable;
     }
-    public ArrayDeque<NoiseTable> getTables() {
+    public ArrayDeque<ECCTable> getTables() {
         return tables;
     }
 
-    public void setTables(ArrayDeque<NoiseTable> tables) {
+    public void setTables(ArrayDeque<ECCTable> tables) {
         this.tables = tables;
     }
 
