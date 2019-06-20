@@ -1,0 +1,105 @@
+R -> 10^-2
+With Hamming (8,5)
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	0	6	2	2	0	506	98	56	408	15	0.61860156	3.1617415	96.21966
+P1	20	10	0	62	23	17	0	1001	593	339	408	85	0.004273996	0.04321485	99.952515
+P2	200	10	4	658	259	165	0	971	563	321	408	81	0.0057780086	0.056671184	99.93755
+P3	2000	10	14	6541	2591	1617	7	986	578	330	408	83	0.004969425	0.04949347	99.94554
+P4	20000	10	144	65366	26021	16091	102	987	579	331	408	83	0.0049197306	0.049048226	99.94604
+With Checksum
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	0	6	2	2	0	506	-	56	408	15	0.61860156	-	99.3814
+P1	20	10	0	60	20	20	0	1010	-	344	408	87	0.0039043694	-	99.99609
+P2	200	10	0	600	201	199	0	1007	-	342	408	86	0.0040238826	-	99.99598
+P3	2000	10	0	6008	2009	1991	0	1007	-	342	408	86	0.0040238826	-	99.99598
+P4	20000	10	0	60054	20066	19934	0	1008	-	343	408	86	0.0039836434	-	99.99602
+R -> 10^-3
+With Hamming (8,5)
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	2	0	6	1	1	543	135	77	408	20	58.08489	31.571669	10.343445
+P1	20	10	243	3	420	19	1	1244	836	477	408	120	28.805443	35.869843	35.324715
+P2	200	10	2460	29	4200	190	10	1231	823	470	408	118	29.182545	35.95967	34.857784
+P3	2000	10	24603	292	41993	1900	100	1239	831	474	408	119	28.949902	35.90484	35.14526
+P4	20000	10	247798	3224	419977	19000	1000	1248	840	480	408	121	28.690397	35.841457	35.468147
+With Checksum
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	4	3	6	1	1	618	-	120	408	31	53.885895	-	46.114105
+P1	20	10	32	99	174	15	1	890	-	275	408	69	41.04778	-	58.952225
+P2	200	10	422	1497	2316	135	9	957	-	313	408	79	38.386425	-	61.61357
+P3	2000	10	3807	12748	19296	1411	89	950	-	309	408	78	38.656208	-	61.34379
+P4	20000	10	37201	128178	193581	14055	926	948	-	308	408	78	38.73364	-	61.26636
+R -> 10^-4
+With Hamming (8,5)
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	107	61	408	16	94.97934	4.891926	0.12873411
+P1	20	10	22	0	420	19	1	712	304	173	408	44	93.12616	6.631246	0.2425909
+P2	200	10	253	1	4200	190	10	715	307	175	408	44	93.09822	6.6571884	0.24459362
+P3	2000	10	2400	3	42000	1900	100	711	303	173	408	44	93.135475	6.622595	0.2419293
+P4	20000	10	24448	16	420000	19000	1000	712	304	173	408	44	93.12616	6.631246	0.2425909
+With Checksum
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	1	6	1	1	515	-	61	408	16	94.97934	-	5.02066
+P1	20	10	47	8	420	19	1	786	-	216	408	55	92.43942	-	7.560578
+P2	200	10	595	44	4200	190	10	815	-	232	408	59	92.17168	-	7.8283257
+P3	2000	10	5756	474	41989	1900	100	807	-	228	408	58	92.24546	-	7.7545395
+P4	20000	10	57993	4848	419592	19000	1000	808	-	228	408	58	92.23624	-	7.763765
+R -> 10^-5
+With Hamming (8,5)
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	107	61	408	16	99.485596	0.512356	0.0020503998
+P1	20	10	4	0	420	19	1	665	257	147	408	37	99.33628	0.6605929	0.0031232834
+P2	200	10	23	0	4200	190	10	661	253	144	408	37	99.34026	0.6566458	0.0030875206
+P3	2000	10	235	0	42000	1900	100	660	252	144	408	37	99.34126	0.6556589	0.0030815601
+P4	20000	10	2189	0	420000	19000	1000	660	252	144	408	37	99.34126	0.6556589	0.0030815601
+With Checksum
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	-	61	408	16	99.485596	-	0.5144064
+P1	20	10	9	0	420	19	1	682	-	156	408	40	99.31937	-	0.68063724
+P2	200	10	57	2	4200	190	10	672	-	151	408	38	99.329315	-	0.67068267
+P3	2000	10	517	24	42000	1900	100	670	-	150	408	38	99.33131	-	0.66869146
+P4	20000	10	5417	230	420000	19000	1000	670	-	149	408	38	99.33131	-	0.66869146
+R -> 10^-6
+With Hamming (8,5)
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	107	61	408	16	99.947815	0.05147318	7.092953E-4
+P1	20	10	2	0	420	19	1	663	255	145	408	37	99.93282	0.06625553	9.23872E-4
+P2	200	10	3	0	4200	190	10	656	248	142	408	36	99.93353	0.065556474	9.1195107E-4
+P3	2000	10	30	0	42000	1900	100	656	248	141	408	36	99.93353	0.065556474	9.1195107E-4
+P4	20000	10	216	0	420000	19000	1000	655	247	141	408	36	99.93363	0.0654566	9.1195107E-4
+With Checksum
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	-	61	408	16	99.947815	-	0.052182477
+P1	20	10	2	0	420	19	1	663	-	145	408	37	99.93282	-	0.067179404
+P2	200	10	6	0	4200	190	10	657	-	142	408	36	99.933426	-	0.06657425
+P3	2000	10	55	4	42000	1900	100	656	-	142	408	36	99.93353	-	0.066468425
+P4	20000	10	543	14	420000	19000	1000	656	-	142	408	36	99.93353	-	0.066468425
+R -> 10^-7
+With Hamming (8,5)
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	107	61	408	16	99.99386	0.0051496853	9.894371E-4
+P1	20	10	2	0	420	19	1	663	255	145	408	37	99.992096	0.0066294777	0.0012755394
+P2	200	10	3	0	4200	190	10	656	248	142	408	36	99.99218	0.006559489	0.0012636185
+P3	2000	10	6	0	42000	1900	100	655	247	141	408	36	99.992195	0.00654949	0.001257658
+P4	20000	10	33	1	420000	19000	1000	655	247	141	408	36	99.992195	0.00654949	0.001257658
+With Checksum
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	-	61	408	16	99.99386	-	0.006139123
+P1	20	10	2	0	420	19	1	663	-	145	408	37	99.992096	-	0.007905018
+P2	200	10	3	0	4200	190	10	656	-	142	408	36	99.99218	-	0.007823108
+P3	2000	10	12	0	42000	1900	100	655	-	141	408	36	99.992195	-	0.007807148
+P4	20000	10	59	1	420000	19000	1000	655	-	141	408	36	99.992195	-	0.007807148
+R -> 10^-8
+With Hamming (8,5)
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	107	61	408	16	100.0	5.150001E-4	-5.1259995E-4
+P1	20	10	2	0	420	19	1	663	255	145	408	37	100.0	6.630001E-4	-6.67572E-4
+P2	200	10	3	0	4200	190	10	656	248	142	408	36	100.0	6.560001E-4	-6.556511E-4
+P3	2000	10	3	0	42000	1900	100	655	247	141	408	36	100.0	6.550001E-4	-6.556511E-4
+P4	20000	10	3	0	420000	19000	1000	655	247	141	408	36	100.0	6.550001E-4	-6.556511E-4
+With Checksum
+Process	Master sent messages	Master average path	Master average Update Link	Global retrasmission number	Global trasmission number	Global number of fault	Global number of success	Global Full packet size with parity bit  (avg)	Global Payload with parity bit (avg)	Global Payload without parity bit (avg)	Global Header bit (avg)	Global packet block count (avg)	Global packet success rate%	Global Packet recoverable rate%	Global Packet fail rate%
+P0	2	1	1	0	6	1	1	515	-	61	408	16	100.0	-	2.4001565E-6
+P1	20	10	2	0	420	19	1	663	-	145	408	37	100.0	-	-4.5718934E-6
+P2	200	10	3	0	4200	190	10	656	-	142	408	36	100.0	-	3.490186E-7
+P3	2000	10	3	0	42000	1900	100	655	-	141	408	36	100.0	-	-6.5097083E-7
+P4	20000	10	3	0	420000	19000	1000	655	-	141	408	36	100.0	-	-6.5097083E-7
