@@ -2,15 +2,13 @@ package simul.simul;
 
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
-import org.pmw.tinylog.writers.FileWriter;
 import simul.infrastructure.MbusNetwork;
 import simul.protocol.SimulationConfiguration;
 import simul.protocol.Stats;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
+import java.io.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 
 /**
@@ -21,7 +19,7 @@ public class AutoTestProtocol {
     private MbusNetwork network;
 
 
-    public AutoTestProtocol(String name, float ber, long lasting,boolean hamming) throws IOException {
+    public AutoTestProtocol(String name, double ber, long lasting,boolean hamming) throws IOException {
         this.network = new MbusNetwork(name, ber, lasting);
         SimulationConfiguration.CONF_HAMMING = hamming;
     }
@@ -57,8 +55,8 @@ public class AutoTestProtocol {
         }
         return result;
     }
-  private static float powerNFloat(float base, int n) {
-       float result = 1;
+  private static double powerNDouble(double base, int n) {
+       double result = 1;
         for (int i = 0; i < n; i++) {
             result *= base;
         }
@@ -67,7 +65,7 @@ public class AutoTestProtocol {
 
     public static void main(String[] args) throws Exception {
         String file;
-        float ber;
+        double ber;
         long lasting;
         Configurator.currentConfig()
                 .level(Level.OFF)
@@ -77,49 +75,52 @@ public class AutoTestProtocol {
         // List of file.
         AutoTestProtocol test;
 
-        PrintStream fileOut = new PrintStream("solutions/20nodesFormatCustom.csv");
-        System.setOut(fileOut);
+        boolean csv = true;
+        String header = "";
+        String result = "";
         for (int i = 0; i < list.size(); i++) {
-                for (int ri = 2; ri < 9; ri++) {
-                System.out.println("R -> 10^-"+ri);
+            Instant start = Instant.now();
+            System.out.print("Elaborate: "+list.get(i));
+            for (int ri = 2; ri < 9; ri++) { /* Different levels of BER. */
+                /* Different Number of messages. */
 
-                System.out.println("With Hamming (8,5)");
-                AutoTestProtocol.printHeader();
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < 5; j++) {  /* With hamming */
                     /*Configurator.currentConfig()
                             .writer(new FileWriter("solutions/20nodesNoHammingFormatA"+j+".txt  ", true, false))
                             .level(Level.INFO)
                             .activate();*/
 
-                    test = new AutoTestProtocol("examples/"+list.get(i), AutoTestProtocol.powerNFloat(0.1f,ri),2*AutoTestProtocol.powerN(10,j),true);
+                    test = new AutoTestProtocol("examples/"+list.get(i), AutoTestProtocol.powerNDouble(0.1f,ri),5*AutoTestProtocol.powerN(10,j),true);
                     test.run();
-                    System.out.print("P"+j+'\t');
-                    test.printResults(1);
+                    if (header == ""){
+                        header += test.network.printNetworkParametersHeader(csv)+(csv?'\t':' ')+ test.network.printNetworkSimulationHeader(csv)+'\n';
+                    }
 
+                    result += test.network.printNetworkParametersValue(csv)+(csv?'\t':' ')+ test.network.printNetworkSimulationValue(csv)+'\n';
                 }
-                System.out.println("With Checksum");
-                AutoTestProtocol.printHeader();
-                for (int j = 0; j < 5; j++) {
+                for (int j = 0; j < 5; j++) {/* Without hamming */
                     /*Configurator.currentConfig()
                             .writer(new FileWriter("solutions/20nodesNoHammingFormatA"+j+".txt  ", true, false))
                             .level(Level.INFO)
                             .activate();*/
 
-                    test = new AutoTestProtocol("examples/"+list.get(i), AutoTestProtocol.powerNFloat(0.1f,ri),2*AutoTestProtocol.powerN(10,j),false);
+                    test = new AutoTestProtocol("examples/"+list.get(i), AutoTestProtocol.powerNDouble(0.1f,ri),5*AutoTestProtocol.powerN(10,j),false);
                     test.run();
-                    System.out.print("P"+j+'\t');
-                    test.printResults(1);
-
+                    if (j != 4){
+                        result += test.network.printNetworkParametersValue(csv)+(csv?'\t':' ')+test.network.printNetworkSimulationValue(csv)+ '\n';
+                    }else{
+                        result += test.network.printNetworkParametersValue(csv)+(csv?'\t':' ')+test.network.printNetworkSimulationValue(csv)+ '\n';
+                    }
                 }
-
             }
-            //System.out.println("P2:");
-            //p2.printResults();
-            //System.out.println("P3:");
-            //p3.printResults();
-            //System.out.println("P4:");
-            //p4.printResults();
+            Instant end = Instant.now();
+            Duration timeElapsed = Duration.between(start, end);
+            System.out.println(" Time taken: "+ timeElapsed.toMinutes() +" minutes "+(timeElapsed.toSeconds()%60)+" seconds");
+            AutoTestProtocol.printFile("solutions/"+list.get(i),header+result);
+
+
         }
+        AutoTestProtocol.printFile("solutions/solution.txt",header+result);
 
 
 
@@ -189,13 +190,16 @@ public class AutoTestProtocol {
             //.master.band_log.close();
 
     }
-
-    private static void printHeader() {
-        Stats.printHeader();
-    }
-
-    public void printResults(int mode) {
-        this.network.printResults(mode);
+    public static void printFile(String file, String filecontent){
+        File f = new File(file);
+        if(f.exists() && !f.isDirectory()) {
+            f.delete();
+        }
+        try (java.io.FileWriter writer = new FileWriter(file)) {
+            writer.write(filecontent);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

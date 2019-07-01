@@ -14,114 +14,95 @@ import simul.simul.AutoTestProtocol;
  * @author lvlz
  */
 public class Stats {
+    /*
+     * Master device.
+     */
     public long masterSentMessage = 0;
     public long masterSumPath = 0;
     public long masterAvgNumberOfUpdatedLink = 0;
+    public long masterTrasmissionSuccess = 0;
+    public long masterTrasmissionFaultWithNoUpdate = 0;
+    public long masterTrasmissionFaultWithUpdate = 0;
+    /*
+    * Generic device including master.
+    * */
+    public long deviceRetrasmissionCommunication = 0;
+    public long deviceTrasmissionCommunication = 0;
+    public long deviceTrasmissionTimeoutCommunication = 0;
+    public long deviceSuccessTrasmissionCommunication = 0;
 
-    public int globalRetrasmissionCommunication = 0;
-    public int globalTrasmissionCommunication = 0;
-    public int globalTrasmissionPacketSum = 0;
-    public int globalTrasmissionBlockNumber = 0;
-    public int globalTrasmissionPayloadParityBitSum = 0;
-    public int globalTrasmissionPayloadNoParityBitSum = 0;
-    public int globalTrasmissionHeaderSum = 0; // header
-
-
-    public int globalTrasmissionFault = 0;
-    public int globalTrasmissionSuccess = 0;
-
-    public static void printHeader() {
-        System.out.println(
-                "Process" +'\t'+
-                        "Master sent messages" +'\t'+
-                        "Master average path"+'\t'+
-                        "Master average Update Link"+'\t'+
-                        "Global retrasmission number"+'\t'+
-                        "Global trasmission number"+'\t'+
-                        "Global number of fault"+'\t'+
-                        "Global number of success" +'\t'+
-                        "Global Full packet size with parity bit  (avg)" +'\t'+
-                        "Global Payload with parity bit (avg)" +'\t'+
-                        "Global Payload without parity bit (avg)" +'\t'+
-                        "Global Header bit (avg)" +'\t'+
-                        "Global packet block count (avg)"+'\t'+
-                        "Global packet success rate%"+'\t'+
-                        "Global Packet recoverable rate%"+'\t'+
-                        "Global Packet fail rate%"
-        );
+    /*
+        Packet
+     */
+    public long globalTrasmissionResponseBlockNumber = 0;
+    public long globalTrasmissionResponsePayloadParityBitSum = 0;
+    public long globalTrasmissionResponseHeaderSum = 0;
+    public long globalTrasmissionResponsePayloadNoParityBitSum = 0;
+    public long globalTrasmissionResponseSum = 0;
+    public long globalResponseTrasmissionCommunication = 0;
+    
+    public long globalTrasmissionRequestBlockNumber = 0;
+    public long globalTrasmissionRequestHeaderSum = 0;
+    public long globalTrasmissionRequestPayloadParityBitSum = 0;
+    public long globalTrasmissionRequestPayloadNoParityBitSum = 0;
+    public long globalTrasmissionRequestSum = 0;
+    public long globalRequestTrasmissionCommunication = 0;
 
 
-    }
 
-    public void printResults(float ber,int mode){
-        if (mode == 0){
-            System.out.println(
-                    "Master sent messages: "+this.masterSentMessage+'\n'+
-                    "Master average path: "+(this.masterSumPath/this.masterSentMessage)+'\n'+
-                    "Master average Update Link: " + this.masterAvgNumberOfUpdatedLink+'\n'+
-                    "Global retrasmission number: "+this.globalRetrasmissionCommunication+'\n'+
-                    "Global trasmission number:"+this.globalTrasmissionCommunication+'\n'+
-                    "Global number of fault: "+this.globalTrasmissionFault+'\n'+
-                    "Global number of success: "+this.globalTrasmissionSuccess+'\n'+
-                    "Global Full packet size with parity bit (avg): "+this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication+'\n'+
-                    "Global Payload with parity bit (avg): "+((SimulationConfiguration.CONF_HAMMING)?this.globalTrasmissionPayloadParityBitSum/this.globalTrasmissionCommunication:"-")+'\n'+
-                    "Global Payload without parity bit (avg): "+this.globalTrasmissionPayloadNoParityBitSum/this.globalTrasmissionCommunication+'\n'+
-                    "Global Header sum (avg): "+this.globalTrasmissionHeaderSum/this.globalTrasmissionCommunication+'\n'+
-                    "Global packet block count (avg): "+this.globalTrasmissionBlockNumber/this.globalTrasmissionCommunication
-            );
+    public ResultTable printResults(double ber){
 
-            if (SimulationConfiguration.CONF_HAMMING){
-                System.out.println(
-                        "Global Packet success rate%: "+ MbusMessage.getSuccessProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100+'\n'+
-                        "Global Packet recoverable rate%: "+MbusMessage.getRecoverableProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100+'\n'+
-                        "Global Packet fail rate%: "+ MbusMessage.getFaultProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100
-                );
-            }else{
-                System.out.println(
-                    "Global Packet Success rate: "+MbusMessage.getSuccessProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100+'\n'+
-                    "Global Packet fail rate: "+MbusMessage.getFaultProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100
-                );
-            }
-        }else if (mode == 1){
-            System.out.print(
-                    ""+this.masterSentMessage+'\t'+
-                    (this.masterSumPath/this.masterSentMessage)+'\t'+
-                            this.masterAvgNumberOfUpdatedLink+'\t'+
-                            this.globalRetrasmissionCommunication+'\t'+
-                            this.globalTrasmissionCommunication+'\t'+
-                            this.globalTrasmissionFault+'\t'+
-                            this.globalTrasmissionSuccess+'\t'+
-                            (this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication)+'\t'+
-                            ((SimulationConfiguration.CONF_HAMMING)?this.globalTrasmissionPayloadParityBitSum/this.globalTrasmissionCommunication:"-")+'\t'+
-                            this.globalTrasmissionPayloadNoParityBitSum/this.globalTrasmissionCommunication+'\t'+
-                            this.globalTrasmissionHeaderSum/this.globalTrasmissionCommunication+'\t'+
-                            this.globalTrasmissionBlockNumber/this.globalTrasmissionCommunication+'\t'
-            );
-
-            if (SimulationConfiguration.CONF_HAMMING){
-                System.out.println(
-                        ""+MbusMessage.getSuccessProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100+'\t'+
-                         MbusMessage.getRecoverableProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100+'\t'+
-                         MbusMessage.getFaultProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100
-                );
-            }else{
-                System.out.println(
-                        ""+MbusMessage.getSuccessProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100 +'\t'+"-"+'\t'+
-                        MbusMessage.getFaultProb(this.globalTrasmissionPacketSum/this.globalTrasmissionCommunication,ber)*100
-                );
-            }
+        ResultTable r = new ResultTable();
+        /* NO way */
+        if (this.masterSentMessage == 0) {
+            return r;
         }
+        /* Master node */
+        r.addRow("Master #messages:",this.masterSentMessage);
+        r.addRow("Master fault with no update #messages:",this.masterTrasmissionFaultWithNoUpdate);
+        r.addRow("Master fault with updates #messages:",this.masterTrasmissionFaultWithUpdate);
+        r.addRow("Master average path:",this.masterSumPath/this.masterSentMessage);
+        r.addRow("Master average Update Link:",this.masterAvgNumberOfUpdatedLink);
 
+        /* Device to  Device packet*/
+        r.addRow("Device-to-Device #trasmission:",this.deviceTrasmissionCommunication);
+        r.addRow("Device-to-Device Request  #trasmission:",this.globalRequestTrasmissionCommunication);
+        r.addRow("Device-to-Device Response #trasmission:",this.globalResponseTrasmissionCommunication);
+        r.addRow("Device-to-Device retrasmission:",this.deviceRetrasmissionCommunication);
+        r.addRow("Device-to-Device fault:",this.deviceTrasmissionTimeoutCommunication);
+        r.addRow("Device-to-Device success:",this.deviceSuccessTrasmissionCommunication);
+        /* Request packet */
+        r.addRow("Request Packet size",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("Request Header size",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestHeaderSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("Request Payload size (no-ecc):",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestPayloadNoParityBitSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("Request Payload size (ecc):",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestPayloadParityBitSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("Request Packet Block count:",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestBlockNumber/this.globalRequestTrasmissionCommunication);
+        /* Response packet */
+        r.addRow("Response Packet size",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("Response Header size",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseHeaderSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("Response Payload size (no-ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadNoParityBitSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("Response Payload size (ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadParityBitSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("Response Packet Block count:",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseBlockNumber/this.globalResponseTrasmissionCommunication);
+
+        /* Request packet % */
+        r.addRow("Request success %:",this.globalRequestTrasmissionCommunication==0?0:MbusMessage.getSuccessProb(this.globalTrasmissionRequestSum/this.globalRequestTrasmissionCommunication,ber)*100);
+        if (SimulationConfiguration.CONF_HAMMING) {
+            r.addRow("Request recoverable %",this.globalRequestTrasmissionCommunication==0?0:MbusMessage.getRecoverableProb(globalTrasmissionRequestSum/this.globalRequestTrasmissionCommunication,ber)*100);
+        }else {
+            r.addRow("Request recoverable %",0);
+        }
+        r.addRow("Request fail %",this.globalRequestTrasmissionCommunication==0?0:MbusMessage.getFaultProb(this.globalTrasmissionRequestSum/this.globalRequestTrasmissionCommunication,ber)*100);
+
+        /*  -- Response packet %*/
+        r.addRow("Response success %:",this.globalResponseTrasmissionCommunication==0?0:MbusMessage.getSuccessProb(this.globalTrasmissionResponseSum/this.globalResponseTrasmissionCommunication,ber)*100);
+        if (SimulationConfiguration.CONF_HAMMING) {
+            r.addRow("Response recoverable %",this.globalResponseTrasmissionCommunication==0?0:MbusMessage.getRecoverableProb(this.globalTrasmissionResponseSum/this.globalResponseTrasmissionCommunication,ber)*100);
+        }else {
+            r.addRow("Response recoverable %",0);
+        }
+        r.addRow("Response fail %",this.globalResponseTrasmissionCommunication==0?0:MbusMessage.getFaultProb(this.globalTrasmissionResponseSum/this.globalResponseTrasmissionCommunication,ber)*100);
+        return r;
     }
 
-    public void init(){
-        this.masterSentMessage = 0;
-        this.masterSumPath = 0;
-        this.masterAvgNumberOfUpdatedLink = 0;
-        this.globalRetrasmissionCommunication = 0;
-        this.globalTrasmissionCommunication = 0;
-        this.globalTrasmissionFault = 0;
-        this.globalTrasmissionSuccess = 0;
-    }
     
 }

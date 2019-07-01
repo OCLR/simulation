@@ -79,7 +79,7 @@ public class Master extends MbusDevice {
 
         Integer fixedNodeIndex = 0;
         //
-        this.network.getStats().init();
+        this.network.setStats(new Stats());
 
         /*
          * come descrivi una pecora brutta ?
@@ -113,7 +113,6 @@ public class Master extends MbusDevice {
             GraphPath p;
             try {
                     p = dijkstraPaths.getPath(masterNode,endNode);
-
                     path = p.getVertexList();
             } catch (Exception e) {
                 //throw new SUSPEND;
@@ -158,7 +157,7 @@ public class Master extends MbusDevice {
             answer = this.transmit(sending); // Going down.
 
             if (answer == CommunicationState.TIMEOUT){
-                this.network.getStats().globalTrasmissionFault++;
+                this.network.getStats().masterTrasmissionFaultWithNoUpdate++;
                 this.triggerTimeout();
             }
 
@@ -200,11 +199,12 @@ public class Master extends MbusDevice {
         if (message.getMessageType()== SimulationConfiguration.PACKET_RESPONSE) {
 
             Response res = (Response) message;
+            Logger.trace("Data: "+((Response) message).getData());
             // No data means error.
             if (res.getData()==0){
-                this.network.getStats().globalTrasmissionFault++;
+                this.network.getStats().masterTrasmissionFaultWithUpdate++;
             }else{
-                this.network.getStats().globalTrasmissionSuccess++;
+                this.network.getStats().masterTrasmissionSuccess++;
             }
             for(ECCTable entry : res.getECCTables()){
                 for (Integer destination: entry.getEntries().keySet()){

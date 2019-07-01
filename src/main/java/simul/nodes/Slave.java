@@ -2,6 +2,7 @@ package simul.nodes;
 
 //import simul.cache.slaveCache;
 //import simul.cache.base.cachePair;
+import org.pmw.tinylog.Logger;
 import simul.messages.CommunicationState;
 import simul.messages.MbusMessage;
 
@@ -75,16 +76,17 @@ public class Slave extends MbusDevice {
 
             } else
                 if (message.getMessageType()== SimulationConfiguration.PACKET_RESPONSE) {
-            Response res = (Response) message;
+                    Response res = (Response) message;
+                    Logger.trace("Data: "+((Response) message).getData());
+                    Response new_res = new Response(this.getNodeID(),previousHop,this.attachECCTable(res.getECCTables()));
+                    new_res.setData(res.getData());
+                    tras_result = this.transmit(new_res);
 
-            Response new_res = new Response(this.getNodeID(),previousHop,this.attachECCTable(res.getECCTables()));
-            tras_result = this.transmit(new_res);
-
-            if (tras_result==CommunicationState.TIMEOUT){
-                // Workaround without timer.
-                // Manually trigger timeout for a node.
-                this.network.getNode(previousHop).triggerTimeout();
-            }
+                    if (tras_result==CommunicationState.TIMEOUT){
+                        // Workaround without timer.
+                        // Manually trigger timeout for a node.
+                        this.network.getNode(previousHop).triggerTimeout();
+                    }
         }
 
 
@@ -95,6 +97,7 @@ public class Slave extends MbusDevice {
         ArrayDeque<ECCTable> ECCTable = new ArrayDeque<ECCTable>();
         Response res_req = new Response(this.getNodeID(),previousHop,this.attachECCTable(ECCTable));
         double tras_result = this.transmit(res_req);
+        Logger.trace("Packet loss");
         if (tras_result==CommunicationState.TIMEOUT){
             // Workaround without timer.
             // Manually trigger timeout for a node.

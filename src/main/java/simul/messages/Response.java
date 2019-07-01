@@ -15,7 +15,7 @@ public class Response extends MbusMessage {
     private int destination = 0;
 
 
-    private float data= 0; /* 4 byte*/
+    private double data= 0; /* 4 byte*/
 
     public Response(int source,int destination, ArrayDeque<ECCTable> ECCTables){
         super(source);
@@ -23,11 +23,11 @@ public class Response extends MbusMessage {
         this.destination = destination;
     }
 
-    public float getData() {
+    public double getData() {
         return data;
     }
 
-    public void setData(float data) {
+    public void setData(double data) {
         this.data = data;
     }
 

@@ -42,7 +42,7 @@ public class RequestAck  extends  MbusMessage{
     }
 
     @Override
-    public double computeECC(float ber) {
+    public double computeECC(double ber) {
         return 0;
     }
 

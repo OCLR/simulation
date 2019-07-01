@@ -58,22 +58,33 @@ public abstract class MbusDevice {
         Set<DefaultWeightedEdge> outgoingEdges = this.network.getOutgoingEdges(this.nodeID); // get all neighbors.
         message.setSource(this.nodeID);
         //System.out.println("TRY");
-        float packetSize = message.getMessageSize();
+        double packetSize = message.getMessageSize();
         this.sentPacket++;
         // Every node receive a message.
 
-        if (this.network.getStats().)
-        this.network.getStats().globalTrasmissionCommunication++;
-        this.network.getStats().globalTrasmissionPacketSum+=message.getMessageSize();
-        this.network.getStats().globalTrasmissionPayloadNoParityBitSum+=message.getMessageSizeOnlyPayloadWithoutParitybit();
-        this.network.getStats().globalTrasmissionPayloadParityBitSum +=message.getMessageSizeOnlyPayloadWithParitybit();
-        this.network.getStats().globalTrasmissionHeaderSum +=message.getMessageHeader();
-        this.network.getStats().globalTrasmissionBlockNumber += message.getMessageBlockCount();
+        this.network.getStats().deviceTrasmissionCommunication++;
+
+        if (message.getMessageType()== SimulationConfiguration.PACKET_REQUEST){
+            this.network.getStats().globalTrasmissionRequestSum+=message.getMessageSize();
+            this.network.getStats().globalTrasmissionRequestPayloadNoParityBitSum+=message.getMessageSizeOnlyPayloadWithoutParitybit();
+            this.network.getStats().globalTrasmissionRequestPayloadParityBitSum +=message.getMessageSizeOnlyPayloadWithParitybit();
+            this.network.getStats().globalTrasmissionRequestHeaderSum +=message.getMessageHeader();
+            this.network.getStats().globalTrasmissionRequestBlockNumber += message.getMessageBlockCount();
+            this.network.getStats().globalRequestTrasmissionCommunication +=1;
+        }else{
+            this.network.getStats().globalTrasmissionResponseSum+=message.getMessageSize();
+            this.network.getStats().globalTrasmissionResponsePayloadNoParityBitSum+=message.getMessageSizeOnlyPayloadWithoutParitybit();
+            this.network.getStats().globalTrasmissionResponsePayloadParityBitSum +=message.getMessageSizeOnlyPayloadWithParitybit();
+            this.network.getStats().globalTrasmissionResponseHeaderSum +=message.getMessageHeader();
+            this.network.getStats().globalTrasmissionResponseBlockNumber += message.getMessageBlockCount();
+            this.network.getStats().globalResponseTrasmissionCommunication +=1;
+        }
+
 
         int attemptNumber = SimulationConfiguration.CONF_NUMBER_OF_RETRASMISSION+1;
         // try attempt number of attempt.
         res = -1;
-        Logger.info("TX BROADCAST "+message.toString());
+        //Logger.info("TX BROADCAST "+message.toString());
         //Logger.info("Sending packet from "+message.getSource()+" to "+message.getDestination()+":: ");
         while (attemptNumber > 0 &&   !CommunicationState.isOK(res)){
             res = -1;
@@ -90,7 +101,7 @@ public abstract class MbusDevice {
             }
             attemptNumber--;
             if (!CommunicationState.isOK(res)){
-                this.network.getStats().globalRetrasmissionCommunication++;
+                this.network.getStats().deviceRetrasmissionCommunication++;
                 //System.out.print(" RETR, ");
             }
         }
@@ -99,10 +110,12 @@ public abstract class MbusDevice {
             // Update source to target.
             //System.out.println(" FAULT ");
             this.updateECCStructures(message.getDestination());
+            this.network.getStats().deviceTrasmissionTimeoutCommunication++;
             return CommunicationState.TIMEOUT;
         }
         // LO(" OK  ");
         // After receive packet
+        this.network.getStats().deviceSuccessTrasmissionCommunication++;
         this.network.getNode(nodeTarget).receive(message);
 
         return 0;// The sender doesn't have the nodeRes.
@@ -117,12 +130,12 @@ public abstract class MbusDevice {
         double ecc = message.computeECC(this.network.getBer());
 
         if (ecc==2){
-            Logger.info("RX BROADCAST TIMEOUT "+message.toString());
+            //((Logger.info("RX BROADCAST TIMEOUT "+message.toString());
             this.receivePacketBroadcastTimeout++;
             return CommunicationState.TIMEOUT;
         }else {
             if (this.nodeID != message.getDestination()) {
-                Logger.info("RX BROADCAST NOTFORME "+message.toString());
+                //Logger.info("RX BROADCAST NOTFORME "+message.toString());
                 this.receivePacketBroadcastNotForMe++;
                 return (CommunicationState.NOT_FOR_ME);
             }
@@ -130,7 +143,7 @@ public abstract class MbusDevice {
         // Update internal link.
         //  message.getSource() ->  this.nodeID
         this.ECCUpdateLink(message.getSource(),ecc);
-        Logger.info("RX BROADCAST OK "+ecc);
+        //Logger.info("RX BROADCAST OK "+ecc);
         return ecc;
     }
 

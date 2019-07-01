@@ -17,7 +17,7 @@ public abstract class MBusMessageFormatCore {
 
     public abstract int getBlockSize(int n);
 
-    /*public double computeECC(float ber,int skipFirstBlocks){
+    /*public double computeECC(double ber,int skipFirstBlocks){
         // int packetSize = this.getSize();
         // packetSize-=2;
         double hammingResultOneCount = 0;
@@ -49,27 +49,27 @@ public abstract class MBusMessageFormatCore {
 
 
 
-    private static float powerN(float base, int n) {
-        float result = 1;
+    private static double powerN(double base, long n) {
+        double result = 1;
         for (int i = 0; i < n; i++) {
             result *= base;
         }
         return result;
     }
 
-    public static int getNumberOfBits(float numberbyte){
+    public static int getNumberOfBits(double numberbyte){
         int nbytes = (int) numberbyte;
         int addedbit = (int) ((numberbyte - nbytes)*10);
         return (nbytes*8)+addedbit;
     }
 
-    public int computeHamming(int n,float ber){
-        float neg_ber = (1-ber);
+    public int computeHamming(long n,double ber){
+        double neg_ber = (1-ber);
 
-        float noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
-        float oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
-        float morethanoneerror = 1-(noerror+oneerror);
-        float randomValue = SimulationConfiguration.CONF_RANDOM.nextFloat();
+        double noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
+        double oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
+        double morethanoneerror = 1-(noerror+oneerror);
+        double randomValue = SimulationConfiguration.CONF_RANDOM.nextDouble();
         if (randomValue <=noerror){
             return 0;
         }else if(SimulationConfiguration.CONF_HAMMING == true && randomValue <=noerror+oneerror){
@@ -79,30 +79,30 @@ public abstract class MBusMessageFormatCore {
         }
     }
 
-    public static float getSuccessProb(int n,float ber){
-        float neg_ber = (1-ber);
+    public static double getSuccessProb(long n,double ber){
+        double neg_ber = (1-ber);
 
-        float noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
-        float oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
-        float morethanoneerror = 1-(noerror+oneerror);
-        float randomValue = SimulationConfiguration.CONF_RANDOM.nextFloat();
+        double noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
+        double oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
+        double morethanoneerror = 1-(noerror+oneerror);
+        double randomValue = SimulationConfiguration.CONF_RANDOM.nextDouble();
         return noerror;
     }
-    public static float getRecoverableProb(int n,float ber){
-        float neg_ber = (1-ber);
+    public static double getRecoverableProb(long n,double ber){
+        double neg_ber = (1-ber);
 
-        float noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
-        float oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
-        float morethanoneerror = 1-(noerror+oneerror);
-        float randomValue = SimulationConfiguration.CONF_RANDOM.nextFloat();
+        double noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
+        double oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
+        double morethanoneerror = 1-(noerror+oneerror);
+        double randomValue = SimulationConfiguration.CONF_RANDOM.nextDouble();
         return oneerror;
     }
-    public static float getFaultProb(int n,float ber){
-        float neg_ber = (1-ber);
-        float noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
-        float oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
-        float morethanoneerror = 1-(noerror+oneerror);
-        float randomValue = SimulationConfiguration.CONF_RANDOM.nextFloat();
+    public static double getFaultProb(long n,double ber){
+        double neg_ber = (1-ber);
+        double noerror= MBusMessageFormatCore.powerN(1-ber,n); // (1-r)^n
+        double oneerror= MBusMessageFormatCore.powerN(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
+        double morethanoneerror = 1-(noerror+oneerror);
+        double randomValue = SimulationConfiguration.CONF_RANDOM.nextDouble();
         if (SimulationConfiguration.CONF_HAMMING){
             return  morethanoneerror;
         }else{

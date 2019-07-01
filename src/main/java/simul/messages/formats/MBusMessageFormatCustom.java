@@ -42,11 +42,11 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         }
     }
 
-    public double computeECC(float ber){
+    public double computeECC(double ber){
         // int packetSize = this.getSize();
         // packetSize-=2;
         double hammingResultOneCount = 0;
-
+        int size;
         int result = this.computeHamming(this.getBlockSize(0),ber);
         //if (result == 1){
         //hammingResultOneCount+=1;
@@ -55,7 +55,14 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
             return Integer.MAX_VALUE;
         }
 
-        int size = this.getBlockSize(1);
+        if (SimulationConfiguration.CONF_HAMMING){
+            size = this.getBlockSize(1);
+        }else{
+            // No hamming function
+            size = this.getMessageSize()-this.getMessageHeader();
+        }
+
+
 
         for (int i = 1; i < this.getMessageBlockCount();i++){
             result = this.computeHamming(size,ber);
@@ -73,6 +80,9 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
+        if (!SimulationConfiguration.CONF_HAMMING){
+            return (n); // Simply data
+        }
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
         int data = headerBlockSize;
         int ndata = n;
@@ -91,6 +101,9 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
+        if (!SimulationConfiguration.CONF_HAMMING){
+            return (n); // Simply data.
+        }
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
         int dataBlockHeaderSize = this.getHeaderBlockSize(1);
         int data = 0;
@@ -108,6 +121,9 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
     public int computeFullFrameSizePayloadWithParityBit(int n){
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
+        if (!SimulationConfiguration.CONF_HAMMING){
+            return n;// return (n-headerBlockSize)+4; // 4 byte of CRC.
+        }
         int dataBlockSize = this.getBlockSize(1);
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
         int dataBlockHeaderSize = this.getHeaderBlockSize(1);
@@ -128,6 +144,9 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
+        if (!SimulationConfiguration.CONF_HAMMING){
+            return 2;//return (n-headerBlockSize)+4; // 4 byte of CRC.
+        }
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
         int dataBlockCount = 1;
         n*=8;

@@ -16,6 +16,8 @@ import simul.nodes.MbusDevice;
 import simul.nodes.Master;
 import simul.nodes.MasterGraphNode;
 import simul.nodes.Slave;
+import simul.protocol.NetworkStats;
+import simul.protocol.ResultTable;
 import simul.protocol.SimulationConfiguration;
 import simul.protocol.Stats;
 
@@ -29,11 +31,11 @@ public class MbusNetwork  {
     // public NetConfigManager configManager;
     private long lasting;
 
-    public float getBer() {
+    public double getBer() {
         return ber;
     }
 
-    private float ber;
+    private double ber;
 
 
 
@@ -42,7 +44,7 @@ public class MbusNetwork  {
     private SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> networkGraph;
 
 
-    public MbusNetwork( String filename, float ber, long lasting) throws IOException {
+    public MbusNetwork( String filename, double ber, long lasting) throws IOException {
         //super(owner, name, showInReport, showInTrace);
         this.ber = ber;
         this.lasting = lasting;
@@ -199,7 +201,33 @@ public class MbusNetwork  {
         this.stats = stats;
     }
 
-    public void printResults(int mode) {
-        this.getStats().printResults(this.getBer(),mode);
+    public void printResults() {
+        this.getStats().printResults(this.getBer());
+    }
+
+    public String printNetworkParametersHeader( boolean csv ) {
+        NetworkStats n = new NetworkStats(this);
+        ResultTable r = n.printResults();
+        String header = r.printHeader(csv);
+        return header;
+    }
+
+    public String printNetworkSimulationHeader( boolean csv ) {
+        ResultTable r = this.getStats().printResults(this.getBer());
+        String header = r.printHeader(csv);
+        return header;
+    }
+
+    public String printNetworkParametersValue( boolean csv ) {
+        NetworkStats n = new NetworkStats(this);
+        ResultTable r = n.printResults();
+        String header = r.printValues(csv);
+        return header;
+    }
+
+    public String printNetworkSimulationValue( boolean csv ) {
+        ResultTable r = this.getStats().printResults(this.getBer());
+        String header = r.printValues(csv);
+        return header;
     }
 }

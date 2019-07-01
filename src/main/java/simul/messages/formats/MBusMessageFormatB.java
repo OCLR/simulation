@@ -16,7 +16,7 @@ public abstract class MBusMessageFormatB  extends MBusMessageFormatCore{
             return 126*8;
         }
     }
-    public float computeFullFrameSizeOnlyPayload(int n){
+    public double computeFullFrameSizeOnlyPayload(int n){
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
@@ -35,7 +35,7 @@ public abstract class MBusMessageFormatB  extends MBusMessageFormatCore{
         return data;
     }
 
-    public double computeECC(float ber){
+    public double computeECC(double ber){
         // int packetSize = this.getSize();
         // packetSize-=2;
         double hammingResultOneCount = 0;
@@ -82,13 +82,13 @@ public abstract class MBusMessageFormatB  extends MBusMessageFormatCore{
         return this.getHeaderBlockSize(0);
     }
 
-    public float computeFullFrameSize(int n){
+    public double computeFullFrameSize(int n){
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
         n*=8;
-        float data = headerBlockSize;
+        double data = headerBlockSize;
         while(n>dataBlockPayloadSize){
             data+=dataBlockSize;
             n-=dataBlockPayloadSize;

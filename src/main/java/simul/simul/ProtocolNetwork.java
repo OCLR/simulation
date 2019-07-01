@@ -19,7 +19,7 @@ public class ProtocolNetwork {
     private MbusNetwork network;
     
 
-    public ProtocolNetwork( String name, float ber, long lasting) throws IOException {
+    public ProtocolNetwork( String name, double ber, long lasting) throws IOException {
         this.network = new MbusNetwork(name, ber, lasting);
     }
 
@@ -38,13 +38,13 @@ public class ProtocolNetwork {
 
     public static void main(String[] args) throws Exception {
         String file;
-        float ber;
+        double ber;
         long lasting;
         int packetDestinationMax;
         Scanner in = new Scanner(System.in);
         if (args.length == 3) {
             file = args[0];
-            ber = Float.parseFloat(args[1]);
+            ber = Double.parseDouble(args[1]);
             lasting = Integer.parseInt(args[2]);
             //packetDestinationMax = Integer.parseInt(args[4]);
 
@@ -52,7 +52,7 @@ public class ProtocolNetwork {
             System.out.println("Insert the graph filename");
             file = in.nextLine();
             System.out.println("Insert the ber probability");
-            ber = in.nextFloat();
+            ber = in.nextDouble();
             System.out.println("How many packets will sends?");
             lasting = in.nextLong();
             /*System.out.println("What is the noise range in a node? <= max arches.");
