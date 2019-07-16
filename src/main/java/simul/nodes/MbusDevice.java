@@ -2,9 +2,8 @@ package simul.nodes;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import org.pmw.tinylog.Logger;
 import simul.infrastructure.ECCTable;
-import simul.infrastructure.MbusNetwork;
+import simul.infrastructure.WMbusNetwork;
 import simul.messages.CommunicationState;
 import simul.messages.MbusMessage;
 
@@ -22,7 +21,7 @@ public abstract class MbusDevice {
 
 
     private int nodeID;
-    public MbusNetwork network;
+    public WMbusNetwork network;
 
 
 
@@ -37,7 +36,7 @@ public abstract class MbusDevice {
     public long receivePacketBroadcastNotForMe = 0;
 
 
-    public MbusDevice(MbusNetwork owner, int nodeID) {
+    public MbusDevice(WMbusNetwork owner, int nodeID) {
         /**
          * M-bus network
          */
@@ -127,7 +126,8 @@ public abstract class MbusDevice {
     }
 
     public double receiveAck(MbusMessage message){
-        double ecc = message.computeECC(this.network.getBer());
+        // TODO get the link.
+        double ecc = message.computeECC(this.network.getBer(message.getSource(),message.getDestination()));
 
         if (ecc==2){
             //((Logger.info("RX BROADCAST TIMEOUT "+message.toString());

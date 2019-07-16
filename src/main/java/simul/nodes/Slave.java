@@ -3,12 +3,12 @@ package simul.nodes;
 //import simul.cache.slaveCache;
 //import simul.cache.base.cachePair;
 import org.pmw.tinylog.Logger;
+import simul.infrastructure.WMbusNetwork;
 import simul.messages.CommunicationState;
 import simul.messages.MbusMessage;
 
 import java.util.ArrayDeque;
 
-import simul.infrastructure.MbusNetwork;
 import simul.messages.Request;
 import simul.messages.Response;
 import simul.infrastructure.ECCTable;
@@ -21,7 +21,7 @@ public class Slave extends MbusDevice {
     private int previousHop = -1;
     private int nextHop= -1;
 
-    public Slave(MbusNetwork owner, int pos) {
+    public Slave(WMbusNetwork owner, int pos) {
         super(owner, pos);
     }
     /*

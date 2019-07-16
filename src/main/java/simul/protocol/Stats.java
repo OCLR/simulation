@@ -7,7 +7,6 @@ package simul.protocol;
  */
 
 import simul.messages.MbusMessage;
-import simul.simul.AutoTestProtocol;
 
 /**
  *
@@ -50,7 +49,7 @@ public class Stats {
 
 
 
-    public ResultTable printResults(double ber){
+    public ResultTable printResults(){
 
         ResultTable r = new ResultTable();
         /* NO way */
@@ -83,7 +82,7 @@ public class Stats {
         r.addRow("Response Payload size (no-ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadNoParityBitSum/this.globalResponseTrasmissionCommunication);
         r.addRow("Response Payload size (ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadParityBitSum/this.globalResponseTrasmissionCommunication);
         r.addRow("Response Packet Block count:",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseBlockNumber/this.globalResponseTrasmissionCommunication);
-
+        /* think carefully as*/
         /* Request packet % */
         r.addRow("Request success %:",this.globalRequestTrasmissionCommunication==0?0:MbusMessage.getSuccessProb(this.globalTrasmissionRequestSum/this.globalRequestTrasmissionCommunication,ber)*100);
         if (SimulationConfiguration.CONF_HAMMING) {

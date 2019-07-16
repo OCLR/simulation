@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import org.pmw.tinylog.Logger;
+import simul.infrastructure.WMbusNetwork;
 import simul.messages.CommunicationState;
 import simul.messages.MbusMessage;
 
@@ -22,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
-import simul.infrastructure.MbusNetwork;
 import simul.messages.Request;
 import simul.messages.Response;
 import simul.infrastructure.ECCTable;
@@ -46,7 +46,7 @@ public class Master extends MbusDevice {
     private Integer fixedNode;
     public PrintWriter log_fault;
 
-    public Master(MbusNetwork owner,SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> graph) {
+    public Master(WMbusNetwork owner, SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> graph) {
         super(owner,0);
         this.networkGraphECC = graph;
 
@@ -177,7 +177,7 @@ public class Master extends MbusDevice {
     @Override
     public void updateECCStructures(int destination){
         super.updateECCStructures(destination);
-        DefaultWeightedEdge edge = this.network.getNetworkGraph().getEdge(new MasterGraphNode(0),new MasterGraphNode(destination));
+        DefaultWeightedEdge edge = this.network.getEccGraph().getEdge(new MasterGraphNode(0),new MasterGraphNode(destination));
         //System.out.println("Update link state from to "+destination+" with error maximum");
         this.networkGraphECC.setEdgeWeight(edge,CommunicationState.TIMEOUT);
     }
@@ -208,7 +208,7 @@ public class Master extends MbusDevice {
             }
             for(ECCTable entry : res.getECCTables()){
                 for (Integer destination: entry.getEntries().keySet()){
-                    DefaultWeightedEdge edge = this.network.getNetworkGraph().getEdge(new MasterGraphNode(entry.getNode()),new MasterGraphNode(destination));
+                    DefaultWeightedEdge edge = this.network.getEccGraph().getEdge(new MasterGraphNode(entry.getNode()),new MasterGraphNode(destination));
                     Logger.trace("Update link state from "+entry.getNode()+" to "+destination+" with error "+entry.getEntries().get(destination));
                     this.network.getStats().masterAvgNumberOfUpdatedLink++;
                     this.networkGraphECC.setEdgeWeight(edge,entry.getEntries().get(destination));
