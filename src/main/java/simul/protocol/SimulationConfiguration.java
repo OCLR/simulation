@@ -16,6 +16,9 @@ public class SimulationConfiguration {
     public static final int TRASMISSION_MODE_R2 = 5;
     public static final int TRASMISSION_MODE_C1 = 6;
     public static final int TRASMISSION_MODE_C2 = 7;
+    public static final int TRASMISSION_MODE_N1 = 8;
+    public static final int TRASMISSION_MODE_N2 = 9;
+
     public static final byte PACKET_REQUEST = 0;
     public static final byte PACKET_REQUESTACK = 1;
     public static final byte PACKET_RESPONSE = 2;

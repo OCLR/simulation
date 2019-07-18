@@ -148,5 +148,8 @@ public class WMbusNetwork {
         // get distance from graph.
         // compute ber from distance
         // return ber.
+        DefaultWeightedEdge ed = this.distanceGraph.getEdge(new MasterGraphNode(source),new MasterGraphNode(destination));
+        Double distance = this.distanceGraph.getEdgeWeight(ed);
+
     }
 }
