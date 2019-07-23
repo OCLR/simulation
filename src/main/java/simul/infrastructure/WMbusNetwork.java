@@ -8,7 +8,9 @@ import simul.nodes.MbusDevice;
 import simul.nodes.Slave;
 import simul.protocol.NetworkStats;
 import simul.protocol.ResultTable;
+import simul.protocol.SimulationConfiguration;
 import simul.protocol.Stats;
+import smile.math.special.Erf;
 
 import java.io.IOException;
 import java.util.Set;
@@ -150,6 +152,9 @@ public class WMbusNetwork {
         // return ber.
         DefaultWeightedEdge ed = this.distanceGraph.getEdge(new MasterGraphNode(source),new MasterGraphNode(destination));
         Double distance = this.distanceGraph.getEdgeWeight(ed);
-
+        // Here we have the noise level.
+        double receiverPower = SimulationConfiguration.CONF_TRASMITTER_POWER_LEVEL/(distance*distance);
+        double signalToNoiseRatio = (receiverPower/SimulationConfiguration.CONF_NOISE_POWER);
+        GFSKModulation
     }
 }
