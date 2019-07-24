@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="berGFSK">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/berGFSK.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
