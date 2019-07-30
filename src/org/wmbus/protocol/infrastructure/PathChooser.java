@@ -1,15 +1,15 @@
 package org.wmbus.protocol.infrastructure;
 
 import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.alg.shortestpath.KShortestSimplePaths;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.pmw.tinylog.Logger;
 import org.wmbus.protocol.config.WMBusMasterConfig;
 import org.wmbus.protocol.utilities.DGraph;
 import org.wmbus.simulation.WMBusSimulation;
-import yang.simulation.network.MasterGraphNode;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,19 +67,24 @@ public class PathChooser {
     }
 
 
-    public ArrayList<Integer> searchPathWithBackOff(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge>   graph, Integer destination){
+    public ArrayList<Integer> searchPathWithBackOff(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge>   graph, Integer destination){
         ArrayList<BackOffPath> backPP = new ArrayList<BackOffPath>();
-        KShortestSimplePaths<MasterGraphNode, DefaultWeightedEdge> dijkstra  = new KShortestSimplePaths<MasterGraphNode, DefaultWeightedEdge>(graph);
-        List<GraphPath<MasterGraphNode, DefaultWeightedEdge>> allPaths = dijkstra.getPaths(new MasterGraphNode(0), new MasterGraphNode(destination),10000);
+        AllDirectedPaths<Integer, DefaultWeightedEdge> dijkstra  = new AllDirectedPaths<Integer, DefaultWeightedEdge>(graph);
+        List<GraphPath<Integer, DefaultWeightedEdge>> allPaths = dijkstra.getAllPaths((0), (destination),true,null);
         BackOffPath bpath;
 
         // all possible path between A and B. A --> master and B -> destination node.
-        for (GraphPath<MasterGraphNode, DefaultWeightedEdge> path :allPaths){
+        for (GraphPath<Integer, DefaultWeightedEdge> path :allPaths){
+
             bpath = new BackOffPath();
+            bpath.path = DGraph.getPath(path.getGraph(),path.getEdgeList());
+            System.out.println("bpath-"+bpath.path);
+            if (bpath.path.get(0) != 0){
+                continue; // avoid this path.
+            }
             bpath.failedAttempt = 0;
             bpath.totalWeight = path.getWeight();
-            bpath.destination = path.getEndVertex().getStaticAddress();
-            bpath.path = DGraph.getPath(path.getGraph(),path.getEdgeList());
+            bpath.destination = path.getEndVertex();
             // Check bpath.
             if (this.backOffPaths.contains(bpath)){
                 Integer bi = this.backOffPaths.indexOf(bpath);
@@ -93,6 +98,7 @@ public class PathChooser {
         }
         for (BackOffPath backOff:this.backOffPaths){
             if (backOff.destination == destination){
+                System.out.println("bpath considered-"+backOff.path);
                 backPP.add(backOff);
             }
         }
@@ -108,19 +114,20 @@ public class PathChooser {
             Double probability = Math.pow(2,-doubleExp);
             if (probability <= this.simulation.getwMbusSimulationConfig().CONF_RANDOM.nextDouble()) {
                 lastChoosed = bp + 1;
-                return backPP.get(bp).path;
+                return new ArrayList<Integer>(backPP.get(bp).path);
             }
             // 2^-5(1/32 to 1/4096)
         }
         lastChoosed = 0;
+
         return new ArrayList<Integer>(backPP.get(backPP.size()-1).path);
     }
 
-    public ArrayList<Integer> searchPathWithoutBackOff(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge>   graph, Integer destination){
-        DijkstraShortestPath dijkstraPaths = new DijkstraShortestPath<MasterGraphNode, DefaultWeightedEdge>(graph);
+    public ArrayList<Integer> searchPathWithoutBackOff(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge>   graph, Integer destination){
+        DijkstraShortestPath dijkstraPaths = new DijkstraShortestPath<Integer, DefaultWeightedEdge>(graph);
         //salesman.getTour(graph)
         // dijkstraPaths.getPaths(masterNode);
-        MasterGraphNode endNode = new MasterGraphNode(destination); // chooose destination and apply dijkstra
+        Integer endNode = (destination); // chooose destination and apply dijkstra
         //System.out.println("WMBusMaster ask data to "+fixedNode);
         if (endNode == null) {
             throw new IllegalArgumentException();
@@ -130,7 +137,7 @@ public class PathChooser {
          */
         GraphPath p = null;
         try {
-            p = dijkstraPaths.getPath(new MasterGraphNode(0),endNode);
+            p = dijkstraPaths.getPath((0),endNode);
         } catch (Exception e) {
             //throw new SUSPEND;
             Logger.error("Avoid packet with endnode: "+destination);
@@ -142,7 +149,7 @@ public class PathChooser {
         }
         return new ArrayList<Integer>(DGraph.getPath(graph,p.getEdgeList()));
     }
-    public ArrayList<Integer> searchPath(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge>   graph, Integer destination, boolean backOff){
+    public ArrayList<Integer> searchPath(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge>   graph, Integer destination, boolean backOff){
         if (backOff) {
             return this.searchPathWithBackOff(graph,destination);
         }else {

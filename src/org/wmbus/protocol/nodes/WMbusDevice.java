@@ -7,8 +7,6 @@ import org.wmbus.protocol.messages.WMBusCommunicationState;
 import org.wmbus.protocol.messages.WMBusPacketType;
 import org.wmbus.protocol.messages.WMbusMessage;
 import org.wmbus.simulation.WMBusSimulation;
-import yang.simulation.network.MasterGraphNode;
-
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Set;
@@ -82,12 +80,18 @@ public abstract class WMbusDevice {
 
             for (DefaultWeightedEdge edge : outgoingEdges) {// send to all neighbors.
                 this.sentPacketBroadcast++;
-                MasterGraphNode destinationNode = new MasterGraphNode(message.getDestination());
-                WMbusDevice destinationMbusNode = this.simulation.getwMbusNetwork().getNode(destinationNode.getStaticAddress());
+                int source = this.simulation.getwMbusNetwork().getEccGraph().getEdgeSource(edge);
+                int destination = this.simulation.getwMbusNetwork().getEccGraph().getEdgeTarget(edge);
+                Integer destinationNode = destination;
+                Integer sourceNode = source;
+                if (source != this.nodeID){
+                    continue;
+                }
+                WMbusDevice destinationMbusNode = this.simulation.getwMbusNetwork().getNode(destinationNode);
                 nodeRes = destinationMbusNode.receiveAck(message); // son.getHopDestination()
                 if (WMBusCommunicationState.isOK(nodeRes)){
                     res = nodeRes;
-                    nodeTarget = destinationNode.getStaticAddress();
+                    nodeTarget = destinationNode;
                 }
             }
             attemptNumber--;
@@ -119,8 +123,8 @@ public abstract class WMbusDevice {
 
     public double receiveAck(WMbusMessage message){
         // TODO get the link.
-        double distance = this.simulation.getwMbusNetwork().getDistance(message.getSource(),message.getDestination());
-        double ber = this.simulation.getwMbusNetwork().getBer(message.getSource(),message.getDestination());
+        double distance = this.simulation.getwMbusNetwork().getDistance(message.getSource(),this.nodeID);
+        double ber = this.simulation.getwMbusNetwork().getBer(message.getSource(),this.nodeID);
         double ecc = message.computeECC(ber);
         double successProb = message.computeECCSuccess(ber);
         double failProb = message.computeECCFail(ber);

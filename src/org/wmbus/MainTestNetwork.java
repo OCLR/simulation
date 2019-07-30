@@ -9,7 +9,7 @@ import yang.simulation.network.SimulationNetworkWithDistance;
 
 import java.util.ArrayList;
 
-public class Main {
+public class MainTestNetwork {
 
     public static void main(String[] args) throws Exception {
         Configurator.currentConfig()
@@ -17,7 +17,7 @@ public class Main {
                 .level(Level.INFO)
                 .activate();
 
-        Main.convergesResult(2,true,true);
+        MainTestNetwork.convergesResult(4,true,true);
 
     }
 
@@ -50,7 +50,7 @@ public class Main {
             // Check number of attempt.
             if (numberOfAttemptAfter != numberOfAttempt) {
                 // Perform simulation.
-                simulationResults = Main.performSimulation(attempt, withHamming, withWakeup);
+                simulationResults = MainTestNetwork.performSimulation(attempt, withHamming, withWakeup);
                 preresult = result;
                 result = simulationResults.masterTrasmissionFaultWithUpdate + simulationResults.masterTrasmissionFaultWithNoUpdate;
                 convergencePerc = ((preresult)*GlobalConfiguration.CONVERGENCE_CONFIDENCE_PERCENTAGE)/100;

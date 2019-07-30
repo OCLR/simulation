@@ -2,8 +2,8 @@ package org.wmbus.protocol.utilities;
 
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
-import yang.simulation.network.MasterGraphNode;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,9 +11,9 @@ import java.util.List;
 public class DGraph {
 
 
-    public static SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge>  clone(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> prev){
-        SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> cloned = new SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-        for (MasterGraphNode node:prev.vertexSet()) {
+    public static SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge>  clone(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> prev){
+        SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> cloned = new SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+        for (Integer node:prev.vertexSet()) {
             cloned.addVertex(node);
         }
         for (DefaultWeightedEdge edge:prev.edgeSet()) {
@@ -23,14 +23,17 @@ public class DGraph {
         return cloned;
     }
 
-    public static ArrayList<Integer> getPath(Graph<MasterGraphNode, DefaultWeightedEdge> graph, List<DefaultWeightedEdge> edges){
+    public static ArrayList<Integer> getPath(Graph<Integer, DefaultWeightedEdge> graph, List<DefaultWeightedEdge> edges){
         ArrayList<Integer> nodes = new ArrayList<Integer>();
+        if (edges.size() !=0 ){
+            Integer node = graph.getEdgeSource(edges.get(0));
+            nodes.add(node);
+        }
         for (int i = 0; i < edges.size();i++){
             DefaultWeightedEdge e = edges.get(i);
-            MasterGraphNode source = graph.getEdgeSource(e);
-            MasterGraphNode destination = graph.getEdgeTarget(e);
-            nodes.add(source.getStaticAddress());
-            nodes.add(destination.getStaticAddress());
+            Integer destination = graph.getEdgeTarget(e);
+            //nodes.add(source);
+            nodes.add(destination);
         }
         return nodes;
     }

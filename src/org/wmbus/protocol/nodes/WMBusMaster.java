@@ -4,14 +4,13 @@ package org.wmbus.protocol.nodes;
 //import co.paralleluniverse.fibers.SuspendExecution;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.pmw.tinylog.Logger;
 import org.wmbus.protocol.config.WMBusMasterConfig;
 import org.wmbus.protocol.infrastructure.ECCTable;
 import org.wmbus.protocol.infrastructure.PathChooser;
 import org.wmbus.protocol.messages.*;
 import org.wmbus.simulation.WMBusSimulation;
-import yang.simulation.network.MasterGraphNode;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -20,7 +19,7 @@ import java.util.*;
 
 public class WMBusMaster extends WMbusDevice {
 
-    private final SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> networkGraphECC;
+    private final SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> networkGraphECC;
 
     private ArrayList<Integer> path;
 
@@ -28,13 +27,13 @@ public class WMBusMaster extends WMbusDevice {
     public PrintWriter band_log;
 
     private Request sending;
-    private MasterGraphNode endNode;
+    private Integer  endNode;
     private ArrayDeque<Integer> pathEncoded;
     private DecimalFormat formatter = new DecimalFormat("#,###.00");
     private Integer fixedNode;
     public PrintWriter log_fault;
 
-    public WMBusMaster(WMBusSimulation simulation, SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> graph) {
+    public WMBusMaster(WMBusSimulation simulation, SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> graph) {
         super(simulation,0);
         this.networkGraphECC = graph;
 
@@ -42,16 +41,16 @@ public class WMBusMaster extends WMbusDevice {
 
 
 
-    private ArrayDeque<Integer> encodePath(List<MasterGraphNode> path) {
+    private ArrayDeque<Integer> encodePath(List<Integer> path) {
         ArrayDeque<Integer> hopList = new ArrayDeque<Integer>();
 
-        for (MasterGraphNode node : path) {
-            hopList.add(node.getStaticAddress());
+        for (Integer node : path) {
+            hopList.add(node);
         }
         return hopList;
     }
 
-    public void printGraph(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> networkGraphECC){
+    public void printGraph(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> networkGraphECC){
         for (DefaultWeightedEdge e: networkGraphECC.edgeSet()){
             Logger.trace("From: "+networkGraphECC.getEdgeSource(e)+" To: "+networkGraphECC.getEdgeTarget(e)+" With  weight: "+networkGraphECC.getEdgeWeight(e));
         }
@@ -61,7 +60,7 @@ public class WMBusMaster extends WMbusDevice {
     public void lifeCycle()  {
 
         WMBusMaster m = this;
-        MasterGraphNode masterNode = new MasterGraphNode(0);
+        Integer masterNode = (0);
         // Generate fixed list node.
         ArrayList<Integer> dest = getDestinations(this.simulation.getwMbusNetwork().getNodes().size()); // without master.
 
@@ -87,12 +86,12 @@ public class WMBusMaster extends WMbusDevice {
             }
 
             // this.printGraph(this.networkGraphECC);
-            //TwoApproxMetricTSP salesman = new TwoApproxMetricTSP<MasterGraphNode, DefaultWeightedEdge>();
-
+            //TwoApproxMetricTSP salesman = new TwoApproxMetricTSP<Integer, DefaultWeightedEdge>();
+            Logger.info("Search node for "+fixedNode);
             path = pathChooser.searchPath(this.networkGraphECC,fixedNode,this.simulation.getwMbusSimulationConfig().CONF_WAKEUP);
-
+            System.out.println(path);
             try {
-                path.remove(0);
+                path.remove((0));
             } catch (Exception e) {
                 //System.out.println("No master node "+fixedNode);
                 Logger.error("Node master not found");
@@ -100,6 +99,7 @@ public class WMBusMaster extends WMbusDevice {
                 //continue;
                 // the fuck?
             }
+            System.out.println(path);
 
             Logger.info("Send message #"+this.simulation.getResults().masterSentMessage+ "");
             this.simulation.getResults().masterSumPath+=path.size();
@@ -145,9 +145,11 @@ public class WMBusMaster extends WMbusDevice {
     @Override
     public void updateECCStructures(int destination){
         super.updateECCStructures(destination);
-        DefaultWeightedEdge edge = this.simulation.getwMbusNetwork().getEccGraph().getEdge(new MasterGraphNode(0),new MasterGraphNode(destination));
+        DefaultWeightedEdge edge = this.simulation.getwMbusNetwork().getEccGraph().getEdge((0),(destination));
+        DefaultWeightedEdge edge2 = this.simulation.getwMbusNetwork().getEccGraph().getEdge((destination),(0));
         //System.out.println("Update link state from to "+destination+" with error maximum");
         this.networkGraphECC.setEdgeWeight(edge, WMBusCommunicationState.TIMEOUT);
+        this.networkGraphECC.setEdgeWeight(edge2, WMBusCommunicationState.TIMEOUT);
     }
 
     /**
@@ -176,7 +178,7 @@ public class WMBusMaster extends WMbusDevice {
             }
             for(ECCTable entry : res.getECCTables()){
                 for (Integer destination: entry.getEntries().keySet()){
-                    DefaultWeightedEdge edge = this.simulation.getwMbusNetwork().getEccGraph().getEdge(new MasterGraphNode(entry.getNode()),new MasterGraphNode(destination));
+                    DefaultWeightedEdge edge = this.simulation.getwMbusNetwork().getEccGraph().getEdge((entry.getNode()),(destination));
                     Logger.trace("Update link state from "+entry.getNode()+" to "+destination+" with error "+entry.getEntries().get(destination));
                     this.simulation.getResults().masterUpdateLink++;
                     this.networkGraphECC.setEdgeWeight(edge,entry.getEntries().get(destination));

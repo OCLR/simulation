@@ -1,13 +1,12 @@
 package org.wmbus.protocol.infrastructure;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.wmbus.protocol.nodes.WMBusMaster;
 import org.wmbus.protocol.nodes.WMBusSlave;
 import org.wmbus.protocol.nodes.WMbusDevice;
 import org.wmbus.protocol.utilities.DGraph;
 import org.wmbus.simulation.WMBusSimulation;
-import yang.simulation.network.MasterGraphNode;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -15,12 +14,12 @@ import java.util.Set;
 public class WMbusNetwork {
 
     private HashMap<Integer,WMbusDevice> nodes = new HashMap<Integer, WMbusDevice>();
-    private SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> eccGraph;
-    private SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> distanceGraph;
+    private SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> eccGraph;
+    private SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> distanceGraph;
     private WMBusSimulation simulation;
 
 
-    public WMbusNetwork(WMBusSimulation simulation,SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> distanceGraph)  {
+    public WMbusNetwork(WMBusSimulation simulation,SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> distanceGraph)  {
         //super(owner, name, showInReport, showInTrace);
         this.simulation = simulation;
         this.distanceGraph = distanceGraph;
@@ -44,7 +43,7 @@ public class WMbusNetwork {
     }
 
     public synchronized Set<DefaultWeightedEdge> getOutgoingEdges(int source) {
-        return this.eccGraph.edgesOf(new MasterGraphNode(source));
+        return this.eccGraph.edgesOf((source));
     }
 
     private void create(){
@@ -56,10 +55,10 @@ public class WMbusNetwork {
         //System.out.println("Network created");
     }
 
-    private void generateNetwork(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> distanceGraph) {
+    private void generateNetwork(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> distanceGraph) {
         int node = 1;
-        for (MasterGraphNode n: distanceGraph.vertexSet()) {
-            if (n.getStaticAddress() != 0){
+        for (Integer n: distanceGraph.vertexSet()) {
+            if (n != 0){
                 this.setNode(new WMBusSlave(this.simulation,node),node);
                 node++;
             }
@@ -67,8 +66,8 @@ public class WMbusNetwork {
         }
     }
 
-    private SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> resetNetwork(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> networkGraph){
-        SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> masterGraph = DGraph.clone(networkGraph);
+    private SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> resetNetwork(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> networkGraph){
+        SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> masterGraph = DGraph.clone(networkGraph);
         Set<DefaultWeightedEdge> edges =  masterGraph.edgeSet();
         //
         for (DefaultWeightedEdge edge: edges){
@@ -77,12 +76,12 @@ public class WMbusNetwork {
         return masterGraph;
     }
 
-    public SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> getEccGraph() {
+    public SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> getEccGraph() {
         return this.eccGraph;
     }
 
     public double getDistance(int source,int destination){
-        DefaultWeightedEdge ed = this.distanceGraph.getEdge(new MasterGraphNode(source),new MasterGraphNode(destination));
+        DefaultWeightedEdge ed = this.distanceGraph.getEdge((source),(destination));
         Double distance = this.distanceGraph.getEdgeWeight(ed);
         return distance;
     }
@@ -90,7 +89,7 @@ public class WMbusNetwork {
         // get distance from graph.
         // compute ber from distance
         // return ber.
-        DefaultWeightedEdge ed = this.distanceGraph.getEdge(new MasterGraphNode(source),new MasterGraphNode(destination));
+        DefaultWeightedEdge ed = this.distanceGraph.getEdge((source),(destination));
         Double distance = this.distanceGraph.getEdgeWeight(ed);
         // Here we have the noise level.
         if (distance == 0){
@@ -100,7 +99,7 @@ public class WMbusNetwork {
         return this.simulation.getWMBusNoise().getBerFromDistance(distance);
     }
 
-    public SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> getDistanceGraph() {
+    public SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> getDistanceGraph() {
         return this.distanceGraph;
     }
 }
