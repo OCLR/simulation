@@ -78,7 +78,7 @@ public class PathChooser {
 
             bpath = new BackOffPath();
             bpath.path = DGraph.getPath(path.getGraph(),path.getEdgeList());
-            System.out.println("bpath-"+bpath.path);
+            //System.out.println("bpath-"+bpath.path);
             if (bpath.path.get(0) != 0){
                 continue; // avoid this path.
             }
@@ -98,7 +98,7 @@ public class PathChooser {
         }
         for (BackOffPath backOff:this.backOffPaths){
             if (backOff.destination == destination){
-                System.out.println("bpath considered-"+backOff.path);
+                //System.out.println("bpath considered-"+backOff.path);
                 backPP.add(backOff);
             }
         }

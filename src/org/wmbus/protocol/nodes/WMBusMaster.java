@@ -74,7 +74,7 @@ public class WMBusMaster extends WMbusDevice {
         Logger.trace("WMBusSimulation starts");
         PathChooser pathChooser = new PathChooser(this.simulation);
         while (true) {
-            System.out.println(this.simulation.getwMbusNetwork().getDistanceGraph().edgeSet());
+            // System.out.println(this.simulation.getwMbusNetwork().getDistanceGraph().edgeSet());
             //fixedNode = randomGen.nextInt(graph.vertexSet().size() - 1) +1;
             if (fixedNodeIndex.equals(dest.size())) {
                 fixedNodeIndex = 0;
@@ -89,7 +89,7 @@ public class WMBusMaster extends WMbusDevice {
             //TwoApproxMetricTSP salesman = new TwoApproxMetricTSP<Integer, DefaultWeightedEdge>();
             Logger.info("Search node for "+fixedNode);
             path = pathChooser.searchPath(this.networkGraphECC,fixedNode,this.simulation.getwMbusSimulationConfig().CONF_WAKEUP);
-            System.out.println(path);
+            //System.out.println(path);
             try {
                 path.remove((0));
             } catch (Exception e) {
@@ -99,8 +99,8 @@ public class WMBusMaster extends WMbusDevice {
                 //continue;
                 // the fuck?
             }
-            System.out.println(path);
-
+            //System.out.println(path);
+            Logger.info("Path: "+path);
             Logger.info("Send message #"+this.simulation.getResults().masterSentMessage+ "");
             this.simulation.getResults().masterSumPath+=path.size();
             sending = new Request(this.simulation,0, path);
