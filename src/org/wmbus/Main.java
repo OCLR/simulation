@@ -2,8 +2,8 @@ package org.wmbus;
 
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
-import org.wmbus.protocol.simulation.WMBusSimulation;
-import org.wmbus.protocol.simulation.WMBusStats;
+import org.wmbus.simulation.WMBusSimulation;
+import org.wmbus.simulation.stats.WMBusStats;
 import yang.NetworkGeneratorHelper;
 import yang.simulation.network.SimulationNetworkWithDistance;
 
@@ -16,7 +16,8 @@ public class Main {
                 .formatPattern("{level}: {class}.{method}()\t{message}")
                 .level(Level.INFO)
                 .activate();
-        Main.convergesResult(2,true,false);
+
+        Main.convergesResult(2,true,true);
 
     }
 
@@ -31,12 +32,13 @@ public class Main {
         int convergenceTime = 0;
         double convergencePerc = 0.0;
         long result = 0, preresult = 0;
-
+        WMBusStats simulationResults = null;
         do {
             SimulationNetworkWithDistance attempt = NetworkGeneratorHelper.generateInterconnectedRadiusNetwork(
                     nNodes,
                     GlobalConfiguration.NETWORK_SIZE_METERS,
-                    GlobalConfiguration.NODE_RADIUS,
+                    GlobalConfiguration.MIN_NODE_RADIUS,
+                    GlobalConfiguration.MAX_NODE_RADIUS,
                     GlobalConfiguration.MASTER_X,
                     GlobalConfiguration.MASTER_Y,
                     -1);
@@ -44,10 +46,11 @@ public class Main {
             int numberOfAttempt = attempts.size();
             attempts.add(attempt);
             int numberOfAttemptAfter = attempts.size();
+
             // Check number of attempt.
             if (numberOfAttemptAfter != numberOfAttempt) {
                 // Perform simulation.
-                WMBusStats simulationResults = Main.performSimulation(attempt, withHamming, withWakeup);
+                simulationResults = Main.performSimulation(attempt, withHamming, withWakeup);
                 preresult = result;
                 result = simulationResults.masterTrasmissionFaultWithUpdate + simulationResults.masterTrasmissionFaultWithNoUpdate;
                 convergencePerc = ((preresult)*GlobalConfiguration.CONVERGENCE_CONFIDENCE_PERCENTAGE)/100;
@@ -64,15 +67,14 @@ public class Main {
                 if (convergenceTime == GlobalConfiguration.CONVERGENCE_CONFIDENCE_TIMES){
                     convergence = true;
                 }
-
             }
         }while(!convergence);
-
+        System.out.println(simulationResults.printResults().prettyPrint());
     }
 
     private static WMBusStats performSimulation(SimulationNetworkWithDistance simulationWrapper, boolean withHamming, boolean withWakeup)  {
 
-        WMBusSimulation simulation = new WMBusSimulation(simulationWrapper.network,withHamming,withWakeup,simulationWrapper.network.vertexSet().size()*GlobalConfiguration.LASTING_FOREACHNODE);
+        WMBusSimulation simulation = new WMBusSimulation(simulationWrapper.network,withHamming,withWakeup);
         simulation.run();
         return simulation.getResults();
     }

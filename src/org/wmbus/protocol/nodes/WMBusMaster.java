@@ -1,0 +1,198 @@
+package org.wmbus.protocol.nodes;
+
+//import desmoj.core.simulator.*;
+//import co.paralleluniverse.fibers.SuspendExecution;
+
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleWeightedGraph;
+import org.pmw.tinylog.Logger;
+import org.wmbus.protocol.config.WMBusMasterConfig;
+import org.wmbus.protocol.infrastructure.ECCTable;
+import org.wmbus.protocol.infrastructure.PathChooser;
+import org.wmbus.protocol.messages.*;
+import org.wmbus.simulation.WMBusSimulation;
+import yang.simulation.network.MasterGraphNode;
+
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.util.*;
+
+
+public class WMBusMaster extends WMbusDevice {
+
+    private final SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> networkGraphECC;
+
+    private ArrayList<Integer> path;
+
+    public PrintWriter log;
+    public PrintWriter band_log;
+
+    private Request sending;
+    private MasterGraphNode endNode;
+    private ArrayDeque<Integer> pathEncoded;
+    private DecimalFormat formatter = new DecimalFormat("#,###.00");
+    private Integer fixedNode;
+    public PrintWriter log_fault;
+
+    public WMBusMaster(WMBusSimulation simulation, SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> graph) {
+        super(simulation,0);
+        this.networkGraphECC = graph;
+
+    }
+
+
+
+    private ArrayDeque<Integer> encodePath(List<MasterGraphNode> path) {
+        ArrayDeque<Integer> hopList = new ArrayDeque<Integer>();
+
+        for (MasterGraphNode node : path) {
+            hopList.add(node.getStaticAddress());
+        }
+        return hopList;
+    }
+
+    public void printGraph(SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> networkGraphECC){
+        for (DefaultWeightedEdge e: networkGraphECC.edgeSet()){
+            Logger.trace("From: "+networkGraphECC.getEdgeSource(e)+" To: "+networkGraphECC.getEdgeTarget(e)+" With  weight: "+networkGraphECC.getEdgeWeight(e));
+        }
+
+    }
+
+    public void lifeCycle()  {
+
+        WMBusMaster m = this;
+        MasterGraphNode masterNode = new MasterGraphNode(0);
+        // Generate fixed list node.
+        ArrayList<Integer> dest = getDestinations(this.simulation.getwMbusNetwork().getNodes().size()); // without master.
+
+        Integer fixedNodeIndex = 0;
+        long stabilityConvergenceTimes = 0;
+
+        /*
+         * come descrivi una pecora brutta ?
+		 * bela fuori ...e  bella dentro ...
+         */
+        Logger.trace("WMBusSimulation starts");
+        PathChooser pathChooser = new PathChooser(this.simulation);
+        while (true) {
+            System.out.println(this.simulation.getwMbusNetwork().getDistanceGraph().edgeSet());
+            //fixedNode = randomGen.nextInt(graph.vertexSet().size() - 1) +1;
+            if (fixedNodeIndex.equals(dest.size())) {
+                fixedNodeIndex = 0;
+                fixedNode = dest.get(fixedNodeIndex);
+                fixedNodeIndex++;
+            } else {
+                fixedNode = dest.get(fixedNodeIndex);
+                fixedNodeIndex++;
+            }
+
+            // this.printGraph(this.networkGraphECC);
+            //TwoApproxMetricTSP salesman = new TwoApproxMetricTSP<MasterGraphNode, DefaultWeightedEdge>();
+
+            path = pathChooser.searchPath(this.networkGraphECC,fixedNode,this.simulation.getwMbusSimulationConfig().CONF_WAKEUP);
+
+            try {
+                path.remove(0);
+            } catch (Exception e) {
+                //System.out.println("No master node "+fixedNode);
+                Logger.error("Node master not found");
+                throw new IllegalArgumentException();
+                //continue;
+                // the fuck?
+            }
+
+            Logger.info("Send message #"+this.simulation.getResults().masterSentMessage+ "");
+            this.simulation.getResults().masterSumPath+=path.size();
+            sending = new Request(this.simulation,0, path);
+            double answer = 0;
+            // Convergence stuff
+            long prevFault = this.simulation.getResults().masterTrasmissionFaultWithNoUpdate + this.simulation.getResults().masterTrasmissionFaultWithUpdate;
+            double prevPercFault = this.simulation.getResults().masterSentMessage==0?0:prevFault/this.simulation.getResults().masterSentMessage;
+            // update master number of messages sent.
+            this.simulation.getResults().masterSentMessage+=1;
+
+
+            answer = this.transmit(sending); // Going down.
+
+            if (answer == WMBusCommunicationState.TIMEOUT){
+                this.simulation.getResults().masterTrasmissionFaultWithNoUpdate++;
+                this.triggerTimeout();
+            }
+            // Convergence stuff
+            long fault = this.simulation.getResults().masterTrasmissionFaultWithNoUpdate + this.simulation.getResults().masterTrasmissionFaultWithUpdate;
+            double percFault = fault/this.simulation.getResults().masterSentMessage;
+
+            double percentMargin =  prevPercFault* this.simulation.getwMbusSimulationConfig().CONF_SIMULATION_CONVERGENCE_PERCENTAGE;
+
+            if (prevPercFault-percFault > percentMargin){
+                stabilityConvergenceTimes = 0;
+            }else{
+                stabilityConvergenceTimes++;
+            }
+            /* Finish simulation.*/
+            if (stabilityConvergenceTimes == this.simulation.getwMbusSimulationConfig().CONF_SIMULATION_STABILITY_TIMES){
+                return;
+            }
+
+         }
+
+    }
+
+    /**
+     * Update internal graph structure.
+     * @param destination
+     */
+    @Override
+    public void updateECCStructures(int destination){
+        super.updateECCStructures(destination);
+        DefaultWeightedEdge edge = this.simulation.getwMbusNetwork().getEccGraph().getEdge(new MasterGraphNode(0),new MasterGraphNode(destination));
+        //System.out.println("Update link state from to "+destination+" with error maximum");
+        this.networkGraphECC.setEdgeWeight(edge, WMBusCommunicationState.TIMEOUT);
+    }
+
+    /**
+     * Receive a packet
+     * @param message
+     */
+    @Override
+    public void receive(WMbusMessage message)  {
+        super.receive(message);
+        double tras_result = 0; // fixed value.
+        // WMBusStats.hopCount += 1;
+
+        // Check message type.
+        if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST) {
+            // no need to do anything.
+        } else
+        if (message.getMessageType()== WMBusPacketType.PACKET_RESPONSE) {
+
+            Response res = (Response) message;
+            Logger.trace("Data: "+((Response) message).getData());
+            // No data means error.
+            if (res.getData()==0){
+                this.simulation.getResults().masterTrasmissionFaultWithUpdate++;
+            }else{
+                this.simulation.getResults().masterTrasmissionSuccess++;
+            }
+            for(ECCTable entry : res.getECCTables()){
+                for (Integer destination: entry.getEntries().keySet()){
+                    DefaultWeightedEdge edge = this.simulation.getwMbusNetwork().getEccGraph().getEdge(new MasterGraphNode(entry.getNode()),new MasterGraphNode(destination));
+                    Logger.trace("Update link state from "+entry.getNode()+" to "+destination+" with error "+entry.getEntries().get(destination));
+                    this.simulation.getResults().masterUpdateLink++;
+                    this.networkGraphECC.setEdgeWeight(edge,entry.getEntries().get(destination));
+                }
+            }
+        }
+    }
+    private ArrayList<Integer> getDestinations(int maxDest) {
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        // 1 without master.
+        for (int i = 1; i < maxDest;i++){
+            list.add(i);
+        }
+        if (WMBusMasterConfig.CONF_DESTINATION_FETCH == WMBusMasterConfig.DESTINATION_FETCH_RANDOM){
+            Collections.shuffle(list);
+        }
+        return list;
+    }
+}

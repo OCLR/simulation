@@ -1,11 +1,12 @@
 package org.wmbus.protocol.nodes;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.protocol.infrastructure.ECCTable;
 import org.wmbus.protocol.messages.WMBusCommunicationState;
 import org.wmbus.protocol.messages.WMBusPacketType;
 import org.wmbus.protocol.messages.WMbusMessage;
-import org.wmbus.protocol.simulation.WMBusSimulation;
+import org.wmbus.simulation.WMBusSimulation;
 import yang.simulation.network.MasterGraphNode;
 
 import java.util.ArrayDeque;
@@ -71,7 +72,7 @@ public abstract class WMbusDevice {
         }
 
 
-        int attemptNumber = this.simulation.getwMbusConfig().CONF_NUMBER_OF_RETRASMISSION+1;
+        int attemptNumber = WMBusDeviceConfig.CONF_NUMBER_OF_RETRASMISSION+1;
         // try attempt number of attempt.
         res = -1;
         //Logger.info("TX BROADCAST "+message.toString());
@@ -118,9 +119,27 @@ public abstract class WMbusDevice {
 
     public double receiveAck(WMbusMessage message){
         // TODO get the link.
-        double ecc = message.computeECC(this.simulation.getwMbusNetwork().getBer(message.getSource(),message.getDestination()));
+        double distance = this.simulation.getwMbusNetwork().getDistance(message.getSource(),message.getDestination());
+        double ber = this.simulation.getwMbusNetwork().getBer(message.getSource(),message.getDestination());
+        double ecc = message.computeECC(ber);
+        double successProb = message.computeECCSuccess(ber);
+        double failProb = message.computeECCFail(ber);
+        double recProb = message.computeECCRecoverable(ber);
 
-        if (ecc==2){
+        if (this.nodeID == message.getDestination()) {
+            // Add probability.
+            if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST) {
+                this.simulation.getResults().globalRequestProbSuccess += successProb;
+                this.simulation.getResults().globalRequestProbFail += failProb;
+                this.simulation.getResults().globalRequestProbRecoverable += recProb;
+            }else{
+                this.simulation.getResults().globalResponseProbSuccess += successProb;
+                this.simulation.getResults().globalResponseProbFail += failProb;
+                this.simulation.getResults().globalResponseProbRecoverable += recProb;
+            }
+        }
+
+        if (ecc>=2){
             //((Logger.info("RX BROADCAST TIMEOUT "+message.toString());
             this.receivePacketBroadcastTimeout++;
             return WMBusCommunicationState.TIMEOUT;
@@ -131,6 +150,7 @@ public abstract class WMbusDevice {
                 return (WMBusCommunicationState.NOT_FOR_ME);
             }
         }
+
         // Update internal link.
         //  message.getSource() ->  this.nodeID
         this.ECCUpdateLink(message.getSource(),ecc);

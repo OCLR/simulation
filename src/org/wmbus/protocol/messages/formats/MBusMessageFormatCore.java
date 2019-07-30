@@ -1,7 +1,7 @@
 package org.wmbus.protocol.messages.formats;
 
 
-import org.wmbus.protocol.simulation.WMBusSimulation;
+import org.wmbus.simulation.WMBusSimulation;
 
 public abstract class MBusMessageFormatCore {
 
@@ -66,10 +66,10 @@ public abstract class MBusMessageFormatCore {
         double noerror= Math.pow(1-ber,n); // (1-r)^n
         double oneerror= Math.pow(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
         double morethanoneerror = 1-(noerror+oneerror);
-        double randomValue = this.simulation.getwMbusConfig().CONF_RANDOM.nextDouble();
+        double randomValue = this.simulation.getwMbusSimulationConfig().CONF_RANDOM.nextDouble();
         if (randomValue <=noerror){
             return 0;
-        }else if(this.simulation.getwMbusConfig().CONF_HAMMING && randomValue <=noerror+oneerror){
+        }else if(this.simulation.getwMbusSimulationConfig().CONF_HAMMING && randomValue <=noerror+oneerror){
             return 1;
         }else {
             return Integer.MAX_VALUE;

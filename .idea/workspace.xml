@@ -2,37 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="49311b73-9712-4a1c-b1e2-fc85cdf3fb7d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/berGFSK.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMBusPacketType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCore.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMBusSimulation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/utilities/Hamming.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/lib.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/config/UniversalConstant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusConstant.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusDeviceConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusMasterConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusSlaveConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMBusNoise.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/simulation/WMbusSimulationConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusSingleCommunicationStat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/test/MainTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/test/MainTestTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ELightRoutingProt.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ELightRoutingProt.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/berGFSK.jar" beforeDir="false" afterPath="$PROJECT_DIR$/lib/berGFSK.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/yang.jar" beforeDir="false" afterPath="$PROJECT_DIR$/lib/yang.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/infrastructure/ECC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/ECC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/infrastructure/ECCTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/ECCTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/infrastructure/WMbusNetwork.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/CommunicationState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMBusCommunicationState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/MbusMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMbusMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/RequestAck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/RequestAck.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Response.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/formats/MBusMessageFormatA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/formats/MBusMessageFormatB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/formats/MBusMessageFormatCore.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/messages/formats/MBusMessageFormatCustom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCustom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/nodes/MasterGraphNode.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/nodes/MbusDevice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMbusDevice.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/nodes/Slave.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/Slave.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/protocol/CommunicationFault.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/protocol/NetworkStats.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/protocol/ResultTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/ResultTable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/protocol/Stats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMBusStats.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/simul/simul/CompleteTestProtocol.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/RequestAck.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/RequestAck.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Response.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Response.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMbusMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMbusMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatA.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatB.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCustom.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCustom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMbusDevice.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMbusDevice.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/ResultTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/simulation/ResultTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMBusSimulation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/simulation/WMBusSimulation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMBusStats.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusStats.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMbusConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/org/wmbus/protocol/utilities/Hamming.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/org/wmbus/protocol/utilities/Hamming.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -50,11 +47,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMbusConfig.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMaster.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="826">
-              <caret line="135" column="5" lean-forward="true" selection-start-line="108" selection-start-column="3" selection-end-line="135" selection-end-column="5" />
+            <state relative-caret-position="380">
+              <caret line="91" selection-start-line="91" selection-end-line="91" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -63,27 +60,12 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java">
+        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="96" column="77" selection-start-line="96" selection-start-column="77" selection-end-line="96" selection-end-column="77" />
+            <state relative-caret-position="182">
+              <caret line="26" column="18" selection-start-line="26" selection-start-column="18" selection-end-line="26" selection-end-column="18" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1114#1115#0" expanded="true" />
-                <element signature="e#1142#1143#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/utilities/DGraph.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="80" selection-start-line="15" selection-start-column="80" selection-end-line="15" selection-end-column="80" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#440#478#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -92,8 +74,48 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMbusDevice.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="120" selection-start-line="120" selection-end-line="120" />
+            <state relative-caret-position="182">
+              <caret line="84" column="78" selection-start-line="84" selection-start-column="78" selection-end-line="84" selection-end-column="78" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#7858#7859#0" expanded="true" />
+                <element signature="e#7887#7888#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/PathChooser.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="398">
+              <caret line="142" column="76" selection-start-line="142" selection-start-column="76" selection-end-line="142" selection-end-column="76" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#921#922#0" expanded="true" />
+                <element signature="e#962#963#0" expanded="true" />
+                <element signature="e#1820#1833#0" expanded="true" />
+                <element signature="e#1395#1408#0" expanded="true" />
+                <element signature="e#2106#2144#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="jrt:///usr/lib/jvm/java-1.11.0-openjdk-amd64!/java.base/java/util/ArrayList.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="178">
+              <caret line="130" selection-start-line="130" selection-end-line="130" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/utilities/DGraph.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="405">
+              <caret line="27" selection-start-line="27" selection-end-line="27" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -102,10 +124,32 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/org/wmbus/simulation/WMBusSimulation.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="83">
+              <caret line="19" selection-start-line="19" selection-end-line="19" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1094#1095#0" expanded="true" />
+                <element signature="e#1129#1130#0" expanded="true" />
+                <element signature="e#1167#1168#0" expanded="true" />
+                <element signature="e#1200#1201#0" expanded="true" />
+                <element signature="e#1263#1264#0" expanded="true" />
+                <element signature="e#1307#1308#0" expanded="true" />
+                <element signature="e#1347#1348#0" expanded="true" />
+                <element signature="e#1380#1381#0" expanded="true" />
+                <element signature="e#1407#1408#0" expanded="true" />
+                <element signature="e#1464#1465#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/org/wmbus/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="33" selection-start-line="16" selection-start-column="33" selection-end-line="16" selection-end-column="33" />
+            <state relative-caret-position="270">
+              <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -114,31 +158,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/generators/twod/NetworkGenerator2DCore.class">
+        <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/NetworkGeneratorHelper.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="55" selection-start-line="55" selection-end-line="55" />
+            <state relative-caret-position="405">
+              <caret line="32" selection-start-line="32" selection-end-line="32" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/nodes/SpaceNode.class">
+        <entry file="file://$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="199">
-              <caret line="63" selection-start-line="63" selection-end-line="63" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/Master.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="470">
-              <caret line="153" selection-start-line="153" selection-end-line="153" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="135">
+              <caret line="9" column="64" selection-start-line="9" selection-start-column="64" selection-end-line="9" selection-end-column="64" />
             </state>
           </provider>
         </entry>
@@ -149,31 +181,14 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
+        <option value="JUnit5 Test Class" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>receiveack</find>
-      <find>getBer</find>
-      <find>hamming\</find>
-      <find>CONF_HAMMING</find>
-      <find>this.network.getStats()</find>
-      <find>static</find>
-      <find>hamming</find>
-      <find>this.network.getLasting()</find>
-      <find>getSlavesNum</find>
-      <find>WMbusConfig.</find>
-      <find>CONF_PREHE</find>
-      <find>getSuccessProb</find>
-      <find>CommunicationFault</find>
-      <find>yang.</find>
-      <find>yam</find>
-      <find>WMBusCommunicationState</find>
-      <find>CONF_MAX_DISTANCE</find>
       <find>\</find>
-      <find>masterTrasmissionFaultWithUpdate</find>
       <find>eccTable</find>
       <find>new</find>
       <find>for (</find>
@@ -183,8 +198,26 @@
       <find>distance</find>
       <find>SimpleWeightedGraph</find>
       <find>Logger</find>
-      <find>this.distanceGraph</find>
       <find>getNoisePower</find>
+      <find>this.distanceGraph</find>
+      <find>CONF_</find>
+      <find>getDistanceGraph</find>
+      <find>distanceGraph</find>
+      <find>globalRequestTrasmissionCommunication</find>
+      <find>LOGGER.INFO</find>
+      <find>PERFORM</find>
+      <find>receiveack</find>
+      <find>updat</find>
+      <find>masterTrasmissionFaultWithUpdate</find>
+      <find>masterAvgNumberOfUpdatedLink</find>
+      <find>_updateBackOff</find>
+      <find>Random</find>
+      <find>deque</find>
+      <find>hops</find>
+      <find>new request</find>
+      <find>ArrayList</find>
+      <find>ArrayDeque</find>
+      <find>backOffPaths</find>
     </findStrings>
     <replaceStrings>
       <replace>noiseEdgesNodePercentage</replace>
@@ -207,41 +240,13 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/simul/protocol/SimulationConfiguration.java" />
-        <option value="$PROJECT_DIR$/src/main/java/simul/protocol/WMbusConfig.java" />
-        <option value="$PROJECT_DIR$/src/main/java/simul/simul/WMBusSimulation.java" />
-        <option value="$PROJECT_DIR$/src/main/java/simul/nodes/Master.java" />
-        <option value="$PROJECT_DIR$/src/main/java/wmbus/nodes/Master.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/infrastructure/WMbusNetwork.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/utilities/Hamming.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/WMBusPacketInfo.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/formats/MBusMessageFormatA.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/formats/MBusMessageFormatB.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/formats/MBusMessageFormatCore.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/formats/MBusMessageFormatCustom.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/MbusMessage.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/Request.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/Response.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/WMBusPacketType.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/protocol/WMbusConfig.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/RequestAck.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/nodes/Slave.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/nodes/Master.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/nodes/MbusDevice.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/CommunicationState.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/messages/WMBusCommunicationState.java" />
-        <option value="$PROJECT_DIR$/src/org/protocols/wmbus/simul/WMBusSimulation.java" />
         <option value="$PROJECT_DIR$/src/wmbus/Main.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/WMBusSimulation.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/ECC.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCore.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCustom.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/utilities/Hamming.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/MasterGraphNode.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMbusMessage.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/MbusDevice.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatA.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/RequestAck.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMBusPacketType.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMBusCommunicationState.java" />
@@ -251,13 +256,41 @@
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/Slave.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/SimulationsConf.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMBusSimulation.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMbusDevice.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/utilities/DGraph.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/Master.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/Main.java" />
-        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMBusConstant.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/config/UniversalConstant.java" />
         <option value="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMbusConfig.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMbusSimulationConfig.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusConstant.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatB.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatA.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusDeviceConfig.java" />
+        <option value="$PROJECT_DIR$/src/test/MainTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/test/MainTestTest.java" />
+        <option value="$PROJECT_DIR$/src/test/java/test/MainTest.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/MainTest.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/test/TestBer.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/WMbusSimulationConfig.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/WMBusAdvancedStats.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusSingleCommunication.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusSingleCommunicationStat.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusAdvancedStats.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCustom.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/WMBusSimulation.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMBusNoise.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMbusDevice.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/ResultTable.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusStats.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMasterWithBackOff.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusMasterConfig.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusSlave.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMaster.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/utilities/DGraph.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/PathChooser.java" />
+        <option value="$PROJECT_DIR$/src/org/wmbus/Main.java" />
       </list>
     </option>
   </component>
@@ -284,6 +317,17 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="ELightRoutingProt" type="58d84e3e:PackageViewProjectNode" />
+              <item name="ELightRoutingProt" type="616d4139:PackageViewModuleNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -314,31 +358,6 @@
               <item name="ELightRoutingProt" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="wmbus" type="462c0819:PsiDirectoryNode" />
-              <item name="protocol" type="462c0819:PsiDirectoryNode" />
-              <item name="infrastructure" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ELightRoutingProt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ELightRoutingProt" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="wmbus" type="462c0819:PsiDirectoryNode" />
-              <item name="protocol" type="462c0819:PsiDirectoryNode" />
-              <item name="messages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ELightRoutingProt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ELightRoutingProt" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="wmbus" type="462c0819:PsiDirectoryNode" />
-              <item name="protocol" type="462c0819:PsiDirectoryNode" />
-              <item name="nodes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="ELightRoutingProt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="ELightRoutingProt" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="wmbus" type="462c0819:PsiDirectoryNode" />
-              <item name="protocol" type="462c0819:PsiDirectoryNode" />
               <item name="simulation" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -346,8 +365,8 @@
               <item name="ELightRoutingProt" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="wmbus" type="462c0819:PsiDirectoryNode" />
-              <item name="protocol" type="462c0819:PsiDirectoryNode" />
-              <item name="utilities" type="462c0819:PsiDirectoryNode" />
+              <item name="simulation" type="462c0819:PsiDirectoryNode" />
+              <item name="stats" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="ELightRoutingProt" type="b2602c69:ProjectViewProjectNode" />
@@ -358,21 +377,12 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="PackagesPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="ELightRoutingProt" type="58d84e3e:PackageViewProjectNode" />
-              <item name="ELightRoutingProt" type="616d4139:PackageViewModuleNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5" value="" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/lib" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -380,12 +390,19 @@
     <property name="settings.editor.selected.configurable" value="Errors" />
   </component>
   <component name="RecentsManager">
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="test" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.wmbus.protocol.nodes" />
+      <recent name="simul.simul" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/lib" />
       <recent name="$PROJECT_DIR$/examples" />
     </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="simul.simul" />
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/org" />
@@ -407,7 +424,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.wmbus.Main" />
       <module name="ELightRoutingProt" />
@@ -417,6 +434,23 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="org.wmbus.protocol.test in ELightRoutingProt" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+      <module name="ELightRoutingProt" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.wmbus.protocol.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.wmbus.protocol.test" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -440,6 +474,11 @@
     </task>
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="org_wmbus_protocol_test_in_ELightRoutingProt - 2019.07.25 at 16h 28m 53s.xml">
+      <configuration name="org.wmbus.protocol.test in ELightRoutingProt" configurationId="JUnit" />
+    </history-entry>
+  </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
@@ -453,14 +492,14 @@
     <frame x="0" y="23" width="1920" height="1057" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23588924" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24813631" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
       <window_info id="Favorites" order="4" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32976446" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32762313" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.35867238" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39828694" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -547,35 +586,11 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/Master.java</url>
-          <line>153</line>
-          <properties />
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java</url>
-          <line>96</line>
-          <properties />
-          <option name="timeStamp" value="15" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java</url>
-          <line>98</line>
-          <properties />
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <condition expression="neighbor.distance == 0" language="JAVA" />
           <url>jar://$PROJECT_DIR$/lib/yang.jar!/yang/generators/twod/NetworkGenerator2DCore.class</url>
-          <line>56</line>
+          <line>60</line>
           <properties />
           <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java</url>
-          <line>93</line>
-          <properties />
-          <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <condition expression="n.getNeighbors().get(e).distance == 0" language="JAVA" />
@@ -585,10 +600,77 @@
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java</url>
+          <condition expression="Double.isNaN(distance)" language="JAVA" />
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMBusNoise.java</url>
+          <line>48</line>
+          <properties />
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMaster.java</url>
+          <line>76</line>
+          <properties />
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMaster.java</url>
+          <line>77</line>
+          <properties />
+          <option name="timeStamp" value="45" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/simulation/WMBusSimulation.java</url>
+          <line>19</line>
+          <properties />
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/Main.java</url>
           <line>52</line>
           <properties />
-          <option name="timeStamp" value="36" />
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/Main.java</url>
+          <line>36</line>
+          <properties />
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$PROJECT_DIR$/lib/yang.jar!/yang/NetworkGeneratorHelper.class</url>
+          <line>32</line>
+          <properties />
+          <option name="timeStamp" value="50" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMaster.java</url>
+          <line>114</line>
+          <properties />
+          <option name="timeStamp" value="52" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMaster.java</url>
+          <line>91</line>
+          <properties />
+          <option name="timeStamp" value="53" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/PathChooser.java</url>
+          <line>83</line>
+          <properties />
+          <option name="timeStamp" value="54" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/PathChooser.java</url>
+          <line>88</line>
+          <properties />
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/PathChooser.java</url>
+          <line>27</line>
+          <properties />
+          <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -596,16 +678,22 @@
       <configuration name="Application">
         <watch expression="this.distanceGraph.edgeSet()" language="JAVA" />
         <watch expression="distanceGraph.edgeSet()" language="JAVA" />
-        <watch expression="this.simulation.getwMbusConfig().CONF_NOISE_POWER" language="JAVA" />
-        <watch expression="receiverPower" language="JAVA" />
-        <watch expression="distance" language="JAVA" />
-        <watch expression="signalToNoiseRatio" language="JAVA" />
-        <watch expression="this.simulation.getwMbusConfig().CONF_TRASMITTER_POWER_LEVEL" language="JAVA" />
+        <watch expression="attempt.network.edgeSet()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
+      <expression>
+        <expression-string>Double.isNaN(distance)</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>distance == NaN</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>n.getNeighbors().get(e).distance == 0</expression-string>
         <language-id>JAVA</language-id>
@@ -644,6 +732,21 @@
     </expressions>
     <expressions id="watch">
       <expression>
+        <expression-string>attempt.network.edgeSet()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>distanceGraph.edgeSet()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>this.distanceGraph.edgeSet()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
         <expression-string>this.simulation.getwMbusConfig().CONF_TRASMITTER_POWER_LEVEL</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -669,16 +772,6 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>this.distanceGraph.edgeSet()</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
-        <expression-string>distanceGraph.edgeSet()</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
-      <expression>
         <expression-string>simulationWrapper.network.edgeSet()</expression-string>
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
@@ -688,188 +781,13 @@
         <language-id>JAVA</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
-      <expression>
-        <expression-string>this.distanceGraph.getEdgeWeight(ed)</expression-string>
-        <language-id>JAVA</language-id>
-        <evaluation-mode>EXPRESSION</evaluation-mode>
-      </expression>
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/solutions/20nodesHammingP0.txt  " />
-    <entry file="file://$PROJECT_DIR$/solutions/20nodesHammingP1.txt  " />
-    <entry file="file://$PROJECT_DIR$/solutions/20nodesHammingP2.txt  " />
-    <entry file="file://$PROJECT_DIR$/solutions/20nodesNoHammingFormatA.csv" />
-    <entry file="file://$PROJECT_DIR$/solutions/20nodesFormatCustom.csv" />
-    <entry file="file://$PROJECT_DIR$/examples/worstcase.adj" />
-    <entry file="file://$PROJECT_DIR$/solutions/6_1844.0_.txt" />
-    <entry file="file://$PROJECT_DIR$/examples/30_1940.0_.txt" />
-    <entry file="file://$PROJECT_DIR$/solutions/solution.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="569">
-          <caret line="562" column="31" selection-start-line="562" selection-start-column="31" selection-end-line="562" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/simul/simul/AutoTestProtocol.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/simul/infrastructure/MbusNetwork.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/simul/simul/ProtocolNetwork.java" />
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="37" column="17" selection-start-line="37" selection-start-column="17" selection-end-line="37" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/berGFSK.jar!/GFSKModulation.class" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/simul/protocol/NetworkStats.java" />
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/CommunicationFault.java" />
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCustom.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/utilities/Hamming.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/simulation/ResultTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/org/junit/runner/Request.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="17" column="11" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="19" column="10" selection-start-line="19" selection-start-column="10" selection-end-line="19" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatA.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="40" lean-forward="true" selection-start-line="10" selection-start-column="40" selection-end-line="10" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/RequestAck.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMBusPacketType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMBusCommunicationState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/utilities/MasterGraphNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="23" column="21" lean-forward="true" selection-start-line="23" selection-start-column="21" selection-end-line="23" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMBusStats.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/ECCTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$MAVEN_REPOSITORY$/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar!/org/apache/commons/math3/analysis/interpolation/SplineInterpolator.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="19" column="163" selection-start-line="19" selection-start-column="134" selection-end-line="19" selection-end-column="163" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/ECC.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/Response.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1125">
-          <caret line="85" column="13" selection-start-line="85" selection-start-column="13" selection-end-line="85" selection-end-column="13" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMbusMessage.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="166">
           <caret line="21" column="33" selection-start-line="21" selection-start-column="33" selection-end-line="21" selection-end-column="33" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="55" selection-start-line="7" selection-start-column="50" selection-end-line="7" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/Slave.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1035">
-          <caret line="71" column="56" selection-start-line="71" selection-start-column="56" selection-end-line="71" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -883,6 +801,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/utilities/Hamming.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="18" selection-start-line="4" selection-start-column="18" selection-end-line="4" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jrt:///usr/lib/jvm/java-1.11.0-openjdk-amd64!/java.base/java/lang/Double.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="62" selection-start-line="62" selection-end-line="62" />
+          <folding>
+            <element signature="e#2382#2383#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/berGFSK.jar!/org/gfsk/GFSKModulation.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="161">
+          <caret line="17" selection-start-line="17" selection-end-line="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="jar://$PROJECT_DIR$/lib/berGFSK.jar!/net/sourceforge/jdistlib/math/Bessel.class">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="178">
@@ -890,121 +832,352 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/generators/twod/RadiusClusterNetworkGenerator.class">
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatA.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="161">
-          <caret line="27" column="11" selection-start-line="27" selection-start-column="11" selection-end-line="27" selection-end-column="11" />
+        <state relative-caret-position="150">
+          <caret line="11" column="61" selection-start-line="11" selection-start-column="61" selection-end-line="11" selection-end-column="61" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/nodes/SpaceNode.class">
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatB.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
+        <state relative-caret-position="150">
+          <caret line="11" column="61" selection-start-line="11" selection-start-column="61" selection-end-line="11" selection-end-column="61" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/test/MainTestTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="11" column="8" selection-start-line="11" selection-start-column="8" selection-end-line="11" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/java/test/MainTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="15" selection-start-line="4" selection-start-column="15" selection-end-line="4" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/MainTest.java" />
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/MainTest.java" />
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/TestProtocol.java" />
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/generators/twod/RadiusClusterNetworkGenerator.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="676">
+          <caret line="67" column="19" selection-start-line="67" selection-start-column="19" selection-end-line="67" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/test/TestBer.java" />
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/simulation/network/SimulationNetworkWithDistance.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="36" column="52" lean-forward="true" selection-start-line="36" selection-start-column="52" selection-end-line="36" selection-end-column="52" />
         </state>
       </provider>
     </entry>
     <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/generators/twod/NetworkGenerator2DCore.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="326">
-          <caret line="55" selection-start-line="55" selection-end-line="55" />
+        <state relative-caret-position="630">
+          <caret line="55" column="53" selection-start-line="55" selection-start-column="53" selection-end-line="55" selection-end-column="53" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/simulation/network/SimulationNetworkWithDistance.class">
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/nodes/SpaceNode.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="37" column="87" lean-forward="true" selection-start-line="37" selection-start-column="64" selection-end-line="37" selection-end-column="87" />
+        <state relative-caret-position="355">
+          <caret line="69" column="70" selection-start-line="69" selection-start-column="70" selection-end-line="69" selection-end-column="70" />
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/NetworkGeneratorHelper.class">
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/simulation/WMbusSimulationConfig.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="32" column="53" lean-forward="true" selection-start-line="32" selection-start-column="53" selection-end-line="32" selection-end-column="53" />
+        <state relative-caret-position="105">
+          <caret line="7" column="67" selection-start-line="7" selection-start-column="67" selection-end-line="7" selection-end-column="67" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/utilities/DGraph.java">
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusAdvancedStats.java" />
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/WMBusCommunicationState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="80" selection-start-line="15" selection-start-column="80" selection-end-line="15" selection-end-column="80" />
+        <state relative-caret-position="90">
+          <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#440#478#0" expanded="true" />
+            <element signature="e#233#234#0" expanded="true" />
+            <element signature="e#274#275#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/Main.java">
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusSingleCommunicationStat.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="33" selection-start-line="16" selection-start-column="33" selection-end-line="16" selection-end-column="33" />
+        <state>
+          <caret column="35" selection-start-column="35" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="22" column="38" lean-forward="true" selection-start-line="22" selection-start-column="38" selection-end-line="22" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMBusNoise.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/Master.java">
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/formats/MBusMessageFormatCustom.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="470">
-          <caret line="153" selection-start-line="153" selection-end-line="153" />
+        <state relative-caret-position="714">
+          <caret line="80" column="23" lean-forward="true" selection-start-line="80" selection-start-column="23" selection-end-line="80" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/berGFSK.jar!/org/gfsk/GFSKModulation.class">
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/org/jgrapht/alg/interfaces/ShortestPathAlgorithm.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="24" column="24" selection-start-line="24" selection-start-column="24" selection-end-line="24" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jrt:///usr/lib/jvm/java-1.11.0-openjdk-amd64!/java.base/java/util/TreeMap.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="70" column="13" selection-start-line="70" selection-start-column="13" selection-end-line="70" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/org/jgrapht/graph/IntrusiveEdge.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/org/jgrapht/graph/IntrusiveWeightedEdge.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="7" column="42" lean-forward="true" selection-start-line="7" selection-start-column="42" selection-end-line="7" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/org/jgrapht/graph/DefaultWeightedEdge.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="7" column="47" selection-start-line="7" selection-start-column="41" selection-end-line="7" selection-end-column="62" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/org/jgrapht/alg/shortestpath/DijkstraShortestPath.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="615">
+          <caret line="48" column="43" selection-start-line="48" selection-start-column="35" selection-end-line="48" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/simulation/ResultTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="14" column="30" selection-start-line="14" selection-start-column="30" selection-end-line="14" selection-end-column="30" />
+          <folding>
+            <element signature="e#202#203#0" expanded="true" />
+            <element signature="e#248#249#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusMasterConfig.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="13" column="25" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
+          <caret line="10" column="51" selection-start-line="10" selection-start-column="32" selection-end-line="10" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusConstant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/config/UniversalConstant.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusDeviceConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="55" selection-start-line="8" selection-start-column="55" selection-end-line="8" selection-end-column="55" />
+          <folding>
+            <element signature="method#getHeaderSize#0;class#WMBusDeviceConfig#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/config/WMBusSlaveConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="29" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/WMbusNetwork.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="96" column="77" selection-start-line="96" selection-start-column="77" selection-end-line="96" selection-end-column="77" />
+        <state relative-caret-position="435">
+          <caret line="63" column="23" lean-forward="true" selection-start-line="63" selection-start-column="23" selection-end-line="63" selection-end-column="23" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1114#1115#0" expanded="true" />
-            <element signature="e#1142#1143#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMBusSimulation.java">
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMasterWithBackOff.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="27" column="23" selection-start-line="27" selection-start-column="23" selection-end-line="27" selection-end-column="23" />
+        <state relative-caret-position="15">
+          <caret line="119" column="13" lean-forward="true" selection-start-line="119" selection-start-column="13" selection-end-line="119" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusSlave.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="668">
+          <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#839#840#0" expanded="true" />
-            <element signature="e#874#875#0" expanded="true" />
-            <element signature="e#988#989#0" expanded="true" />
-            <element signature="e#1022#1023#0" expanded="true" />
-            <element signature="e#1049#1050#0" expanded="true" />
-            <element signature="e#1106#1107#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/simulation/stats/WMBusStats.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="443">
+          <caret line="97" column="23" lean-forward="true" selection-start-line="97" selection-start-column="23" selection-end-line="97" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/GlobalConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="64" selection-start-line="9" selection-start-column="64" selection-end-line="9" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/messages/Request.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="182">
+          <caret line="26" column="18" selection-start-line="26" selection-start-column="18" selection-end-line="26" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMbusDevice.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="120" selection-start-line="120" selection-end-line="120" />
+        <state relative-caret-position="182">
+          <caret line="84" column="78" selection-start-line="84" selection-start-column="78" selection-end-line="84" selection-end-column="78" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#7858#7859#0" expanded="true" />
+            <element signature="e#7887#7888#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/utilities/DGraph.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="405">
+          <caret line="27" selection-start-line="27" selection-end-line="27" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/simulation/WMbusConfig.java">
+    <entry file="jar://$PROJECT_DIR$/lib/yang.jar!/yang/NetworkGeneratorHelper.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="826">
-          <caret line="135" column="5" lean-forward="true" selection-start-line="108" selection-start-column="3" selection-end-line="135" selection-end-column="5" />
+        <state relative-caret-position="405">
+          <caret line="32" selection-start-line="32" selection-end-line="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/nodes/WMBusMaster.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="91" selection-start-line="91" selection-end-line="91" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jrt:///usr/lib/jvm/java-1.11.0-openjdk-amd64!/java.base/java/util/ArrayList.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="178">
+          <caret line="130" selection-start-line="130" selection-end-line="130" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/protocol/infrastructure/PathChooser.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="398">
+          <caret line="142" column="76" selection-start-line="142" selection-start-column="76" selection-end-line="142" selection-end-column="76" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#921#922#0" expanded="true" />
+            <element signature="e#962#963#0" expanded="true" />
+            <element signature="e#1820#1833#0" expanded="true" />
+            <element signature="e#1395#1408#0" expanded="true" />
+            <element signature="e#2106#2144#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/simulation/WMBusSimulation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="83">
+          <caret line="19" selection-start-line="19" selection-end-line="19" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1094#1095#0" expanded="true" />
+            <element signature="e#1129#1130#0" expanded="true" />
+            <element signature="e#1167#1168#0" expanded="true" />
+            <element signature="e#1200#1201#0" expanded="true" />
+            <element signature="e#1263#1264#0" expanded="true" />
+            <element signature="e#1307#1308#0" expanded="true" />
+            <element signature="e#1347#1348#0" expanded="true" />
+            <element signature="e#1380#1381#0" expanded="true" />
+            <element signature="e#1407#1408#0" expanded="true" />
+            <element signature="e#1464#1465#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/org/wmbus/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="18" column="8" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="8" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

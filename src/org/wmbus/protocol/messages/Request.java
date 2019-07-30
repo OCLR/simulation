@@ -1,22 +1,21 @@
 package org.wmbus.protocol.messages;
 
 
-import org.wmbus.protocol.simulation.WMBusSimulation;
+import org.wmbus.simulation.WMBusSimulation;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 
 public class Request extends WMbusMessage {
     private byte type = WMBusPacketType.PACKET_REQUEST;
 
-    public ArrayDeque<Integer> getHops() {
+    public ArrayList<Integer> getHops() {
         return hops;
     }
 
-    private ArrayDeque<Integer> hops; /* a list of nodes. 4 byte for each node.*/
+    private ArrayList<Integer> hops; /* a list of nodes. 4 byte for each node.*/
 
-    public Request(WMBusSimulation simulation, int source, ArrayDeque<Integer> hops){
+    public Request(WMBusSimulation simulation, int source, ArrayList<Integer> hops){
         super(simulation,source);
         this.hops = hops;
     }
@@ -27,7 +26,7 @@ public class Request extends WMbusMessage {
         if (this.hops.size()==0){ // 1 element or nothing.
             throw new IllegalArgumentException();
         }else{
-            return (int) this.hops.getFirst();
+            return (int) this.hops.get(0);
         }
     }
     @Override
@@ -56,7 +55,7 @@ public class Request extends WMbusMessage {
         if (this.hops.size()==0){
             throw new IllegalArgumentException();
         }else{
-            return this.hops.getLast();
+            return this.hops.get(this.hops.size()-1);
         }
     }
 

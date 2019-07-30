@@ -2,7 +2,7 @@ package org.wmbus.protocol.messages;
 
 
 import org.wmbus.protocol.infrastructure.ECCTable;
-import org.wmbus.protocol.simulation.WMBusSimulation;
+import org.wmbus.simulation.WMBusSimulation;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

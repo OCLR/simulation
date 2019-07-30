@@ -1,7 +1,9 @@
 package org.wmbus.protocol.messages.formats;
 
 
-import org.wmbus.protocol.simulation.WMBusSimulation;
+import org.wmbus.protocol.config.WMBusDeviceConfig;
+import org.wmbus.protocol.utilities.Hamming;
+import org.wmbus.simulation.WMBusSimulation;
 
 /**
  * Payload format
@@ -13,7 +15,7 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
 
     public MBusMessageFormatCustom(WMBusSimulation simulation) {
         super(simulation);
-        this.preamble_size = simulation.getwMbusConfig().getHeaderSize();
+        this.preamble_size = WMBusDeviceConfig.CONF_PREHEADER;
     }
     /*
     * Everything expressed in bit.
@@ -61,7 +63,7 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
             return Integer.MAX_VALUE;
         }
 
-        if (this.simulation.getwMbusConfig().CONF_HAMMING){
+        if (this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
             size = this.getBlockSize(1);
         }else{
             // No hamming function
@@ -82,11 +84,78 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         return hammingResultOneCount/this.getMessageBlockCount();
     }
 
+    public double computeECCSuccess(double ber){
+        // int packetSize = this.getSize();
+        // packetSize-=2;
+        double success = 0;
+        double hammingResultOneCount = 0;
+        int size;
+        success = Hamming.getSuccessProb(this.simulation,this.getBlockSize(0), ber);
+
+        if (this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
+            size = this.getBlockSize(1);
+        }else{
+            // No hamming function
+            size = this.getMessageSize()-this.getMessageHeader();
+        }
+
+
+
+        for (int i = 1; i < this.getMessageBlockCount();i++){
+            success *= Hamming.getSuccessProb(this.simulation,size,ber);
+        }
+        return success;
+    }
+
+    public double computeECCFail(double ber){
+        // int packetSize = this.getSize();
+        // packetSize-=2;
+        double fail = 0;
+        double hammingResultOneCount = 0;
+        int size;
+        fail = Hamming.getFaultProb(this.simulation,this.getBlockSize(0), ber);
+
+        if (this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
+            size = this.getBlockSize(1);
+        }else{
+            // No hamming function
+            size = this.getMessageSize()-this.getMessageHeader();
+        }
+
+        for (int i = 1; i < this.getMessageBlockCount();i++){
+            fail += Hamming.getFaultProb(this.simulation,size,ber);
+        }
+        return fail;
+    }
+
+    public double computeECCRecoverable(double ber){
+        // int packetSize = this.getSize();
+        // packetSize-=2;
+        double rec = 0;
+        double hammingResultOneCount = 0;
+        int size;
+        // success = Hamming.getSuccessProb(this.simulation,this.getBlockSize(0), ber);
+
+        if (this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
+            size = this.getBlockSize(1);
+        }else{
+            // No hamming function
+            size = this.getMessageSize()-this.getMessageHeader();
+        }
+
+
+
+        for (int i = 1; i < this.getMessageBlockCount();i++){
+            rec += Hamming.getRecoverableProb(this.simulation,size,ber);
+        }
+
+        return rec;
+    }
     public int computeFullFrameSize(int n){
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
-        if (!this.simulation.getwMbusConfig().CONF_HAMMING){
+        if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
             return (n); // Simply data
         }
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
@@ -107,7 +176,7 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
-        if (!this.simulation.getwMbusConfig().CONF_HAMMING){
+        if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
             return (n); // Simply data.
         }
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
@@ -127,7 +196,7 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
     public int computeFullFrameSizePayloadWithParityBit(int n){
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
-        if (!this.simulation.getwMbusConfig().CONF_HAMMING){
+        if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
             return n;// return (n-headerBlockSize)+4; // 4 byte of CRC.
         }
         int dataBlockSize = this.getBlockSize(1);
@@ -150,7 +219,7 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
-        if (!this.simulation.getwMbusConfig().CONF_HAMMING){
+        if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
             return 2;//return (n-headerBlockSize)+4; // 4 byte of CRC.
         }
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);

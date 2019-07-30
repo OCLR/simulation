@@ -1,14 +1,15 @@
 package org.wmbus.protocol.messages.formats;
 
 
-import org.wmbus.protocol.simulation.WMBusSimulation;
+import org.wmbus.protocol.config.WMBusDeviceConfig;
+import org.wmbus.simulation.WMBusSimulation;
 
 public abstract class MBusMessageFormatA extends MBusMessageFormatCore {
     private int preamble_size;
 
     public MBusMessageFormatA(WMBusSimulation simulation) {
         super(simulation);
-        this.preamble_size = simulation.getwMbusConfig().getHeaderSize();
+        this.preamble_size = WMBusDeviceConfig.CONF_PREHEADER;
     }
 
     @Override

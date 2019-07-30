@@ -1,14 +1,12 @@
 package org.wmbus.protocol.infrastructure;
 
-import org.gfsk.GFSKModulation;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
-import org.pmw.tinylog.Logger;
-import org.wmbus.protocol.nodes.Master;
-import org.wmbus.protocol.nodes.Slave;
+import org.wmbus.protocol.nodes.WMBusMaster;
+import org.wmbus.protocol.nodes.WMBusSlave;
 import org.wmbus.protocol.nodes.WMbusDevice;
-import org.wmbus.protocol.simulation.WMBusSimulation;
 import org.wmbus.protocol.utilities.DGraph;
+import org.wmbus.simulation.WMBusSimulation;
 import yang.simulation.network.MasterGraphNode;
 
 import java.util.HashMap;
@@ -33,8 +31,8 @@ public class WMbusNetwork {
         return nodes;
     }
 
-    public Master getMaster() {
-        return (Master) this.getNode(0);
+    public WMBusMaster getMaster() {
+        return (WMBusMaster) this.getNode(0);
     }
 
     protected void setNode(WMbusDevice node, int pos) {
@@ -53,8 +51,8 @@ public class WMbusNetwork {
         this.eccGraph =  DGraph.clone(this.distanceGraph);
         this.eccGraph = this.resetNetwork(this.eccGraph);
         this.generateNetwork(this.distanceGraph);
-        Master master = new Master(this.simulation,this.eccGraph);
-        setNode(master, 0);
+        WMBusMaster wmbusMaster = new WMBusMaster(this.simulation,this.eccGraph);
+        setNode(wmbusMaster, 0);
         //System.out.println("Network created");
     }
 
@@ -62,7 +60,7 @@ public class WMbusNetwork {
         int node = 1;
         for (MasterGraphNode n: distanceGraph.vertexSet()) {
             if (n.getStaticAddress() != 0){
-                this.setNode(new Slave(this.simulation,node),node);
+                this.setNode(new WMBusSlave(this.simulation,node),node);
                 node++;
             }
 
@@ -83,6 +81,11 @@ public class WMbusNetwork {
         return this.eccGraph;
     }
 
+    public double getDistance(int source,int destination){
+        DefaultWeightedEdge ed = this.distanceGraph.getEdge(new MasterGraphNode(source),new MasterGraphNode(destination));
+        Double distance = this.distanceGraph.getEdgeWeight(ed);
+        return distance;
+    }
     public double getBer(int source, int destination) {
         // get distance from graph.
         // compute ber from distance
@@ -93,11 +96,11 @@ public class WMbusNetwork {
         if (distance == 0){
             throw new IllegalArgumentException("Sorry it's not a good day... Distance can't be zero.");
         }
-        double receiverPower = this.simulation.getwMbusConfig().CONF_TRASMITTER_POWER_LEVEL/(distance*distance);
-        double signalToNoiseRatio = (receiverPower/ this.simulation.getwMbusConfig().CONF_NOISE_POWER);
 
-        double ber = GFSKModulation.computeBer(signalToNoiseRatio, this.simulation.getwMbusConfig().CONF_GFSK_INDEX);
-        Logger.info(ber+" "+signalToNoiseRatio);
-        return ber;
+        return this.simulation.getWMBusNoise().getBerFromDistance(distance);
+    }
+
+    public SimpleWeightedGraph<MasterGraphNode, DefaultWeightedEdge> getDistanceGraph() {
+        return this.distanceGraph;
     }
 }

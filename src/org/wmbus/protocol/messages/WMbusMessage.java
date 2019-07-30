@@ -1,7 +1,7 @@
 package org.wmbus.protocol.messages;
 
 import org.wmbus.protocol.messages.formats.MBusMessageFormatCustom;
-import org.wmbus.protocol.simulation.WMBusSimulation;
+import org.wmbus.simulation.WMBusSimulation;
 
 
 public abstract class WMbusMessage extends MBusMessageFormatCustom {
