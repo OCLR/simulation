@@ -66,6 +66,9 @@ public class WMBusMaster extends WMbusDevice {
 
         Integer fixedNodeIndex = 0;
         long stabilityConvergenceTimes = 0;
+        double average = 0;
+        double sum = 0;
+        double index = 0;
 
         /*
          * come descrivi una pecora brutta ?
@@ -106,8 +109,8 @@ public class WMBusMaster extends WMbusDevice {
             sending = new Request(this.simulation,0, path);
             double answer = 0;
             // Convergence stuff
-            long prevFault = this.simulation.getResults().masterTrasmissionFaultWithNoUpdate + this.simulation.getResults().masterTrasmissionFaultWithUpdate;
-            double prevPercFault = this.simulation.getResults().masterSentMessage==0?0:prevFault/this.simulation.getResults().masterSentMessage;
+            // long prevFault = this.simulation.getResults().masterTrasmissionFaultWithNoUpdate + this.simulation.getResults().masterTrasmissionFaultWithUpdate;
+            //double prevPercFault = this.simulation.getResults().masterSentMessage==0?0:prevFault/this.simulation.getResults().masterSentMessage;
             // update master number of messages sent.
             this.simulation.getResults().masterSentMessage+=1;
 
@@ -119,16 +122,21 @@ public class WMBusMaster extends WMbusDevice {
                 this.triggerTimeout();
             }
             // Convergence stuff
-            long fault = this.simulation.getResults().masterTrasmissionFaultWithNoUpdate + this.simulation.getResults().masterTrasmissionFaultWithUpdate;
-            double percFault = fault/this.simulation.getResults().masterSentMessage;
+            double fault = (
+                    (this.simulation.getResults().masterTrasmissionFaultWithNoUpdate + this.simulation.getResults().masterTrasmissionFaultWithUpdate)/this.simulation.getResults().masterSentMessage);
+            // double percFault = fault/this.simulation.getResults().masterSentMessage;
+            index++;
+            sum+=fault;
+            average = sum/index;
+            double percentMargin =  (average* this.simulation.getwMbusSimulationConfig().CONF_SIMULATION_CONVERGENCE_PERCENTAGE)/100;
 
-            double percentMargin =  prevPercFault* this.simulation.getwMbusSimulationConfig().CONF_SIMULATION_CONVERGENCE_PERCENTAGE;
-
-            if (prevPercFault-percFault > percentMargin){
+            if (average - fault > percentMargin){
                 stabilityConvergenceTimes = 0;
             }else{
                 stabilityConvergenceTimes++;
             }
+
+            // System.out.println("Master convergence "+stabilityConvergenceTimes);
             /* Finish simulation.*/
             if (stabilityConvergenceTimes == this.simulation.getwMbusSimulationConfig().CONF_SIMULATION_STABILITY_TIMES){
                 return;

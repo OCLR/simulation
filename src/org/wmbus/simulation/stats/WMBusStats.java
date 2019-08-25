@@ -16,19 +16,20 @@ public class WMBusStats {
     /*
      * WMBusMaster device.
      */
-    public long masterSentMessage = 0;
-    public long masterSumPath = 0;
-    public long masterUpdateLink = 0;
-    public long masterTrasmissionSuccess = 0;
-    public long masterTrasmissionFaultWithNoUpdate = 0;
-    public long masterTrasmissionFaultWithUpdate = 0;
+    public double masterSentMessage = 0;
+    public int masterSumPath = 0;
+    public double masterUpdateLink = 0;
+    public double masterTrasmissionSuccess = 0;
+    public double masterTrasmissionFaultWithNoUpdate = 0;
+    public double masterTrasmissionFaultWithUpdate = 0;
     /*
     * Generic device including master.
     * */
-    public long deviceRetrasmissionCommunication = 0;
-    public long deviceTrasmissionCommunication = 0;
-    public long deviceTrasmissionTimeoutCommunication = 0;
-    public long deviceSuccessTrasmissionCommunication = 0;
+    public double deviceTotalRetrasmission = 0;
+    public double deviceTotalRetrasmissionCommunication = 0;
+    public double deviceTrasmissionCommunication = 0;
+    public double deviceTrasmissionTimeoutCommunication = 0;
+    public double deviceSuccessTrasmissionCommunication = 0;
 
     /*
         Packet
@@ -46,12 +47,13 @@ public class WMBusStats {
     public long globalTrasmissionRequestPayloadNoParityBitSum = 0;
     public long globalTrasmissionRequestSum = 0;
     public long globalRequestTrasmissionCommunication = 0;
-    public double globalRequestProbSuccess = 0;
-    public double globalRequestProbFail = 0;
-    public double globalRequestProbRecoverable = 0;
-    public double globalResponseProbSuccess = 0;
-    public double globalResponseProbFail = 0;
-    public double globalResponseProbRecoverable = 0;
+
+    public long globalRequestSuccessCommunication = 0;
+    public long globalRequestFailCommunication= 0;
+
+    public long  globalResponseSuccessCommunication = 0;
+    public long globalResponseFailCommunication = 0;
+
 
 
     public ResultTable printResults(){
@@ -62,40 +64,55 @@ public class WMBusStats {
             return r;
         }
         /* WMBusMaster node */
-        r.addRow("Master #messages:",this.masterSentMessage);
+       /* r.addRow("Master #messages:",this.masterSentMessage);
         r.addRow("Master fault with no update #messages:",this.masterTrasmissionFaultWithNoUpdate);
         r.addRow("Master fault with updates #messages:",this.masterTrasmissionFaultWithUpdate);
         r.addRow("Master average path length:",this.masterSumPath/this.masterSentMessage);
         r.addRow("Master update Link Average times:",this.masterUpdateLink/this.masterSentMessage);
         r.addRow("Master update Link times:",this.masterUpdateLink);
 
-        /* Device to  Device packet*/
+        /* Device to  Device packet
         r.addRow("Device-to-Device #trasmission:",this.deviceTrasmissionCommunication);
         r.addRow("Device-to-Device Request  #trasmission:",this.globalRequestTrasmissionCommunication);
         r.addRow("Device-to-Device Response #trasmission:",this.globalResponseTrasmissionCommunication);
-        r.addRow("Device-to-Device Packet retrasmission:",this.deviceRetrasmissionCommunication);
+        r.addRow("Device-to-Device #retrasmission:",this.deviceTotalRetrasmission);
+        r.addRow("Device-to-Device Single communication #retrasmission :",this.deviceTotalRetrasmissionCommunication);
+
         r.addRow("Device-to-Device Packet fault:",this.deviceTrasmissionTimeoutCommunication);
         r.addRow("Device-to-Device Packet success:",this.deviceSuccessTrasmissionCommunication);
-        /* Request packet */
-        r.addRow("Request Packet size",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestSum/this.globalRequestTrasmissionCommunication);
-        r.addRow("Request Header size",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestHeaderSum/this.globalRequestTrasmissionCommunication);
-        r.addRow("Request Payload size (no-ecc):",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestPayloadNoParityBitSum/this.globalRequestTrasmissionCommunication);
-        r.addRow("Request Payload size (ecc):",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestPayloadParityBitSum/this.globalRequestTrasmissionCommunication);
-        r.addRow("Request Packet Block count:",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestBlockNumber/this.globalRequestTrasmissionCommunication);
-        /* Response packet */
-        r.addRow("Response Packet size",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseSum/this.globalResponseTrasmissionCommunication);
-        r.addRow("Response Header size",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseHeaderSum/this.globalResponseTrasmissionCommunication);
-        r.addRow("Response Payload size (no-ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadNoParityBitSum/this.globalResponseTrasmissionCommunication);
-        r.addRow("Response Payload size (ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadParityBitSum/this.globalResponseTrasmissionCommunication);
-        r.addRow("Response Packet Block count:",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseBlockNumber/this.globalResponseTrasmissionCommunication);
+        */
 
-        r.addRow("Request success %",this.globalRequestTrasmissionCommunication==0?0:(this.globalRequestProbSuccess /this.globalRequestTrasmissionCommunication)*100);
-        r.addRow("Request recoverable %",this.globalRequestTrasmissionCommunication==0?0:(this.globalRequestProbRecoverable /this.globalRequestTrasmissionCommunication)*100);
-        r.addRow("Request fail %",this.globalRequestTrasmissionCommunication==0?0:(this.globalRequestProbFail /this.globalRequestTrasmissionCommunication)*100);
+        // Relative Measures.
+        r.addRow("RM: Master Fault %:" ,((this.masterTrasmissionFaultWithNoUpdate+this.masterTrasmissionFaultWithUpdate)/this.masterSentMessage)*100);
+        r.addRow("RM: Master average path length:",this.masterSumPath/this.masterSentMessage);
+        if (this.globalRequestTrasmissionCommunication==0){
+            r.addRow("RM: Device-Device Response Success Probability :",0);
+            r.addRow("RM: Device-Device Response Failed Probability :",0);
+        }else{
+            r.addRow("RM: Device-Device Request Success Probability :",((this.globalRequestSuccessCommunication+0.f)/this.globalRequestTrasmissionCommunication)*100);
+            r.addRow("RM: Device-Device Request Failed Probability :",((this.globalRequestFailCommunication+0.f)/this.globalRequestTrasmissionCommunication)*100);
+        }
 
-        r.addRow("Response success %:",this.globalResponseTrasmissionCommunication==0?0:(this.globalResponseProbSuccess /this.globalRequestTrasmissionCommunication)*100);
-        r.addRow("Response recoverable %:",this.globalResponseTrasmissionCommunication==0?0:(this.globalResponseProbRecoverable /this.globalRequestTrasmissionCommunication)*100);
-        r.addRow("Response fail %:",this.globalResponseTrasmissionCommunication==0?0:(this.globalResponseProbFail /this.globalRequestTrasmissionCommunication)*100);
+        if (this.globalResponseTrasmissionCommunication==0){
+            r.addRow("RM: Device-Device Response Success Probability :",0);
+            r.addRow("RM: Device-Device Response Failed Probability :",0);
+        }else{
+            r.addRow("RM: Device-Device Response Success Probability :",((this.globalResponseSuccessCommunication+0.f)/this.globalResponseTrasmissionCommunication)*100);
+            r.addRow("RM: Device-Device Response Failed Probability :",((this.globalResponseFailCommunication+0.f)/this.globalResponseTrasmissionCommunication)*100);
+        }
+
+        // Request packet
+        r.addRow("RM: Request Packet size",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("RM: Request Header size",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestHeaderSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("RM: Request Payload size (no-ecc):",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestPayloadNoParityBitSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("RM: Request Payload size (ecc):",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestPayloadParityBitSum/this.globalRequestTrasmissionCommunication);
+        r.addRow("RM: Request Packet Block count:",this.globalRequestTrasmissionCommunication==0?0:this.globalTrasmissionRequestBlockNumber/this.globalRequestTrasmissionCommunication);
+        // Response packet
+        r.addRow("RM: Response Packet size",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("RM: Response Header size",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseHeaderSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("RM: Response Payload size (no-ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadNoParityBitSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("RM: Response Payload size (ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadParityBitSum/this.globalResponseTrasmissionCommunication);
+        r.addRow("RM: Response Packet Block count:",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseBlockNumber/this.globalResponseTrasmissionCommunication);
 
         return r;
         /* think carefully as*/

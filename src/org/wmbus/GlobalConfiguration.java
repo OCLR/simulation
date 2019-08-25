@@ -7,5 +7,5 @@ public class GlobalConfiguration {
     public static final int MASTER_Y = 5000;
     public static final int MASTER_X = 5000;
     public static final int CONVERGENCE_CONFIDENCE_PERCENTAGE = 5;
-    public static final int CONVERGENCE_CONFIDENCE_TIMES      = 5;
+    public static final int CONVERGENCE_CONFIDENCE_TIMES      = 100;
 }

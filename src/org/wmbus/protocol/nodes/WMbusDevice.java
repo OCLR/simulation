@@ -73,6 +73,7 @@ public abstract class WMbusDevice {
         int attemptNumber = WMBusDeviceConfig.CONF_NUMBER_OF_RETRASMISSION+1;
         // try attempt number of attempt.
         res = -1;
+        boolean wasRetrasmitted = false;
         //Logger.info("TX BROADCAST "+message.toString());
         //Logger.info("Sending packet from "+message.getSource()+" to "+message.getDestination()+":: ");
         while (attemptNumber > 0 &&   !WMBusCommunicationState.isOK(res)){
@@ -96,9 +97,14 @@ public abstract class WMbusDevice {
             }
             attemptNumber--;
             if (!WMBusCommunicationState.isOK(res)){
-                this.simulation.getResults().deviceRetrasmissionCommunication++;
+                wasRetrasmitted = true;
+                this.simulation.getResults().deviceTotalRetrasmission++;
                 //System.out.print(" RETR, ");
             }
+        }
+        if (wasRetrasmitted){
+            // One time only.
+            this.simulation.getResults().deviceTotalRetrasmissionCommunication++;
         }
         // means error.
         if (!WMBusCommunicationState.isOK(res)) {
@@ -106,8 +112,20 @@ public abstract class WMbusDevice {
             //System.out.println(" FAULT ");
             this.updateECCStructures(message.getDestination());
             this.simulation.getResults().deviceTrasmissionTimeoutCommunication++;
+            if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST){
+                this.simulation.getResults().globalRequestFailCommunication++;
+            }else{
+                this.simulation.getResults().globalResponseFailCommunication++;
+            }
             return WMBusCommunicationState.TIMEOUT;
+        }else{
+            if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST){
+                this.simulation.getResults().globalRequestSuccessCommunication++;
+            }else{
+                this.simulation.getResults().globalResponseSuccessCommunication++;
+            }
         }
+
         // LO(" OK  ");
         // After receive packet
         this.simulation.getResults().deviceSuccessTrasmissionCommunication++;
@@ -126,13 +144,13 @@ public abstract class WMbusDevice {
         double distance = this.simulation.getwMbusNetwork().getDistance(message.getSource(),this.nodeID);
         double ber = this.simulation.getwMbusNetwork().getBer(message.getSource(),this.nodeID);
         double ecc = message.computeECC(ber);
-        double successProb = message.computeECCSuccess(ber);
-        double failProb = message.computeECCFail(ber);
-        double recProb = message.computeECCRecoverable(ber);
+        //double successProb = message.computeECCSuccess(ber);
+        ///double failProb = message.computeECCFail(ber);
+        // double recProb = message.computeECCRecoverable(ber);
 
         if (this.nodeID == message.getDestination()) {
             // Add probability.
-            if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST) {
+            /*if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST) {
                 this.simulation.getResults().globalRequestProbSuccess += successProb;
                 this.simulation.getResults().globalRequestProbFail += failProb;
                 this.simulation.getResults().globalRequestProbRecoverable += recProb;
@@ -140,7 +158,7 @@ public abstract class WMbusDevice {
                 this.simulation.getResults().globalResponseProbSuccess += successProb;
                 this.simulation.getResults().globalResponseProbFail += failProb;
                 this.simulation.getResults().globalResponseProbRecoverable += recProb;
-            }
+            }*/
         }
 
         if (ecc>=2){

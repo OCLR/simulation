@@ -1,5 +1,7 @@
 package org.wmbus;
 
+import org.joda.time.LocalDateTime;
+import org.joda.time.Period;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.wmbus.simulation.ResultTable;
@@ -17,9 +19,19 @@ public class MainTestNetworks {
                 .formatPattern("{level}: {class}.{method}()\t{message}")
                 .level(Level.OFF)
                 .activate();
-        ResultTable res = MainTestNetworks.convergesResult(Integer.parseInt(args[0]),Boolean.parseBoolean(args[1]),Boolean.parseBoolean(args[2]));
-        System.out.println(res.printHeader(true));
-        System.out.println(res.printValues(true));
+        for (int nodes = 3; nodes < 15; nodes++) {
+            // Integer.parseInt(args[0]),Boolean.parseBoolean(args[1]),Boolean.parseBoolean(args[2])
+            System.out.println("Nodes network: "+nodes);
+            LocalDateTime now = LocalDateTime.now();
+            ResultTable res = MainTestNetworks.convergesResult(nodes, true,true );
+            System.out.println(res.prettyPrint());
+           // System.out.println(res.printValues(false));
+            LocalDateTime after = LocalDateTime.now();
+            Period period = new Period(now, after);
+            long minutes = period.getMinutes();
+            System.out.println("Time: "+minutes+" min and "+ period.getSeconds() % 60+ " seconds");
+        }
+
     }
 
     /**
@@ -32,7 +44,8 @@ public class MainTestNetworks {
         boolean convergence = false;
         int convergenceTime = 0;
         double convergencePerc = 0.0;
-        long result = 0, preresult = 0;
+        double result = 0, resultsum = 0;
+        double index = 0;
         WMBusStats simulationResults = null;
         do {
             SimulationNetworkWithDistance attempt = NetworkGeneratorHelper.generateInterconnectedRadiusNetwork(
@@ -44,30 +57,36 @@ public class MainTestNetworks {
                     GlobalConfiguration.MASTER_Y,
                     -1);
             // Add attempt.
-            int numberOfAttempt = attempts.size();
-            attempts.add(attempt);
-            int numberOfAttemptAfter = attempts.size();
+            //sint numberOfAttempt = attempts.size();
+
+            //int numberOfAttemptAfter = attempts.size();
 
             // Check number of attempt.
-            if (numberOfAttemptAfter != numberOfAttempt) {
+            if (attempts.indexOf(attempt) == -1) {
+                attempts.add(attempt);
                 // Perform simulation.
                 simulationResults = MainTestNetworks.performSimulation(attempt, withHamming, withWakeup);
-                preresult = result;
-                result = simulationResults.masterTrasmissionFaultWithUpdate + simulationResults.masterTrasmissionFaultWithNoUpdate;
-                convergencePerc = ((preresult)*GlobalConfiguration.CONVERGENCE_CONFIDENCE_PERCENTAGE)/100;
-                /*
-                    Convergence algorithm.
-                 */
-                boolean tempConvergence = ( (result-preresult) <= convergencePerc);
+                result = (simulationResults.masterTrasmissionFaultWithUpdate + simulationResults.masterTrasmissionFaultWithNoUpdate)/simulationResults.masterSentMessage;
+
+                double average;
+                resultsum+=result;
+                index++;
+                average = resultsum/index;
+                convergencePerc = ((average)*GlobalConfiguration.CONVERGENCE_CONFIDENCE_PERCENTAGE)/100;
+
+                boolean tempConvergence = ( (average-result) <= convergencePerc);
                 if (tempConvergence){
                     convergenceTime++;
                 }else{
                     convergenceTime = 0;
                 }
+                System.out.println("Network convergence "+average+ "  Percentage: "+ convergencePerc + " Convergence:"+convergenceTime);
                 //
                 if (convergenceTime == GlobalConfiguration.CONVERGENCE_CONFIDENCE_TIMES){
                     convergence = true;
                 }
+            }else{
+                System.out.println("Yeah");
             }
         }while(!convergence);
         return simulationResults.printResults();

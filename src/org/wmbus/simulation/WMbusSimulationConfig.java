@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class WMbusSimulationConfig {
 
-    public static final double CONF_SIMULATION_CONVERGENCE_PERCENTAGE = 1;
+    public static final double CONF_SIMULATION_CONVERGENCE_PERCENTAGE = 5;
     public static final double CONF_SIMULATION_STABILITY_TIMES = 100;
 
     public  final Random CONF_RANDOM = new Random();

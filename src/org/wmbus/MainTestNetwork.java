@@ -17,7 +17,9 @@ public class MainTestNetwork {
                 .level(Level.INFO)
                 .activate();
 
-        MainTestNetwork.convergesResult(4,true,true);
+        for (int i = 3; i < 10; i++) {
+            MainTestNetwork.convergesResult(4,true,true);
+        }
 
     }
 
@@ -31,7 +33,9 @@ public class MainTestNetwork {
         boolean convergence = false;
         int convergenceTime = 0;
         double convergencePerc = 0.0;
-        long result = 0, preresult = 0;
+        double result = 0, sum = 0;
+        double average = 0;
+        double index = 0;
         WMBusStats simulationResults = null;
         do {
             SimulationNetworkWithDistance attempt = NetworkGeneratorHelper.generateInterconnectedRadiusNetwork(
@@ -51,13 +55,17 @@ public class MainTestNetwork {
             if (numberOfAttemptAfter != numberOfAttempt) {
                 // Perform simulation.
                 simulationResults = MainTestNetwork.performSimulation(attempt, withHamming, withWakeup);
-                preresult = result;
                 result = simulationResults.masterTrasmissionFaultWithUpdate + simulationResults.masterTrasmissionFaultWithNoUpdate;
-                convergencePerc = ((preresult)*GlobalConfiguration.CONVERGENCE_CONFIDENCE_PERCENTAGE)/100;
+
+                sum += result;
+                index++;
+                average = sum/index;
+
+                convergencePerc = ((average)*GlobalConfiguration.CONVERGENCE_CONFIDENCE_PERCENTAGE)/100;
                 /*
                     Convergence algorithm.
                  */
-                boolean tempConvergence = ( (result-preresult) <= convergencePerc);
+                boolean tempConvergence = ( (average - result) <= convergencePerc);
                 if (tempConvergence){
                     convergenceTime++;
                 }else{
