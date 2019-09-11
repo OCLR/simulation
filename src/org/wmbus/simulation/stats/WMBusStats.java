@@ -54,6 +54,7 @@ public class WMBusStats {
     public long  globalResponseSuccessCommunication = 0;
     public long globalResponseFailCommunication = 0;
 
+    public boolean globalConvergence = false;
 
 
     public ResultTable printResults(){
@@ -83,6 +84,7 @@ public class WMBusStats {
         */
 
         // Relative Measures.
+        r.addRow("Convergence (0-yes,1-no):" ,(this.globalConvergence?0.0:1.0));
         r.addRow("RM: Master Fault %:" ,((this.masterTrasmissionFaultWithNoUpdate+this.masterTrasmissionFaultWithUpdate)/this.masterSentMessage)*100);
         r.addRow("RM: Master average path length:",this.masterSumPath/this.masterSentMessage);
         if (this.globalRequestTrasmissionCommunication==0){

@@ -61,7 +61,11 @@ public abstract class MBusMessageFormatB  extends MBusMessageFormatCore{
                 return Integer.MAX_VALUE;
             }
         }
-        return hammingResultOneCount/this.getMessageBlockCount();
+        if (simulation.getwMbusSimulationConfig().CONF_DETAILED_NOISE){
+            return hammingResultOneCount/this.getMessageBlockCount();
+        }else{
+            return 0;
+        }
     }
 
     public int getPayloadBlockSize(int n){

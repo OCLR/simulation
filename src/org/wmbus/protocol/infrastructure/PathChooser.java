@@ -147,8 +147,11 @@ public class PathChooser {
         if (p == null){
             Logger.error("Path not found");
         }
-        return new ArrayList<Integer>(DGraph.getPath(graph,p.getEdgeList()));
+        assert p != null;
+        return new ArrayList<Integer>(DGraph.getPath(graph, p.getEdgeList()));
     }
+
+
     public ArrayList<Integer> searchPath(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge>   graph, Integer destination, boolean backOff){
         if (backOff) {
             return this.searchPathWithBackOff(graph,destination);

@@ -11,6 +11,8 @@ import org.wmbus.protocol.infrastructure.ECCTable;
 import org.wmbus.protocol.infrastructure.PathChooser;
 import org.wmbus.protocol.messages.*;
 import org.wmbus.simulation.WMBusSimulation;
+import org.wmbus.simulation.convergence.model.ConvergenceModel;
+import org.wmbus.simulation.convergence.state.ConvergenceState;
 
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -76,7 +78,10 @@ public class WMBusMaster extends WMbusDevice {
          */
         Logger.trace("WMBusSimulation starts");
         PathChooser pathChooser = new PathChooser(this.simulation);
-        while (true) {
+        ConvergenceModel convergenceModel = this.simulation.getwMbusSimulationConvergence();
+        int convMeasure = ConvergenceState.CONVERGENCE_STATE_CONTINUE;
+
+        while (convMeasure == ConvergenceState.CONVERGENCE_STATE_CONTINUE) {
             // System.out.println(this.simulation.getwMbusNetwork().getDistanceGraph().edgeSet());
             //fixedNode = randomGen.nextInt(graph.vertexSet().size() - 1) +1;
             if (fixedNodeIndex.equals(dest.size())) {
@@ -124,22 +129,16 @@ public class WMBusMaster extends WMbusDevice {
             // Convergence stuff
             double fault = (
                     (this.simulation.getResults().masterTrasmissionFaultWithNoUpdate + this.simulation.getResults().masterTrasmissionFaultWithUpdate)/this.simulation.getResults().masterSentMessage);
-            // double percFault = fault/this.simulation.getResults().masterSentMessage;
-            index++;
-            sum+=fault;
-            average = sum/index;
-            double percentMargin =  (average* this.simulation.getwMbusSimulationConfig().CONF_SIMULATION_CONVERGENCE_PERCENTAGE)/100;
 
-            if (average - fault > percentMargin){
-                stabilityConvergenceTimes = 0;
-            }else{
-                stabilityConvergenceTimes++;
-            }
 
-            // System.out.println("Master convergence "+stabilityConvergenceTimes);
-            /* Finish simulation.*/
-            if (stabilityConvergenceTimes == this.simulation.getwMbusSimulationConfig().CONF_SIMULATION_STABILITY_TIMES){
-                return;
+            convMeasure = convergenceModel.addMeasure(fault);
+            // Call Convergence event.
+            this.simulation.getWMbusEvents().provideMeasure(fault,convMeasure,convergenceModel.percentageConvergence);
+
+            if (convMeasure == ConvergenceState.CONVERGENCE_STATE_STOP_CONVERGENCE){
+                this.simulation.getResults().globalConvergence = true;
+            } else if (convMeasure == ConvergenceState.CONVERGENCE_STATE_STOP_NOTCONVERGENCE){
+                this.simulation.getResults().globalConvergence = false;
             }
 
          }
