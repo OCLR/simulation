@@ -111,6 +111,7 @@ public abstract class WMbusDevice {
             // Update source to target.
             //System.out.println(" FAULT ");
             this.updateECCStructures(message.getDestination());
+            this.simulation.getWMbusEvents().pathEnd(false);
             this.simulation.getResults().deviceTrasmissionTimeoutCommunication++;
             if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST){
                 this.simulation.getResults().globalRequestFailCommunication++;

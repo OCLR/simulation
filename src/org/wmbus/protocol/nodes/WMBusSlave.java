@@ -52,19 +52,25 @@ public class WMBusSlave extends WMbusDevice {
             int size = req.getHops().size();
             previousHop = message.getSource();
             nextHop = message.getDestination();
+            this.simulation.getWMbusEvents().pathRequest(previousHop, nextHop,this.simulation.getwMbusNetwork().getDistance(message.getSource(),this.getNodeID()));
 
             if (size==1) {
                 // I'm the destination node.
                 ArrayDeque<ECCTable> ECCTable = new ArrayDeque<ECCTable>();
+                this.simulation.getWMbusEvents().pathEnd(true);
+                this.simulation.getWMbusEvents().pathStart(false);
                 Response res_req = new Response(this.simulation,this.getNodeID(),previousHop,this.attachECCTable(ECCTable));
                 res_req.setData(10);
                 tras_result = this.transmit(res_req);
             }else {
                 // just relay node.
                 req.getHops().remove(0);
-
-
                 tras_result = this.transmit(req);
+                if (tras_result== WMBusCommunicationState.TIMEOUT){
+                    // Workaround without timer.
+                    // Manually trigger timeout for a node.
+                    this.triggerTimeout(); // provide back timeout info
+                }
             }
 
 
@@ -72,6 +78,7 @@ public class WMBusSlave extends WMbusDevice {
                 if (message.getMessageType()== WMBusPacketType.PACKET_RESPONSE) {
                     Response res = (Response) message;
                     Logger.trace("Data: "+((Response) message).getData());
+                    this.simulation.getWMbusEvents().pathRequest(previousHop, nextHop,this.simulation.getwMbusNetwork().getDistance(message.getSource(),this.getNodeID()));
                     Response new_res = new Response(this.simulation,this.getNodeID(),previousHop,this.attachECCTable(res.getECCTables()));
                     new_res.setData(res.getData());
                     tras_result = this.transmit(new_res);
@@ -89,6 +96,8 @@ public class WMBusSlave extends WMbusDevice {
     public void triggerTimeout(){
         super.triggerTimeout();
         ArrayDeque<ECCTable> ECCTable = new ArrayDeque<ECCTable>();
+        this.simulation.getWMbusEvents().pathEnd(false);
+        this.simulation.getWMbusEvents().pathStart(false);
         Response res_req = new Response(this.simulation,this.getNodeID(),previousHop,this.attachECCTable(ECCTable));
         double tras_result = this.transmit(res_req);
         Logger.trace("Packet loss");

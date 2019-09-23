@@ -42,12 +42,45 @@ public class WMBusNoise {
         /**
          * 40dBm -> 100 meters.
          * 63,59 -> 1500 meters.
-         * Mapping the range 40..63,59
+             * Mapping the range 40..63,59
          *                   20..1
          */
+        /*
+            Second analysis:
 
-        double distanceDb = (10 * Math.log10(distance*distance) );
-        double signalToNoiseRatioDb = WMBusNoise.scaleTo(distanceDb,63.59,40,20,1);
+            Working only with SNR.
+            SNR At the source is 50db ( a value, can be even higher) .
+            SNR(receiver) = SNR(trasmitter) + a - 20*log(10)(distance)
+            where a is :
+            10*log((299792458÷(4×3,14×169×10^6))^2)
+            log uses as a base 10.
+            This means:
+
+            SS      d   RS
+            50	    4	20,9588001734407
+            50	    7	16,0980391997149
+            50	    10	13
+            50	    13	10,7211329538633
+            50	    16	8,9176003468815
+            50	    19	7,42492798094342
+            50	    22	6,15154638355588
+            50	    25	5,04119982655925
+
+            SS -> Source snr
+            RS -> Destination snr.
+
+            Final formula:
+            SNR(receiver) = 50 - 17 - 20*log(d)
+            log uses as a base 10.
+
+             Maximum distance: 16 meters (10^-2 ber)
+
+
+         */
+        // v1.0.0 approach.
+        //double distanceDb = (10 * Math.log10(distance*distance) );
+        //double signalToNoiseRatioDb = WMBusNoise.scaleTo(distanceDb,63.59,40,20,1);
+        double signalToNoiseRatioDb = 50 - 17 - 20*Math.log10(distance);
         // Logger.info(signalToNoiseRatioDb);
         double ber = GFSKModulation.computeBer(signalToNoiseRatioDb, WMBusConstant.WMBUS_GFSK_MODULATION_INDEX);
         //Logger.info(ber+" "+signalToNoiseRatioDb);

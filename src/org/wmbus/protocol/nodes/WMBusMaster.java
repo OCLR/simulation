@@ -97,6 +97,7 @@ public class WMBusMaster extends WMbusDevice {
             //TwoApproxMetricTSP salesman = new TwoApproxMetricTSP<Integer, DefaultWeightedEdge>();
             Logger.info("Search node for "+fixedNode);
             path = pathChooser.searchPath(this.networkGraphECC,fixedNode,this.simulation.getwMbusSimulationConfig().CONF_WAKEUP);
+            this.simulation.getWMbusEvents().pathPredict(fixedNode, path);
             //System.out.println(path);
             try {
                 path.remove((0));
@@ -118,11 +119,13 @@ public class WMBusMaster extends WMbusDevice {
             //double prevPercFault = this.simulation.getResults().masterSentMessage==0?0:prevFault/this.simulation.getResults().masterSentMessage;
             // update master number of messages sent.
             this.simulation.getResults().masterSentMessage+=1;
-
+            // notify pathStart.
+            this.simulation.getWMbusEvents().pathStart(true);
 
             answer = this.transmit(sending); // Going down.
 
             if (answer == WMBusCommunicationState.TIMEOUT){
+                this.simulation.getWMbusEvents().pathEnd(false);
                 this.simulation.getResults().masterTrasmissionFaultWithNoUpdate++;
                 this.triggerTimeout();
             }
@@ -178,10 +181,13 @@ public class WMBusMaster extends WMbusDevice {
             Response res = (Response) message;
             Logger.trace("Data: "+((Response) message).getData());
             // No data means error.
+            this.simulation.getWMbusEvents().pathEnd(true);
             if (res.getData()==0){
                 this.simulation.getResults().masterTrasmissionFaultWithUpdate++;
+                this.simulation.getWMbusEvents().globalPathEnd(false);
             }else{
                 this.simulation.getResults().masterTrasmissionSuccess++;
+                this.simulation.getWMbusEvents().globalPathEnd(true);
             }
             for(ECCTable entry : res.getECCTables()){
                 for (Integer destination: entry.getEntries().keySet()){
