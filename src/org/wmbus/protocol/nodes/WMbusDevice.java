@@ -1,12 +1,12 @@
 package org.wmbus.protocol.nodes;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.protocol.infrastructure.ECCTable;
 import org.wmbus.protocol.messages.WMBusCommunicationState;
 import org.wmbus.protocol.messages.WMBusPacketType;
 import org.wmbus.protocol.messages.WMbusMessage;
 import org.wmbus.simulation.WMBusSimulation;
+
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Set;
@@ -70,7 +70,7 @@ public abstract class WMbusDevice {
         }
 
 
-        int attemptNumber = WMBusDeviceConfig.CONF_NUMBER_OF_RETRASMISSION+1;
+        int attemptNumber = this.simulation.getwmbusDeviceConfig().CONF_NUMBER_OF_RETRASMISSION+1;
         // try attempt number of attempt.
         res = -1;
         boolean wasRetrasmitted = false;
@@ -143,8 +143,17 @@ public abstract class WMbusDevice {
     public double receiveAck(WMbusMessage message){
         // TODO get the link.
         double distance = this.simulation.getwMbusNetwork().getDistance(message.getSource(),this.nodeID);
-        double ber = this.simulation.getwMbusNetwork().getBer(message.getSource(),this.nodeID);
-        double ecc = message.computeECC(ber);
+        double ber = 0;
+        double ecc = 0;
+        try {
+            ber = this.simulation.getwMbusNetwork().getBer(message.getSource(),this.nodeID);
+            ecc = message.computeECC(ber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ecc = Double.POSITIVE_INFINITY;
+        }
+
+
         //double successProb = message.computeECCSuccess(ber);
         ///double failProb = message.computeECCFail(ber);
         // double recProb = message.computeECCRecoverable(ber);

@@ -9,7 +9,7 @@ public abstract class MBusMessageFormatB  extends MBusMessageFormatCore{
 
     public MBusMessageFormatB(WMBusSimulation simulation) {
         super(simulation);
-        this.preamble_size = WMBusDeviceConfig.CONF_PREHEADER;
+        this.preamble_size = WMBusDeviceConfig.getHeaderSize(this.simulation.getwmbusDeviceConfig().CONF_PACKET_TRASMISSION);
     }
 
     public int getBlockSize(int n){

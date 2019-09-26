@@ -2,6 +2,7 @@ package org.wmbus.simulation;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.protocol.infrastructure.WMBusNoise;
 import org.wmbus.protocol.infrastructure.WMbusNetwork;
 import org.wmbus.simulation.convergence.model.ConvergenceModel;
@@ -16,11 +17,18 @@ public class WMBusSimulation {
     private WMBusNoise WMBusNoise;
     private org.wmbus.simulation.stats.WMBusStats WMBusStats;
     private WMbusSimulationEventInterface events;
+    private WMBusDeviceConfig wMbusDeviceConfig;
 
 
-    public WMBusSimulation(SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> distanceGraph, WMbusSimulationConfig simulationConfig, ConvergenceModel simulationConvergence, WMbusSimulationEventInterface events) {
+    public WMBusSimulation(SimpleDirectedWeightedGraph<Integer,
+            DefaultWeightedEdge> distanceGraph,
+            WMBusDeviceConfig deviceConfig,
+            WMbusSimulationConfig simulationConfig,
+            ConvergenceModel simulationConvergence,
+            WMbusSimulationEventInterface events) {
         this.wMbusSimulationConvergence = simulationConvergence;
         this.wMbusSimulationConfig = simulationConfig;
+        this.wMbusDeviceConfig = deviceConfig;
         this.events = events;
         this.WMBusStats = new WMBusStats();
         this.wMbusNetwork = new WMbusNetwork(this,distanceGraph);
@@ -54,5 +62,9 @@ public class WMBusSimulation {
 
     public WMbusSimulationEventInterface getWMbusEvents() {
         return events;
+    }
+
+    public WMBusDeviceConfig getwmbusDeviceConfig() {
+        return this.wMbusDeviceConfig;
     }
 }

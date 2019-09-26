@@ -1,10 +1,8 @@
 package org.wmbus.protocol.infrastructure;
 
-import com.sun.jdi.InternalException;
-import org.gfsk.GFSKModulation;
-import org.wmbus.protocol.config.UniversalConstant;
+import org.apache.commons.math3.special.Erf;
+import org.pmw.tinylog.Logger;
 import org.wmbus.protocol.config.WMBusConstant;
-import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.simulation.WMBusSimulation;
 
 /**
@@ -17,20 +15,62 @@ public class WMBusNoise {
         this.simulation = simulation;
     }
 
-    public double getNoisePower(){
-        double noiseVolt = simulation.getwMbusSimulationConfig().CONF_RANDOM.nextGaussian() * Math.sqrt(WMBusConstant.WMBUS_FREQUENCY_MAXNOISE_mW) ;
+    public double getNoisePower( double noiseMWVariance){
+        double noiseVolt = simulation.getwMbusSimulationConfig().CONF_RANDOM.nextGaussian() * Math.sqrt(noiseMWVariance) ;
         // Assuming ohm = 1
-        return noiseVolt*noiseVolt;
+        return noiseVolt*noiseVolt; //  *noiseVoltAvoid negative part.
     }
 
-    public double getBerFromDistance(double distance){
-        double receivedPowerCostant = UniversalConstant.SPEED_OF_LIGHT /(4* Math.PI*distance*WMBusConstant.WMBUS_FREQUENCY);
-        double antennaValue = WMBusDeviceConfig.CONF_ANTENNA_REAL_GAIN*WMBusDeviceConfig.CONF_ANTENNA_REAL_GAIN; // Same antenna receiver and sender.
-        double receiverPower = WMBusDeviceConfig.CONF_TRASMITTER_POWER_LEVEL*(antennaValue*(receivedPowerCostant*receivedPowerCostant));
-        // Check received power.
-        if (receiverPower < WMBusConstant.WMBUS_FREQUENCY_MAXNOISE_mW){
-            throw new InternalException("Received power "+receiverPower+"is a noise.");
+    public double getBerFromDistance(double distance) throws Exception {
+        double noiseVarianceMW = Math.pow(10, this.simulation.getwmbusDeviceConfig().WMBUS_FREQUENCY_NOISE_DBM/10);
+        // double signalPowerMw = Math.pow(10, this.simulation.getwmbusDeviceConfig().CONF_TRASMITTER_POWER_LEVEL_DBM/10);
+        double antennaGain = Math.pow(10,this.simulation.getwmbusDeviceConfig().CONF_ANTENNA_GAIN_DB/10)*2; // Same for receiver and trasmitter.
+        // Compute noise level.
+        double noiseDBActual = 0;
+        double noiseMwActual = 0 ;
+        do {
+            noiseMwActual = this.getNoisePower(noiseVarianceMW);
+            noiseDBActual = (10 * Math.log10(noiseMwActual));
+        }while (noiseDBActual > -70);
+        double  pathlossDb  =20*Math.log10(distance)+20*Math.log10(WMBusConstant.WMBUS_FREQUENCY_MHZ)-27.55-antennaGain;
+        double  receiverPowerDb = this.simulation.getwmbusDeviceConfig().CONF_TRASMITTER_POWER_LEVEL_DBM - pathlossDb;
+        double  SignalToNoiseRatio = receiverPowerDb - noiseDBActual;
+        double  ber = 0.5* Erf.erfc(Math.sqrt(SignalToNoiseRatio/2));
+        Logger.trace("DISTANCE: "+distance + " NOISE DB:" + noiseDBActual + " PATH LOSS DB:" + pathlossDb + " POWER REC DB:" + receiverPowerDb + "\n SNR DB:" + SignalToNoiseRatio + " BER: "+ber);
+        if (Double.isNaN(ber)) {
+            Logger.error("Ber Cannot be Nan, COMMUNICATIONS CANNOT OCCURS WITH THIS LEVEL OF NOISE."+ noiseDBActual+ " dbm. MESSAGE ERROR ");
+            throw new Exception("DISTANCE: "+distance + " NOISE DB:" + noiseDBActual + " PATH LOSS DB:" + pathlossDb + " POWER REC DB:" + receiverPowerDb + "\n SNR DB:" + SignalToNoiseRatio + " BER: "+ber);
+            // no cannot be.
         }
+        return ber;
+        /*
+         Third analysis: Working with
+            Noise dbm
+            -70
+            Distance
+
+                5
+                25
+                50
+                75
+                100
+                150
+                175
+                200
+                225
+                250
+            Free space Ber(-70db)
+                8,43076835058939E-11
+                1,11610576968615E-07
+                2,5488747961865E-06
+                1,61419617445414E-05
+                6,04176550678364E-05
+                0,000396449845576
+                0,000817975270038
+                0,001540384912243
+                0,002706596103981
+                0,004505096455511
+         */
 
 
         /*
@@ -80,11 +120,11 @@ public class WMBusNoise {
         // v1.0.0 approach.
         //double distanceDb = (10 * Math.log10(distance*distance) );
         //double signalToNoiseRatioDb = WMBusNoise.scaleTo(distanceDb,63.59,40,20,1);
-        double signalToNoiseRatioDb = 50 - 17 - 20*Math.log10(distance);
+        // double signalToNoiseRatioDb = 50 - 17 - 20*Math.log10(distance); GFSK
         // Logger.info(signalToNoiseRatioDb);
-        double ber = GFSKModulation.computeBer(signalToNoiseRatioDb, WMBusConstant.WMBUS_GFSK_MODULATION_INDEX);
+        // double ber = GFSKModulation.computeBer(signalToNoiseRatioDb, WMBusConstant.WMBUS_GFSK_MODULATION_INDEX); GFSK
         //Logger.info(ber+" "+signalToNoiseRatioDb);
-        return ber;
+
     }
     private static double scaleTo(double value, double OldMax, double OldMin, double NewMax, double NewMin ){
         double OldRange = (OldMax - OldMin);

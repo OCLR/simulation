@@ -1,13 +1,21 @@
 package org.wmbus.protocol.config;
 
 public class WMBusDeviceConfig {
-    public  final static double CONF_TRASMITTER_POWER_LEVEL = 500; // Trasmitter power level. 21 dbm(125.892541179) ( -27 to +27(500mW) dbm 3dbm step)
-    public  final static int CONF_PREHEADER = WMBusDeviceConfig.getHeaderSize(WMBusDeviceConfig.CONF_PACKET_TRASMISSION); // PREAMBLE + SYNC WORD. depending on the modality.
-    public  final static int CONF_PACKET_TYPE = WMBusConstant.TELEGRAM_FORMAT_A; // PREAMBLE + SYNC WORD. depending on the modality.
-    public  final static int CONF_PACKET_TRASMISSION = WMBusConstant.TRASMISSION_MODE_S2;
-    public  final static int CONF_NUMBER_OF_RETRASMISSION = 2;
-    public static final double CONF_ANTENNA_GAIN_DB = 0;
-    public static final double CONF_ANTENNA_REAL_GAIN = Math.pow(10,WMBusDeviceConfig.CONF_ANTENNA_GAIN_DB/10)*1.64;
+    public  double CONF_TRASMITTER_POWER_LEVEL_DBM = 10; // Trasmitter power level. 21 dbm(125.892541179) ( -27 to +27(500mW) dbm 3dbm step)
+
+    // public    int CONF_PREHEADER; // PREAMBLE + SYNC WORD. depending on the modality.
+    // public    int CONF_PACKET_TYPE = WMBusConstant.TELEGRAM_FORMAT_A; // PREAMBLE + SYNC WORD. depending on the modality.
+    public  final  int CONF_PACKET_TRASMISSION = WMBusConstant.TRASMISSION_MODE_T2;
+    public  int CONF_NUMBER_OF_RETRASMISSION = 2;
+    public  double CONF_ANTENNA_GAIN_DB = 0;
+    public  double WMBUS_FREQUENCY_NOISE_DBM = -70; // Maximum value -110 dbmW.
+
+    public WMBusDeviceConfig(double CONF_TRASMITTER_POWER_LEVEL_DBM, int CONF_NUMBER_OF_RETRASMISSION, double CONF_ANTENNA_GAIN_DB, double WMBUS_FREQUENCY_NOISE_DBM) {
+        this.CONF_TRASMITTER_POWER_LEVEL_DBM = CONF_TRASMITTER_POWER_LEVEL_DBM;
+        this.CONF_NUMBER_OF_RETRASMISSION = CONF_NUMBER_OF_RETRASMISSION;
+        this.CONF_ANTENNA_GAIN_DB = CONF_ANTENNA_GAIN_DB;
+        this.WMBUS_FREQUENCY_NOISE_DBM = WMBUS_FREQUENCY_NOISE_DBM;
+    }
 
     public  static int getHeaderSize(int trans_mode){
 

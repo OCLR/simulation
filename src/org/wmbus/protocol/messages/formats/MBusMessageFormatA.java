@@ -9,7 +9,7 @@ public abstract class MBusMessageFormatA extends MBusMessageFormatCore {
 
     public MBusMessageFormatA(WMBusSimulation simulation) {
         super(simulation);
-        this.preamble_size = WMBusDeviceConfig.CONF_PREHEADER;
+        this.preamble_size = WMBusDeviceConfig.getHeaderSize(this.simulation.getwmbusDeviceConfig().CONF_PACKET_TRASMISSION);
     }
 
     @Override

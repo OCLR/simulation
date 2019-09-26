@@ -15,7 +15,7 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
 
     public MBusMessageFormatCustom(WMBusSimulation simulation) {
         super(simulation);
-        this.preamble_size = WMBusDeviceConfig.CONF_PREHEADER;
+        this.preamble_size = WMBusDeviceConfig.getHeaderSize(this.simulation.getwmbusDeviceConfig().CONF_PACKET_TRASMISSION);
     }
     /*
     * Everything expressed in bit.

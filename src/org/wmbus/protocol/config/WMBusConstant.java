@@ -2,8 +2,7 @@ package org.wmbus.protocol.config;
 
 public class WMBusConstant {
 
-    public static final double WMBUS_FREQUENCY = 169e6;
-    public static final double WMBUS_FREQUENCY_MAXNOISE_mW = 10e-11; // Maximum value -110 dbmW.
+    public static final double WMBUS_FREQUENCY_MHZ = 868;
     public static final double WMBUS_GFSK_MODULATION_INDEX = 0.31;
 
 

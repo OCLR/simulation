@@ -85,7 +85,7 @@ public class WMbusNetwork {
         Double distance = this.distanceGraph.getEdgeWeight(ed);
         return distance;
     }
-    public double getBer(int source, int destination) {
+    public double getBer(int source, int destination) throws Exception {
         // get distance from graph.
         // compute ber from distance
         // return ber.
