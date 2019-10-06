@@ -31,7 +31,7 @@ public class WMBusNoise {
         do {
             noiseMwActual = this.getNoisePower(noiseVarianceMW);
             noiseDBActual = (10 * Math.log10(noiseMwActual));
-        }while (noiseDBActual > -70);
+        }while (noiseDBActual > -70 || noiseDBActual < -120);
         double  pathlossDb  =20*Math.log10(distance)+20*Math.log10(WMBusConstant.WMBUS_FREQUENCY_MHZ)-27.55-antennaGain;
         double  receiverPowerDb = this.simulation.getwmbusDeviceConfig().CONF_TRASMITTER_POWER_LEVEL_DBM - pathlossDb;
         double  SignalToNoiseRatio = receiverPowerDb - noiseDBActual;
@@ -42,6 +42,29 @@ public class WMBusNoise {
             throw new Exception("DISTANCE: "+distance + " NOISE DB:" + noiseDBActual + " PATH LOSS DB:" + pathlossDb + " POWER REC DB:" + receiverPowerDb + "\n SNR DB:" + SignalToNoiseRatio + " BER: "+ber);
             // no cannot be.
         }
+        this.simulation.getResults().snrTimes++;
+
+        if (ber < this.simulation.getResults().berMin){
+            this.simulation.getResults().berMin = ber;
+        } else if (ber > this.simulation.getResults().berMax){
+            this.simulation.getResults().berMax = ber;
+        }
+        this.simulation.getResults().berSum += ber;
+
+        if (SignalToNoiseRatio < this.simulation.getResults().snrMin){
+            this.simulation.getResults().snrMin = SignalToNoiseRatio;
+        } else if (SignalToNoiseRatio > this.simulation.getResults().snrMax){
+            this.simulation.getResults().snrMax = SignalToNoiseRatio;
+        }
+        this.simulation.getResults().snrSum += SignalToNoiseRatio;
+
+        if (noiseDBActual > this.simulation.getResults().noiseMax){
+            this.simulation.getResults().noiseMax = noiseDBActual;
+        } else if (noiseDBActual < this.simulation.getResults().noiseMin){
+            this.simulation.getResults().noiseMin  = noiseDBActual;
+        }
+        this.simulation.getResults().noiseSum+=noiseDBActual;
+
         return ber;
         /*
          Third analysis: Working with

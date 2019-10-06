@@ -56,6 +56,19 @@ public class WMBusStats {
 
     public boolean globalConvergence = false;
 
+    public double snrSum = 0;
+    public double snrMax = Double.MIN_VALUE;
+    public double snrMin = Double.MAX_VALUE;
+    public double snrTimes = 0;
+
+    public double berMin = Double.MAX_VALUE;
+    public double berMax = Double.MIN_VALUE;
+    public double berSum = 0;
+
+    public double noiseMin = Double.MIN_VALUE; // O
+    public double noiseSum = 0;
+    public double noiseMax = Double.MIN_VALUE;
+
 
     public ResultTable printResults(){
 
@@ -115,6 +128,19 @@ public class WMBusStats {
         r.addRow("RM: Response Payload size (no-ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadNoParityBitSum/this.globalResponseTrasmissionCommunication);
         r.addRow("RM: Response Payload size (ecc):",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponsePayloadParityBitSum/this.globalResponseTrasmissionCommunication);
         r.addRow("RM: Response Packet Block count:",this.globalResponseTrasmissionCommunication==0?0:this.globalTrasmissionResponseBlockNumber/this.globalResponseTrasmissionCommunication);
+
+        // r.addRow("Max noise dbm: ", noiseMax);
+        //r.addRow("Min noise dbm: ", noiseMin);
+        r.addRow("Avg noise dbm: ", snrTimes==0?0:noiseSum/snrTimes);
+
+        r.addRow("Max BER: ", berMax);
+        r.addRow("Min BER: ", berMin);
+        r.addRow("Avg BER: ", snrTimes==0?0:berSum/snrTimes);
+
+        r.addRow("Max SNR: ", snrMax);
+        r.addRow("Min SNR: ", snrMin);
+        r.addRow("Avg SNR: ", snrTimes!=0?snrSum/snrTimes:0);
+
 
         return r;
         /* think carefully as*/
