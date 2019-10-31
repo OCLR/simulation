@@ -64,13 +64,14 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         }
 
         if (this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
+            // 4+3 4(payload) 3 header 1 codewords.
             size = this.getBlockSize(1);
         }else{
             // No hamming function
-            size = this.getMessageSize()-this.getMessageHeader();
+            // the rest.
+            // -this.getMessageHeader() what? only the rest.
+            size = this.getMessageSize();
         }
-
-
 
         for (int i = 1; i < this.getMessageBlockCount();i++){
             result = this.computeHamming(size,ber);
@@ -222,8 +223,6 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
 
     public int computeFullFrameCount(int n){
         /* A block for header. */
-        int headerBlockSize = this.getBlockSize(0);
-        int dataBlockSize = this.getBlockSize(1);
         if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
             return 2;//return (n-headerBlockSize)+4; // 4 byte of CRC.
         }

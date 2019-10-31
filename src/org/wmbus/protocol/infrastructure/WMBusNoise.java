@@ -28,10 +28,11 @@ public class WMBusNoise {
         // Compute noise level.
         double noiseDBActual = 0;
         double noiseMwActual = 0 ;
-        do {
-            noiseMwActual = this.getNoisePower(noiseVarianceMW);
-            noiseDBActual = (10 * Math.log10(noiseMwActual));
-        }while (noiseDBActual > -70 || noiseDBActual < -120);
+        //do {
+        //    noiseMwActual = this.getNoisePower(noiseVarianceMW);
+        //    noiseDBActual = (10 * Math.log10(noiseMwActual));
+        //}while (noiseDBActual > noiseVarianceMW-5 || noiseDBActual < noiseVarianceMW-20); // -70 -120
+        noiseDBActual = this.simulation.getwmbusDeviceConfig().WMBUS_FREQUENCY_NOISE_DBM;
         double  pathlossDb  =20*Math.log10(distance)+20*Math.log10(WMBusConstant.WMBUS_FREQUENCY_MHZ)-27.55-antennaGain;
         double  receiverPowerDb = this.simulation.getwmbusDeviceConfig().CONF_TRASMITTER_POWER_LEVEL_DBM - pathlossDb;
         double  SignalToNoiseRatio = receiverPowerDb - noiseDBActual;
