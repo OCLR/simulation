@@ -3,7 +3,7 @@ package org.wmbus.simulation;
 import java.util.TreeMap;
 
 public class ResultTable {
-    TreeMap<String,Double> results = new TreeMap<String,Double>();
+    public TreeMap<String,Double> results = new TreeMap<String,Double>();
     public void addRow(String header,double value){
         this.results.put(header,value);
     }

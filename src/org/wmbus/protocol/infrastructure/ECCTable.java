@@ -9,14 +9,14 @@ import java.util.HashMap;
 public class ECCTable {
 
     private int node;
-    private HashMap<Integer, Double> entries;
+    private HashMap<Integer, Integer> entries;
 
     public ECCTable(int node) {
-        this.entries = new HashMap<Integer, Double>();
+        this.entries = new HashMap<Integer, Integer>();
         this.node = node;
     }
 
-    public HashMap<Integer, Double> getEntries() {
+    public HashMap<Integer, Integer> getEntries() {
         return entries;
     }
 
@@ -25,7 +25,7 @@ public class ECCTable {
     }
 
     public int getBytesSize(){
-        return 4+((4+4)*entries.size());
+        return 1+((1+1)*entries.size());
     }
     public int getNode() {
         return node;

@@ -59,7 +59,7 @@ public class WMBusSlave extends WMbusDevice {
                 ArrayDeque<ECCTable> ECCTable = new ArrayDeque<ECCTable>();
                 this.simulation.getWMbusEvents().pathEnd(true);
                 this.simulation.getWMbusEvents().pathStart(false);
-                Response res_req = new Response(this.simulation,this.getNodeID(),previousHop,this.attachECCTable(ECCTable));
+                Response res_req = new Response(this.simulation,this.getNodeID(),previousHop,this.simulation.getwMbusSimulationConfig().CONF_SLAVE_RESULT?this.attachECCTable(ECCTable):ECCTable);
                 res_req.setData(10);
                 tras_result = this.transmit(res_req);
             }else {
@@ -79,8 +79,11 @@ public class WMBusSlave extends WMbusDevice {
                     Response res = (Response) message;
                     Logger.trace("Data: "+((Response) message).getData());
                     this.simulation.getWMbusEvents().pathRequest(previousHop, nextHop,this.simulation.getwMbusNetwork().getDistance(message.getSource(),this.getNodeID()));
-                    Response new_res = new Response(this.simulation,this.getNodeID(),previousHop,this.attachECCTable(res.getECCTables()));
+
+                    Response new_res = new Response(this.simulation,this.getNodeID(),previousHop,this.simulation.getwMbusSimulationConfig().CONF_SLAVE_RESULT?this.attachECCTable(res.getECCTables()): new ArrayDeque<ECCTable>());
+
                     new_res.setData(res.getData());
+
                     tras_result = this.transmit(new_res);
 
                     if (tras_result== WMBusCommunicationState.TIMEOUT){
@@ -98,7 +101,7 @@ public class WMBusSlave extends WMbusDevice {
         ArrayDeque<ECCTable> ECCTable = new ArrayDeque<ECCTable>();
         this.simulation.getWMbusEvents().pathEnd(false);
         this.simulation.getWMbusEvents().pathStart(false);
-        Response res_req = new Response(this.simulation,this.getNodeID(),previousHop,this.attachECCTable(ECCTable));
+        Response res_req = new Response(this.simulation,this.getNodeID(),previousHop,this.simulation.getwMbusSimulationConfig().CONF_SLAVE_RESULT?this.attachECCTable(ECCTable):ECCTable);
         double tras_result = this.transmit(res_req);
         Logger.trace("Packet loss");
         if (tras_result== WMBusCommunicationState.TIMEOUT){

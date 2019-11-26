@@ -6,7 +6,12 @@ import org.wmbus.simulation.convergence.state.ConvergenceState;
 public class AverageConvergenceModel extends ConvergenceModel {
     private AverageConvergenceConfigModel config;
     private double sum, index, average;
-    public AverageConvergenceModel( AverageConvergenceConfigModel config) {
+
+    public double getAverage() {
+        return average;
+    }
+
+    public AverageConvergenceModel(AverageConvergenceConfigModel config) {
         this.config = config;
     }
 

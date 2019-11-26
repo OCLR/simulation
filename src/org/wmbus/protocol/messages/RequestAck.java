@@ -43,7 +43,7 @@ public class RequestAck  extends WMbusMessage {
     }
 
     @Override
-    public double computeECC(double ber) {
+    public int computeECC(double ber) {
         return 0;
     }
 

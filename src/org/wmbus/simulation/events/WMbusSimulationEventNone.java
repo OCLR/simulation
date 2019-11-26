@@ -1,5 +1,7 @@
 package org.wmbus.simulation.events;
 
+import org.wmbus.protocol.messages.Response;
+
 import java.util.ArrayList;
 
 public class WMbusSimulationEventNone implements WMbusSimulationEventInterface {
@@ -29,6 +31,11 @@ public class WMbusSimulationEventNone implements WMbusSimulationEventInterface {
 
     @Override
     public void globalPathEnd(boolean b) {
+
+    }
+
+    @Override
+    public void masterResponseReceived(Response res) {
 
     }
 

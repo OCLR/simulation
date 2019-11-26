@@ -17,7 +17,7 @@ public abstract class WMbusDevice {
 
     protected final WMBusSimulation simulation;
     private int nodeID;
-    private HashMap<Integer, Double> eccTable = new HashMap<Integer, Double>();
+    private HashMap<Integer, Integer> eccTable = new HashMap<Integer, Integer>();
     private HashMap<Integer, Boolean> updatedEccTable = new HashMap<Integer, Boolean>();
     public long timeoutPacket = 0;
     public long receivedPacket = 0;
@@ -85,18 +85,18 @@ public abstract class WMbusDevice {
                 int destination = this.simulation.getwMbusNetwork().getEccGraph().getEdgeTarget(edge);
                 Integer destinationNode = destination;
                 Integer sourceNode = source;
-                if (source != this.nodeID){
+                if (source !=(this.nodeID)){
                     continue;
                 }
                 WMbusDevice destinationMbusNode = this.simulation.getwMbusNetwork().getNode(destinationNode);
                 nodeRes = destinationMbusNode.receiveAck(message); // son.getHopDestination()
-                if (WMBusCommunicationState.isOK(nodeRes)){
+                if (nodeRes!= WMBusCommunicationState.NOT_FOR_ME){
                     res = nodeRes;
                     nodeTarget = destinationNode;
                 }
             }
             attemptNumber--;
-            if (!WMBusCommunicationState.isOK(res)){
+            if (res == WMBusCommunicationState.TIMEOUT){
                 wasRetrasmitted = true;
                 this.simulation.getResults().deviceTotalRetrasmission++;
                 //System.out.print(" RETR, ");
@@ -107,7 +107,7 @@ public abstract class WMbusDevice {
             this.simulation.getResults().deviceTotalRetrasmissionCommunication++;
         }
         // means error.
-        if (!WMBusCommunicationState.isOK(res)) {
+        if (res == WMBusCommunicationState.TIMEOUT) {
             // Update source to target.
             //System.out.println(" FAULT ");
             this.updateECCStructures(message.getDestination());
@@ -118,12 +118,21 @@ public abstract class WMbusDevice {
             }else{
                 this.simulation.getResults().globalResponseFailCommunication++;
             }
-            return WMBusCommunicationState.TIMEOUT;
+            return res;
         }else{
-            if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST){
-                this.simulation.getResults().globalRequestSuccessCommunication++;
-            }else{
-                this.simulation.getResults().globalResponseSuccessCommunication++;
+            this.ECCUpdateLink(message.getDestination(), (int) res); // cast only beacuse notforme
+            if (res == 0){
+                if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST){
+                    this.simulation.getResults().globalRequestSuccessCommunication++;
+                }else{
+                    this.simulation.getResults().globalResponseSuccessCommunication++;
+                }
+            } else {
+                if (message.getMessageType()== WMBusPacketType.PACKET_REQUEST){
+                    this.simulation.getResults().globalRequestRecCommunication++;
+                }else{
+                    this.simulation.getResults().globalResponseRecCommunication++;
+                }
             }
         }
 
@@ -132,7 +141,7 @@ public abstract class WMbusDevice {
         this.simulation.getResults().deviceSuccessTrasmissionCommunication++;
         this.simulation.getwMbusNetwork().getNode(nodeTarget).receive(message);
 
-        return 0;// The sender doesn't have the nodeRes.
+        return res;// The sender doesn't have the nodeRes.
 
     }
 
@@ -144,13 +153,13 @@ public abstract class WMbusDevice {
         // TODO get the link.
         double distance = this.simulation.getwMbusNetwork().getDistance(message.getSource(),this.nodeID);
         double ber = 0;
-        double ecc = 0;
+        int ecc = 0;
         try {
             ber = this.simulation.getwMbusNetwork().getBer(message.getSource(),this.nodeID);
             ecc = message.computeECC(ber);
         } catch (Exception e) {
             e.printStackTrace();
-            ecc = Double.POSITIVE_INFINITY;
+            ecc =  WMBusCommunicationState.TIMEOUT;
         }
 
 
@@ -171,7 +180,7 @@ public abstract class WMbusDevice {
             }*/
         }
 
-        if (ecc>=2){
+        if (ecc== WMBusCommunicationState.TIMEOUT){
             //((Logger.info("RX BROADCAST TIMEOUT "+message.toString());
             this.receivePacketBroadcastTimeout++;
             return WMBusCommunicationState.TIMEOUT;
@@ -190,14 +199,13 @@ public abstract class WMbusDevice {
         return ecc;
     }
 
-    private void ECCUpdateLink(int destination, double ecc) {
+    private void ECCUpdateLink(int destination, Integer ecc) {
         if (this.eccTable.containsKey(destination)){
-            this.updatedEccTable.put(destination,(this.eccTable.get(destination)!=ecc));
+            this.updatedEccTable.put(destination,(!this.eccTable.get(destination).equals(ecc)));
         }else{
             this.updatedEccTable.put(destination,true);
         }
         this.eccTable.put(destination,ecc);
-
     }
 
     public void receive(WMbusMessage message){
@@ -224,6 +232,7 @@ public abstract class WMbusDevice {
                 if (v){
                     // Add it's own value of ecc.
                     nodeECCTable.getEntries().put(nodeEcc,this.eccTable.get(nodeEcc));
+                    this.updatedEccTable.put(nodeEcc, false);
                 }
             }
             if (!nodeECCTable.getEntries().isEmpty()){

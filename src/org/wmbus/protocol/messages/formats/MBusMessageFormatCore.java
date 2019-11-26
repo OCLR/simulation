@@ -1,7 +1,9 @@
 package org.wmbus.protocol.messages.formats;
 
 
+import org.pmw.tinylog.Logger;
 import org.wmbus.simulation.WMBusSimulation;
+
 
 public abstract class MBusMessageFormatCore {
 
@@ -67,6 +69,14 @@ public abstract class MBusMessageFormatCore {
         double oneerror= Math.pow(neg_ber,n-1)*n*ber; // (1-r)^(n-1)*n*ber
         double morethanoneerror = 1-(noerror+oneerror);
         double randomValue = this.simulation.getwMbusSimulationConfig().CONF_RANDOM.nextDouble();
+        if (this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
+            Logger.debug("Probability Success Rec Fail: " + noerror+ " "+oneerror+ " "+(1-(noerror+oneerror)) );
+        } else {
+            Logger.debug("Probability Success Fail: " + noerror+  " "+(1-(noerror)) );
+        }
+
+        Logger.debug("Probability Success: " + noerror);
+
         if (randomValue <=noerror){
             return 0;
         }else if(this.simulation.getwMbusSimulationConfig().CONF_HAMMING && randomValue <=noerror+oneerror){

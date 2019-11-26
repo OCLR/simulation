@@ -31,24 +31,27 @@ public class Request extends WMbusMessage {
     }
     @Override
     public int getMessageSize() {
-        return this.computeFullFrameSize((this.hops.size()*4)+1);
+        return this.computeFullFrameSize((this.hops.size())+1);
     }
 
     @Override
     public int getMessageSizeOnlyPayloadWithParitybit() {
-        return this.computeFullFrameSizePayloadWithParityBit((this.hops.size()*4)+1);
+        // 1 node 1 byte + type.
+        return this.computeFullFrameSizePayloadWithParityBit((this.hops.size())+1);
     }
 
     @Override
     public int getMessageSizeOnlyPayloadWithoutParitybit() {
-        return this.computeFullFrameSizePayloadWithoutParityBit((this.hops.size()*4)+1);
+        // 1 node 1 byte. + type.
+        return this.computeFullFrameSizePayloadWithoutParityBit((this.hops.size())+1);
     }
 
 
 
     @Override
     public int getMessageBlockCount() {
-        return this.computeFullFrameCount((this.hops.size()*4)+1);
+        // 1 node 1 byte + 1 byte type.
+        return this.computeFullFrameCount((this.hops.size())+1);
     }
 
     public int getFinalDestination() {

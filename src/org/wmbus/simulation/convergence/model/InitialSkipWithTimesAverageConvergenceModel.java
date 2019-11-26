@@ -4,7 +4,7 @@ import org.wmbus.simulation.convergence.model.config.InitialSkipTimesAverageConv
 import org.wmbus.simulation.convergence.state.ConvergenceState;
 
 public class InitialSkipWithTimesAverageConvergenceModel extends TimesAverageConvergenceModel {
-    private int initialSkip = 0;
+    private long initialSkip = 0;
     private InitialSkipTimesAverageConvergenceConfigModel config;
 
     public InitialSkipWithTimesAverageConvergenceModel(InitialSkipTimesAverageConvergenceConfigModel config) {

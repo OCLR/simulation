@@ -1,5 +1,7 @@
 package org.wmbus.simulation.events;
 
+import org.wmbus.protocol.messages.Response;
+
 import java.util.ArrayList;
 
 public interface WMbusSimulationEventInterface {
@@ -11,4 +13,6 @@ public interface WMbusSimulationEventInterface {
     public void pathPredict(Integer destination, ArrayList<Integer> path);
 
     public void globalPathEnd(boolean b);
+
+    public void masterResponseReceived(Response res);
 }

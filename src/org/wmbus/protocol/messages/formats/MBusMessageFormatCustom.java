@@ -1,6 +1,7 @@
 package org.wmbus.protocol.messages.formats;
 
 
+import org.pmw.tinylog.Logger;
 import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.protocol.utilities.Hamming;
 import org.wmbus.simulation.WMBusSimulation;
@@ -26,6 +27,11 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         return this.getHeaderBlockSize(0);
     }
 
+    /**
+     * Return the number of bit in a block. ( full )
+     * @param n
+     * @return
+     */
     public int getBlockSize(int n){
         if (n==0){
             return (12+preamble_size+1+1)*8;
@@ -34,6 +40,11 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         }
     }
 
+    /**
+     * Return payload size part of a block.
+     * @param n
+     * @return
+     */
     public int getPayloadBlockSize(int n){
         if (n==0){
             return 0;
@@ -50,10 +61,10 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         }
     }
 
-    public double computeECC(double ber){
+    public int computeECC(double ber){
         // int packetSize = this.getSize();
         // packetSize-=2;
-        double hammingResultOneCount = 0;
+        int hammingResultOneCount = 0;
         int size;
         int result = this.computeHamming(this.getBlockSize(0),ber);
         //if (result == 1){
@@ -79,11 +90,16 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
                 hammingResultOneCount+=1;
             }
             if (result > 1){
-                return Integer.MAX_VALUE;
+                return 255;
             }
         }
-        if (simulation.getwMbusSimulationConfig().CONF_DETAILED_NOISE){
-            return hammingResultOneCount/this.getMessageBlockCount();
+        if (this.simulation.getwMbusSimulationConfig().CONF_HAMMING && simulation.getwMbusSimulationConfig().CONF_DETAILED_NOISE){
+            double subLevelIndex = 1/(this.simulation.getwMbusSimulationConfig().CONF_DETAILED_NOISE_SUBLEVEL+0.0f); // smallest value.
+            double messageRatio = ((hammingResultOneCount+0.0f)/((this.getMessageBlockCount() - 1)+0.0f)); // value between 0 and 1.
+            if (Math.floor(messageRatio/subLevelIndex) > 0 ){
+                Logger.trace("Quality of channel: "+ Math.floor(messageRatio/subLevelIndex)+" MessageRatio: "+messageRatio+ " MessageRatio: "+messageRatio+" SubLevel: "+subLevelIndex);
+            }
+            return (int) Math.floor(messageRatio/subLevelIndex);
         }else{
             return 0;
         }
@@ -157,17 +173,24 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
 
         return rec;
     }
+
+    /**
+     *  Get size of packet in bits. ( header + payload)
+     * @param n
+     * @return
+     */
     public int computeFullFrameSize(int n){
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
         if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
-            return (n); // Simply data
+            return headerBlockSize+(n*8); // Simply data
         }
         int dataBlockPayloadSize = this.getPayloadBlockSize(1);
         int data = headerBlockSize;
         int ndata = n;
         n*=8;
+
         while(n>dataBlockPayloadSize){
             data+=dataBlockSize;
             n-=dataBlockPayloadSize;
@@ -183,9 +206,9 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         int headerBlockSize = this.getBlockSize(0);
         int dataBlockSize = this.getBlockSize(1);
         if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
-            return (n); // Simply data.
+            return (n*8); // Simply data.
         }
-        int dataBlockPayloadSize = this.getPayloadBlockSize(1);
+        int dataBlockPayloadSize = this.getPayloadBlockSize(1); // payload only part.
         int dataBlockHeaderSize = this.getHeaderBlockSize(1);
         int data = 0;
         n*=8;
@@ -203,11 +226,11 @@ public abstract class MBusMessageFormatCustom extends MBusMessageFormatCore {
         /* A block for header. */
         int headerBlockSize = this.getBlockSize(0);
         if (!this.simulation.getwMbusSimulationConfig().CONF_HAMMING){
-            return n;// return (n-headerBlockSize)+4; // 4 byte of CRC.
+            return n*8;// return (n-headerBlockSize)+4; // 4 byte of CRC.
         }
         int dataBlockSize = this.getBlockSize(1);
-        int dataBlockPayloadSize = this.getPayloadBlockSize(1);
-        int dataBlockHeaderSize = this.getHeaderBlockSize(1);
+        int dataBlockPayloadSize = this.getPayloadBlockSize(1); // data bit.
+        int dataBlockHeaderSize = this.getHeaderBlockSize(1); // Parity bit.
         int data = 0;
         n*=8;
 

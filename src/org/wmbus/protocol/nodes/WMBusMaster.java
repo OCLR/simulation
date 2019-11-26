@@ -34,6 +34,7 @@ public class WMBusMaster extends WMbusDevice {
     private DecimalFormat formatter = new DecimalFormat("#,###.00");
     private Integer fixedNode;
     public PrintWriter log_fault;
+    private ArrayList<Integer> currentPath;
 
     public WMBusMaster(WMBusSimulation simulation, SimpleDirectedWeightedGraph<Integer, DefaultWeightedEdge> graph) {
         super(simulation,0);
@@ -63,7 +64,7 @@ public class WMBusMaster extends WMbusDevice {
 
         WMBusMaster m = this;
         Integer masterNode = (0);
-        // Generate fixed list node.
+            // Generate fixed list node.
         ArrayList<Integer> dest = getDestinations(this.simulation.getwMbusNetwork().getNodes().size()); // without master.
 
         Integer fixedNodeIndex = 0;
@@ -97,6 +98,9 @@ public class WMBusMaster extends WMbusDevice {
             //TwoApproxMetricTSP salesman = new TwoApproxMetricTSP<Integer, DefaultWeightedEdge>();
             Logger.info("Search node for "+fixedNode);
             path = pathChooser.searchPath(this.networkGraphECC,fixedNode,this.simulation.getwMbusSimulationConfig().CONF_WAKEUP);
+
+
+
             this.simulation.getWMbusEvents().pathPredict(fixedNode, path);
             //System.out.println(path);
             try {
@@ -108,10 +112,14 @@ public class WMBusMaster extends WMbusDevice {
                 //continue;
                 // the fuck?
             }
+            this.currentPath = new ArrayList<Integer>();
+            for (int i = 0; i < path.size();i++){
+                this.currentPath.add(path.get(i));
+            }
             //System.out.println(path);
             Logger.info("Path: "+path);
             Logger.info("Send message #"+this.simulation.getResults().masterSentMessage+ "");
-            this.simulation.getResults().masterSumPath+=path.size();
+            this.simulation.getResults().masterSumPath+=this.currentPath.size();
             sending = new Request(this.simulation,0, path);
             double answer = 0;
             // Convergence stuff
@@ -126,7 +134,10 @@ public class WMBusMaster extends WMbusDevice {
 
             if (answer == WMBusCommunicationState.TIMEOUT){
                 this.simulation.getWMbusEvents().pathEnd(false);
+                this.simulation.getResults().masterTrasmissionFailure+=1;
                 this.simulation.getResults().masterTrasmissionFaultWithNoUpdate++;
+                this.simulation.getResults().masterSumFailedPathWithNoUpdate += this.currentPath.size();
+                this.simulation.getResults().masterSumFailedPath += this.currentPath.size();
                 this.triggerTimeout();
             }
             // Convergence stuff
@@ -180,19 +191,38 @@ public class WMBusMaster extends WMbusDevice {
 
             Response res = (Response) message;
             Logger.trace("Data: "+((Response) message).getData());
+            //System.out.println("Response:"+res.getMessageSize());
+
             // No data means error.
             this.simulation.getWMbusEvents().pathEnd(true);
+            this.simulation.getWMbusEvents().masterResponseReceived(res);
+
             if (res.getData()==0){
+                this.simulation.getResults().masterTrasmissionFailure+=1;
+                this.simulation.getResults().masterSumFailedPath += this.currentPath.size();
+                this.simulation.getResults().masterSumFailedPathWithUpdate += this.currentPath.size();
                 this.simulation.getResults().masterTrasmissionFaultWithUpdate++;
                 this.simulation.getWMbusEvents().globalPathEnd(false);
             }else{
                 this.simulation.getResults().masterTrasmissionSuccess++;
+                this.simulation.getResults().masterSumSuccessPath += this.currentPath.size();
                 this.simulation.getWMbusEvents().globalPathEnd(true);
             }
             for(ECCTable entry : res.getECCTables()){
                 for (Integer destination: entry.getEntries().keySet()){
                     DefaultWeightedEdge edge = this.simulation.getwMbusNetwork().getEccGraph().getEdge((entry.getNode()),(destination));
-                    Logger.trace("Update link state from "+entry.getNode()+" to "+destination+" with error "+entry.getEntries().get(destination));
+
+                    Logger.trace("Update link state from "+entry.getNode()+" to "+destination+" with channel quality "+entry.getEntries().get(destination));
+                    if (entry.getEntries().get(destination) > 0 && entry.getEntries().get(destination) < 255){
+                        if (entry.getEntries().get(destination) > this.simulation.getResults().maxChannelQuality){
+                            this.simulation.getResults().maxChannelQuality = entry.getEntries().get(destination);
+                        }
+                        if (entry.getEntries().get(destination) < this.simulation.getResults().minChannelQuality){
+                            this.simulation.getResults().minChannelQuality = entry.getEntries().get(destination);
+                        }
+                        this.simulation.getResults().sumChannelQuality += entry.getEntries().get(destination);
+                        this.simulation.getResults().channelTimes++;
+                    }
                     this.simulation.getResults().masterUpdateLink++;
                     this.networkGraphECC.setEdgeWeight(edge,entry.getEntries().get(destination));
                 }

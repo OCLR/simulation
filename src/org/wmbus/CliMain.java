@@ -1,4 +1,5 @@
 package org.wmbus;
+
 import org.apache.commons.cli.*;
 import org.wmbus.simulation.WMbusSimulationConfig;
 import org.wmbus.simulation.convergence.model.config.InitialSkipTimesAverageConvergenceConfigModel;
@@ -81,7 +82,7 @@ public class CliMain {
         );
 
 
-        // WmbusStats stats = WMBusSimulationHelper.performSimulation();
+        // WMBusStats stats = WMBusSimulationHelper.
 
     }
 }

@@ -4,6 +4,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.wmbus.protocol.config.WMBusDeviceConfig;
 import org.wmbus.protocol.messages.CustomSizeMessage;
+import org.wmbus.protocol.messages.Response;
 import org.wmbus.protocol.messages.WMBusCommunicationState;
 import org.wmbus.protocol.nodes.WMbusDevice;
 import org.wmbus.simulation.WMBusSimulation;
@@ -69,9 +70,9 @@ public class SimulationDistanceToPer implements WMbusSimulationEventInterface {
                 }
             }
 
-            System.out.println((hamming)?"Hamming":"NotHamming"+",Response");
+            // System.out.println((hamming)?"Hamming":"NotHamming"+",Response");
             for (int i = 0; i < packetSizeRes.size(); i++) {
-                packetSize = packetSizeReq.get(i);
+                packetSize = packetSizeRes.get(i);
                 System.out.println("PowerDbm="+powerDbm+",NoiseDbm="+noiseDbm+",WithHamming="+(hamming?"Yes":"No")+",PacketType=Request,PayloadSizeNoParityBit="+packetSize);
                 for (int distance = 5; distance < 251; distance++) {
                      result = s.performSimulation(hamming,powerDbm, noiseDbm, packetSize,distance);
@@ -158,6 +159,11 @@ public class SimulationDistanceToPer implements WMbusSimulationEventInterface {
 
     @Override
     public void globalPathEnd(boolean b) {
+
+    }
+
+    @Override
+    public void masterResponseReceived(Response res) {
 
     }
 }

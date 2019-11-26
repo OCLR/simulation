@@ -37,7 +37,7 @@ public class WMBusNoise {
         double  receiverPowerDb = this.simulation.getwmbusDeviceConfig().CONF_TRASMITTER_POWER_LEVEL_DBM - pathlossDb;
         double  SignalToNoiseRatio = receiverPowerDb - noiseDBActual;
         double  ber = 0.5* Erf.erfc(Math.sqrt(SignalToNoiseRatio/2));
-        Logger.trace("DISTANCE: "+distance + " NOISE DB:" + noiseDBActual + " PATH LOSS DB:" + pathlossDb + " POWER REC DB:" + receiverPowerDb + "\n SNR DB:" + SignalToNoiseRatio + " BER: "+ber);
+        // Logger.trace("DISTANCE: "+distance + " NOISE DB:" + noiseDBActual + " PATH LOSS DB:" + pathlossDb + " POWER REC DB:" + receiverPowerDb + "\n SNR DB:" + SignalToNoiseRatio + " BER: "+ber);
         if (Double.isNaN(ber)) {
             Logger.error("Ber Cannot be Nan, COMMUNICATIONS CANNOT OCCURS WITH THIS LEVEL OF NOISE."+ noiseDBActual+ " dbm. MESSAGE ERROR ");
             throw new Exception("DISTANCE: "+distance + " NOISE DB:" + noiseDBActual + " PATH LOSS DB:" + pathlossDb + " POWER REC DB:" + receiverPowerDb + "\n SNR DB:" + SignalToNoiseRatio + " BER: "+ber);

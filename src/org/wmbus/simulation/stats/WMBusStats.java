@@ -17,9 +17,21 @@ public class WMBusStats {
      * WMBusMaster device.
      */
     public double masterSentMessage = 0;
-    public int masterSumPath = 0;
+
+    public long masterSumPath = 0;
+    public long masterSumSuccessPath = 0;
+    public long masterSumFailedPath = 0;
+
     public double masterUpdateLink = 0;
     public double masterTrasmissionSuccess = 0;
+    public double masterTrasmissionFailure = 0;
+
+    public double minChannelQuality = 100000.0;
+    public double maxChannelQuality = 0.0;
+    public double sumChannelQuality = 0.0;
+    public double channelTimes = 0.0;
+
+
     public double masterTrasmissionFaultWithNoUpdate = 0;
     public double masterTrasmissionFaultWithUpdate = 0;
     /*
@@ -68,6 +80,11 @@ public class WMBusStats {
     public double noiseMin = Double.MIN_VALUE; // O
     public double noiseSum = 0;
     public double noiseMax = Double.MIN_VALUE;
+    public int masterSumFailedPathWithNoUpdate = 0;
+    public int masterSumFailedPathWithUpdate = 0;
+    public double globalRequestRecCommunication = 0;
+    public double globalResponseRecCommunication = 0;
+
 
 
     public ResultTable printResults(){
@@ -100,20 +117,27 @@ public class WMBusStats {
         r.addRow("Convergence (0-yes,1-no):" ,(this.globalConvergence?0.0:1.0));
         r.addRow("RM: Master Fault %:" ,((this.masterTrasmissionFaultWithNoUpdate+this.masterTrasmissionFaultWithUpdate)/this.masterSentMessage)*100);
         r.addRow("RM: Master average path length:",this.masterSumPath/this.masterSentMessage);
+        r.addRow("RM: Master average path Success length:",this.masterTrasmissionSuccess==0?0:this.masterSumSuccessPath/this.masterTrasmissionSuccess);
+        r.addRow("RM: Master average path Failed  length:",this.masterTrasmissionFailure==0?0:this.masterSumFailedPath/this.masterTrasmissionFailure);
+
         if (this.globalRequestTrasmissionCommunication==0){
             r.addRow("RM: Device-Device Response Success Probability :",0);
             r.addRow("RM: Device-Device Response Failed Probability :",0);
         }else{
             r.addRow("RM: Device-Device Request Success Probability :",((this.globalRequestSuccessCommunication+0.f)/this.globalRequestTrasmissionCommunication)*100);
+            r.addRow("RM: Device-Device Request Success+Rec Probability :",((this.globalRequestRecCommunication+this.globalRequestSuccessCommunication+0.f)/this.globalRequestTrasmissionCommunication)*100);
             r.addRow("RM: Device-Device Request Failed Probability :",((this.globalRequestFailCommunication+0.f)/this.globalRequestTrasmissionCommunication)*100);
+            r.addRow("RM: Device-Device Request Recoverable Probability :",((this.globalRequestRecCommunication+0.f)/this.globalRequestTrasmissionCommunication)*100);
         }
 
         if (this.globalResponseTrasmissionCommunication==0){
             r.addRow("RM: Device-Device Response Success Probability :",0);
             r.addRow("RM: Device-Device Response Failed Probability :",0);
         }else{
-            r.addRow("RM: Device-Device Response Success Probability :",((this.globalResponseSuccessCommunication+0.f)/this.globalResponseTrasmissionCommunication)*100);
+            r.addRow("RM: Device-Device Response Success Probability  :",((this.globalResponseSuccessCommunication+0.f)/this.globalResponseTrasmissionCommunication)*100);
+            r.addRow("RM: Device-Device Response Recoverable Probability :",((this.globalResponseRecCommunication+0.f)/this.globalResponseTrasmissionCommunication)*100);
             r.addRow("RM: Device-Device Response Failed Probability :",((this.globalResponseFailCommunication+0.f)/this.globalResponseTrasmissionCommunication)*100);
+            r.addRow("RM: Device-Device Response Success+Rec Probability :",((this.globalResponseSuccessCommunication+this.globalResponseRecCommunication+0.f)/this.globalResponseTrasmissionCommunication)*100);
         }
 
         // Request packet
@@ -131,7 +155,7 @@ public class WMBusStats {
 
         // r.addRow("Max noise dbm: ", noiseMax);
         //r.addRow("Min noise dbm: ", noiseMin);
-        r.addRow("Avg noise dbm: ", snrTimes==0?0:noiseSum/snrTimes);
+        r.addRow("Noise dbm: ", snrTimes==0?0:noiseSum/snrTimes);
 
         r.addRow("Max BER: ", berMax);
         r.addRow("Min BER: ", berMin);
@@ -141,6 +165,9 @@ public class WMBusStats {
         r.addRow("Min SNR: ", snrMin);
         r.addRow("Avg SNR: ", snrTimes!=0?snrSum/snrTimes:0);
 
+        r.addRow("Min Channel quality: ", minChannelQuality);
+        r.addRow("Max Channel quality: ", maxChannelQuality);
+        r.addRow("Average Channel quality: ", channelTimes==0?0:sumChannelQuality/channelTimes);
 
         return r;
         /* think carefully as*/
